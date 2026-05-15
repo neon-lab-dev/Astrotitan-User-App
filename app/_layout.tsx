@@ -1,24 +1,102 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { useFonts } from "expo-font";
+import { Slot } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider } from "react-redux";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { DevResetPanel } from "@/components/dev/DevResetPanel";
+import ScreenWrapper from "@/components/layout/ScreenWrapper";
+import GlobalBottomSheet from "@/components/reusable/GlobalBottomSheet/GlobalBottomSheet";
+import GlobalModal from "@/components/reusable/GlobalModal/GlobalModal";
+import { store } from "@/redux/store";
+import { loadAuth } from "@/utils/loadAuth";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [appReady, setAppReady] =
+    useState(false);
+  const [fontsLoaded] = useFonts({
+    SatoshiLight: require("../assets/fonts/satoshi/Satoshi-Light.otf"),
+    Satoshi: require("../assets/fonts/satoshi/Satoshi-Regular.otf"),
+    SatoshiMedium: require("../assets/fonts/satoshi/Satoshi-Medium.otf"),
+    SatoshiBold: require("../assets/fonts/satoshi/Satoshi-Bold.otf"),
+    SatoshiExtraBold: require("../assets/fonts/satoshi/Satoshi-Black.otf"),
+
+    SansExtraLight: require("../assets/fonts/google_sans/GeneralSans-Extralight.otf"),
+    SansLight: require("../assets/fonts/google_sans/GeneralSans-Light.otf"),
+    Sans: require("../assets/fonts/google_sans/GeneralSans-Regular.otf"),
+    SansMedium: require("../assets/fonts/google_sans/GeneralSans-Medium.otf"),
+    SansSemiBold: require("../assets/fonts/google_sans/GeneralSans-Semibold.otf"),
+    SansBold: require("../assets/fonts/google_sans/GeneralSans-Bold.otf"),
+  });
+
+  /* ---------------- APP INIT ---------------- */
+
+  useEffect(() => {
+    async function prepareApp() {
+      try {
+        /* LOAD AUTH */
+
+        await loadAuth();
+
+        console.log(
+          "AUTH RESTORED"
+        );
+      } catch (error) {
+        console.log(
+          "APP INIT ERROR:",
+          error
+        );
+      } finally {
+        setAppReady(true);
+      }
+    }
+
+    prepareApp();
+  }, []);
+
+  /* ---------------- HIDE SPLASH ---------------- */
+
+  useEffect(() => {
+    async function hideSplash() {
+      if (
+        fontsLoaded &&
+        appReady
+      ) {
+        await SplashScreen.hideAsync();
+      }
+    }
+
+    hideSplash();
+  }, [fontsLoaded, appReady]);
+
+  /* ---------------- BLOCK RENDER ---------------- */
+
+  if (
+    !fontsLoaded ||
+    !appReady
+  ) {
+    return null;
+  }
+
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Provider store={store}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <StatusBar style="dark" />
+
+          <ScreenWrapper>
+            <Slot />
+          </ScreenWrapper>
+
+          <GlobalBottomSheet />
+          <GlobalModal />
+          <DevResetPanel/>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </Provider>
   );
 }

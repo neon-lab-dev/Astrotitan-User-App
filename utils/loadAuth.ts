@@ -1,0 +1,52 @@
+import { authApi } from "@/redux/features/auth/authApi";
+import { setAuth } from "@/redux/features/auth/authSlice";
+import { store } from "@/redux/store";
+import * as SecureStore from "expo-secure-store";
+
+export const loadAuth = async () => {
+  const token = await SecureStore.getItemAsync("ACCESS_TOKEN");
+  const userString = await SecureStore.getItemAsync("USER");
+
+  console.log("TOKEN from storage:", token);
+  console.log("USER from storage:", userString);
+
+  if (token) {
+    // ✅ Step 1: set token FIRST (even if user is stale/null)
+    store.dispatch(
+      setAuth({
+        token,
+        user: userString ? JSON.parse(userString) : null,
+      }),
+    );
+
+    console.log("Redux after initial load:", store.getState().auth);
+
+    try {
+      // ✅ Step 2: call getMe AFTER token is in Redux
+      const result = await store.dispatch(
+        authApi.endpoints.getMe.initiate({}, { forceRefetch: true }),
+      );
+
+      if ("data" in result) {
+        const freshUser = result.data.data;
+
+        console.log("✅ Fresh user from API:", freshUser);
+
+        // ✅ Step 3: update Redux with fresh user (KEEP token)
+        store.dispatch(
+          setAuth({
+            token,
+            user: freshUser,
+          }),
+        );
+
+        // ✅ Step 4: update storage
+        await SecureStore.setItemAsync("USER", JSON.stringify(freshUser));
+      }
+    } catch (err) {
+      console.log("❌ getMe failed:", err);
+    }
+  } else {
+    console.log("No auth data found in storage");
+  }
+};

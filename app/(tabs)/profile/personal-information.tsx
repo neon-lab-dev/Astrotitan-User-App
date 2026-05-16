@@ -14,6 +14,10 @@ import {
   useUpdateProfileMutation,
 } from "@/redux/features/auth/authApi";
 
+import {
+  updateUser,
+} from "@/redux/features/auth/authSlice";
+
 import * as ImagePicker from "expo-image-picker";
 
 import { Image } from "expo-image";
@@ -25,14 +29,25 @@ import React, {
 
 import { useForm } from "react-hook-form";
 
-import { isValidDate } from "@/utils/validators/dateValidators";
-
 import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
+
+import {
+  useDispatch,
+} from "react-redux";
+
+import BookIcon from "@/assets/icons/visual/intent/book.svg";
+import BriefcaseIcon from "@/assets/icons/visual/intent/briefcase.svg";
+import HeartIcon from "@/assets/icons/visual/intent/favourite.svg";
+import MarriageIcon from "@/assets/icons/visual/intent/marriage.svg";
+import TieIcon from "@/assets/icons/visual/intent/tie.svg";
+import WellnessIcon from "@/assets/icons/visual/intent/wellness.svg";
+
+import { isValidDate } from "@/utils/validators/dateValidators";
 
 type FormValues = {
   firstName: string;
@@ -50,517 +65,643 @@ type FormValues = {
   dateOfBirth: string;
 };
 
-const PersonalInformation = () => {
-  /* =======================================================
-   * API
-   * ======================================================= */
+const PersonalInformation =
+  () => {
+    const dispatch =
+      useDispatch();
 
-  const { data: userData } =
-    useGetMeQuery({});
+    /* =======================================================
+     * API
+     * ======================================================= */
 
-  const [
-    updateProfile,
-    {
-      isLoading:
-      updateLoading,
-    },
-  ] =
-    useUpdateProfileMutation();
-  const profile =
-    userData?.data?.profile;
+    const {
+      data: userData,
+      refetch,
+    } = useGetMeQuery({});
 
-  const account =
-    userData?.data?.account;
+    const [
+      updateProfile,
+      {
+        isLoading:
+        updateLoading,
+      },
+    ] =
+      useUpdateProfileMutation();
 
+    const profile =
+      userData?.data
+        ?.profile;
 
-    console.log(userData.data
-      
-    )
+    const account =
+      userData?.data
+        ?.account;
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    watch,
-  } = useForm<FormValues>({
-    defaultValues: {
-      firstName: "",
+    /* =======================================================
+     * FORM
+     * ======================================================= */
 
-      lastName: "",
+    const {
+      control,
+      handleSubmit,
+      setValue,
+    } =
+      useForm<FormValues>({
+        defaultValues: {
+          firstName: "",
 
-      gender: "",
+          lastName: "",
 
-      intents: [],
+          gender: "",
 
-      phoneNumber: "",
-
-      email: "",
-
-      dateOfBirth: "",
-    },
-  });
-
-  const [
-    profileImage,
-    setProfileImage,
-  ] = useState<any>(null);
-
-useEffect(() => {
-  if (!profile) return;
-
-  /* FIRST NAME */
-
-  setValue(
-    "firstName",
-    profile?.firstName || ""
-  );
-
-  /* LAST NAME */
-
-  setValue(
-    "lastName",
-    profile?.lastName || ""
-  );
-
-  /* GENDER */
-
-  setValue(
-    "gender",
-    profile?.gender || ""
-  );
-
-  /* INTENTS */
-
-  let formattedIntents =
-    [];
-
-  if (
-    Array.isArray(
-      profile?.intents
-    )
-  ) {
-    formattedIntents =
-      profile.intents.filter(
-        (
-          item: string
-        ) =>
-          item &&
-          item !== "[]"
-      );
-  }
-
-  setValue(
-    "intents",
-    formattedIntents
-  );
-
-  /* PHONE */
-
-  setValue(
-    "phoneNumber",
-    account?.phoneNumber ||
-      ""
-  );
-
-  /* EMAIL */
-
-  setValue(
-    "email",
-    account?.email || ""
-  );
-
-  /* DOB */
-
-  if (
-    profile?.dateOfBirth
-  ) {
-    const date =
-      new Date(
-        profile.dateOfBirth
-      );
-
-    const formattedDate = `${String(
-      date.getDate()
-    ).padStart(2, "0")}/${String(
-      date.getMonth() + 1
-    ).padStart(2, "0")}/${date.getFullYear()}`;
-
-    setValue(
-      "dateOfBirth",
-      formattedDate
-    );
-  }
-}, [profile, account]);
-
-  const pickImage =
-    async () => {
-      const result =
-        await ImagePicker.launchImageLibraryAsync(
-          {
-            mediaTypes:
-              ImagePicker
-                .MediaTypeOptions
-                .Images,
-
-            quality: 0.7,
-
-            allowsEditing:
-              true,
-
-            aspect: [1, 1],
-          }
-        );
-
-      if (
-        !result.canceled
-      ) {
-        setProfileImage(
-          result.assets[0]
-        );
-      }
-    };
-
-  /* =======================================================
-   * SUBMIT
-   * ======================================================= */
-
-  const onSubmit =
-    async (
-      data: FormValues
-    ) => {
-      try {
-        await updateProfile({
-          profilePicture:
-            profileImage,
-
-          firstName:
-            data.firstName,
-
-          lastName:
-            data.lastName,
-
-          gender:
-            data.gender,
-
-          intents:
-            data.intents,
+          intents: [],
 
           phoneNumber:
-            data.phoneNumber,
+            "",
+
+          email: "",
 
           dateOfBirth:
-            data.dateOfBirth,
-        }).unwrap();
+            "",
+        },
+      });
 
-        console.log(
-          "PROFILE UPDATED"
-        );
-      } catch (error) {
-        console.log(
-          "UPDATE PROFILE ERROR:",
-          error
+    /* =======================================================
+     * STATES
+     * ======================================================= */
+
+    const [
+      profileImage,
+      setProfileImage,
+    ] = useState<any>(
+      null
+    );
+
+    /* =======================================================
+     * SET USER DATA
+     * ======================================================= */
+
+    useEffect(() => {
+      if (!profile)
+        return;
+
+      setValue(
+        "firstName",
+        profile?.firstName ||
+        ""
+      );
+
+      setValue(
+        "lastName",
+        profile?.lastName ||
+        ""
+      );
+
+      setValue(
+        "gender",
+        profile?.gender ||
+        ""
+      );
+
+      let formattedIntents: string[] =
+        [];
+
+      if (
+        Array.isArray(
+          profile?.intents
+        )
+      ) {
+        formattedIntents =
+          profile.intents.flatMap(
+            (
+              item: string
+            ) => {
+              try {
+                const parsed =
+                  JSON.parse(
+                    item
+                  );
+
+                return Array.isArray(
+                  parsed
+                )
+                  ? parsed
+                  : [];
+              } catch {
+                return item
+                  ? [item]
+                  : [];
+              }
+            }
+          );
+      }
+
+      setValue(
+        "intents",
+        formattedIntents
+      );
+
+      setValue(
+        "phoneNumber",
+        account?.phoneNumber ||
+        ""
+      );
+
+      setValue(
+        "email",
+        account?.email ||
+        ""
+      );
+
+      if (
+        profile?.dateOfBirth
+      ) {
+        const date =
+          new Date(
+            profile.dateOfBirth
+          );
+
+        const formattedDate = `${String(
+          date.getDate()
+        ).padStart(
+          2,
+          "0"
+        )}/${String(
+          date.getMonth() +
+          1
+        ).padStart(
+          2,
+          "0"
+        )}/${date.getFullYear()}`;
+
+        setValue(
+          "dateOfBirth",
+          formattedDate
         );
       }
-    };
+    }, [
+      profile,
+      account,
+    ]);
 
-  /* =======================================================
-   * VALIDATION
-   * ======================================================= */
+    /* =======================================================
+     * IMAGE PICKER
+     * ======================================================= */
 
-  const dob =
-    watch("dateOfBirth");
+    const pickImage =
+      async () => {
+        try {
+          const result =
+            await ImagePicker.launchImageLibraryAsync(
+              {
+                mediaTypes:
+                  ["images"],
 
-  const isFormValid =
-    watch("firstName")
-      ?.trim()
-      ?.length > 1 &&
-    watch("lastName")
-      ?.trim()
-      ?.length > 1 &&
-    watch("gender")
-      ?.trim()
-      ?.length > 1 &&
-    watch("intents")
-      ?.length > 0 &&
-    isValidDate(dob);
+                quality: 0.7,
 
-  return (
-    <AnimatedScreen>
-      <ScreenWrapper>
-        <AppHeader>
-          <AuthTitle title="Personal information">
-            <SansText
-              style={{
-                lineHeight: 22,
-              }}
-            >
-              Help us tailor
-              guidance that feels
-              more relevant to
-              you.
-            </SansText>
-          </AuthTitle>
-        </AppHeader>
+                allowsEditing:
+                  true,
 
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
-          <ScrollView
-            contentContainerStyle={{
-              paddingHorizontal: 16,
+                aspect: [1, 1],
+              }
+            );
 
-              paddingTop: 24,
+          console.log(
+            "IMAGE RESULT:",
+            result
+          );
 
-              paddingBottom: 140,
+          if (
+            !result.canceled &&
+            result.assets?.length >
+            0
+          ) {
+            setProfileImage(
+              result.assets[0]
+            );
+          }
+        } catch (error) {
+          console.log(
+            "IMAGE PICK ERROR:",
+            error
+          );
+        }
+      };
+    /* =======================================================
+     * SUBMIT
+     * ======================================================= */
 
-              gap: 20,
-            }}
-            showsVerticalScrollIndicator={
-              false
-            }
-          >
-            {/* PROFILE IMAGE */}
-            <View
-              style={{
-                alignItems:
-                  "center",
+    const onSubmit =
+      async (
+        data: FormValues
+      ) => {
+        try {
+          console.log(
+            "PROFILE IMAGE:",
+            profileImage
+          );
+          console.log(
+            "IMAGE URI:",
+            profileImage?.uri
+          );
 
-                gap: 14,
-              }}
-            >
-              <TouchableOpacity
-                onPress={
-                  pickImage
-                }
-                activeOpacity={
-                  0.8
-                }
-                style={
-                  styles.imageWrapper
-                }
+          console.log(
+            "IMAGE TYPE:",
+            profileImage?.mimeType
+          );
+
+          console.log(
+            "IMAGE NAME:",
+            profileImage?.fileName
+          );
+
+          const response =
+            await updateProfile(
+              {
+                file:
+                  profileImage,
+
+                firstName:
+                  data.firstName,
+
+                lastName:
+                  data.lastName,
+
+                gender:
+                  data.gender,
+
+                intents:
+                  data.intents,
+
+                phoneNumber:
+                  data.phoneNumber,
+
+                dateOfBirth:
+                  data.dateOfBirth,
+              }
+            ).unwrap();
+
+          console.log(
+            "UPDATE RESPONSE:",
+            response
+          );
+
+          const meRes =
+            await refetch();
+
+          const latestUser =
+            meRes?.data
+              ?.data;
+
+          dispatch(
+            updateUser(
+              latestUser
+            )
+          );
+
+          console.log(
+            "LATEST USER:",
+            latestUser
+          );
+
+          console.log(
+            "PROFILE UPDATED SUCCESSFULLY"
+          );
+        } catch (
+        error
+        ) {
+          console.log(
+            "UPDATE PROFILE ERROR:",
+            error
+          );
+        }
+      };
+
+    /* =======================================================
+     * UI
+     * ======================================================= */
+
+    return (
+      <AnimatedScreen>
+        <ScreenWrapper>
+          <AppHeader>
+            <AuthTitle title="Personal information">
+              <SansText
+                style={{
+                  lineHeight: 22,
+                }}
               >
-                <Image
-                  source={
-                    profileImage
-                      ?.uri
-                      ? {
-                        uri:
-                          profileImage.uri,
-                      }
-                      : profile?.profilePicture
-                        ? {
-                          uri:
-                            profile.profilePicture,
-                        }
-                        : require("@/assets/images/dummy/experts/expert1.png")
-                  }
-                  style={
-                    styles.image
-                  }
-                  contentFit="cover"
-                />
+                Help us tailor
+                guidance that
+                feels more
+                relevant to
+                you.
+              </SansText>
+            </AuthTitle>
+          </AppHeader>
 
-                <View
-                  style={
-                    styles.cameraButton
-                  }
-                >
-                  <UserIcon
-                    width={18}
-                    height={18}
-                  />
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={
-                  pickImage
-                }
-              >
-                <SansText
-                  style={{
-                    fontSize: 13,
-
-                    textDecorationLine:
-                      "underline",
-                  }}
-                >
-                  Upload photo
-                </SansText>
-              </TouchableOpacity>
-            </View>
-
-            {/* EMAIL */}
-            <FormInput
-              control={control}
-              name="email"
-              label="Email Address"
-              placeholder="Enter email"
-              editable={false}
-            />
-
-            {/* FIRST NAME */}
-            <FormInput
-              control={control}
-              name="firstName"
-              label="First Name"
-              placeholder="Enter first name"
-              rules={{
-                required:
-                  "First name is required",
-              }}
-            />
-
-            {/* LAST NAME */}
-            <FormInput
-              control={control}
-              name="lastName"
-              label="Last Name"
-              placeholder="Enter last name"
-              rules={{
-                required:
-                  "Last name is required",
-              }}
-            />
-
-            {/* GENDER */}
-            <FormInput
-              control={control}
-              name="gender"
-              variant="dropdown"
-              label="Gender"
-              placeholder="Select your gender"
-              dropdownData={[
-                {
-                  label: "Male",
-                  value: "male",
-                },
-                {
-                  label: "Female",
-                  value: "female",
-                },
-                {
-                  label:
-                    "Non-binary",
-                  value:
-                    "non_binary",
-                },
-              ]}
-              rules={{
-                required:
-                  "Please select gender",
-              }}
-            />
-
-            {/* INTENT */}
-            <FormInput
-              control={control}
-              name="intents"
-              variant="dropdown"
-              multiple
-              label="Intent"
-              placeholder="Select intent"
-              dropdownData={[
-                {
-                  label: "Job",
-                  value: "job",
-                },
-                {
-                  label:
-                    "Education",
-                  value:
-                    "education",
-                },
-                {
-                  label:
-                    "Marriage",
-                  value:
-                    "marriage",
-                },
-                {
-                  label:
-                    "Health",
-                  value:
-                    "health",
-                },
-                {
-                  label:
-                    "Business",
-                  value:
-                    "business",
-                },
-                {
-                  label: "Love",
-                  value: "love",
-                },
-              ]}
-              rules={{
-                validate: (
-                  value: string[]
-                ) =>
-                  value?.length >
-                  0 ||
-                  "Please select at least one intent",
-              }}
-            />
-
-            {/* PHONE */}
-            <FormInput
-              control={control}
-              name="phoneNumber"
-              label="Phone number"
-              placeholder="Enter phone number"
-              keyboardType="numeric"
-            />
-
-            {/* DOB */}
-            <FormInput
-              control={control}
-              name="dateOfBirth"
-              label="Date of birth"
-              placeholder="DD/MM/YYYY"
-              rules={{
-                validate: (
-                  value: string
-                ) =>
-                  isValidDate(
-                    value
-                  ) ||
-                  "Invalid DOB",
-              }}
-            />
-          </ScrollView>
-
-          {/* BUTTON */}
           <View
-            style={
-              styles.bottomContainer
-            }
+            style={{
+              flex: 1,
+            }}
           >
-            <ReusableButton
-              title="Save changes"
-              onPress={handleSubmit(
-                onSubmit
-              )}
-              width="100%"
-              loading={
-                updateLoading
-              }
-              disabled={
-                !isFormValid ||
-                updateLoading
-              }
-            />
-          </View>
-        </View>
-      </ScreenWrapper>
-    </AnimatedScreen>
-  );
-};
+            <ScrollView
+              contentContainerStyle={{
+                paddingHorizontal: 16,
 
-export default PersonalInformation;
+                paddingTop: 24,
+
+                paddingBottom: 140,
+
+                gap: 20,
+              }}
+              showsVerticalScrollIndicator={
+                false
+              }
+            >
+              {/* PROFILE IMAGE */}
+
+              <View
+                style={{
+                  alignItems:
+                    "center",
+
+                  gap: 14,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={
+                    pickImage
+                  }
+                  activeOpacity={
+                    0.8
+                  }
+                  style={
+                    styles.imageWrapper
+                  }
+                >
+                  <Image
+                    source={
+                      profileImage?.uri
+                        ? profileImage.uri
+                        : profile?.profilePicture
+                          ? profile.profilePicture
+                          : require("@/assets/images/dummy/experts/expert1.png")
+                    }
+                    style={
+                      styles.image
+                    }
+                    contentFit="cover"
+                  />
+
+                  <View
+                    style={
+                      styles.cameraButton
+                    }
+                  >
+                    <UserIcon
+                      width={
+                        18
+                      }
+                      height={
+                        18
+                      }
+                    />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={
+                    pickImage
+                  }
+                >
+                  <SansText
+                    style={{
+                      fontSize: 13,
+
+                      textDecorationLine:
+                        "underline",
+                    }}
+                  >
+                    Upload
+                    photo
+                  </SansText>
+                </TouchableOpacity>
+              </View>
+
+              {/* EMAIL */}
+
+              <FormInput
+                control={
+                  control
+                }
+                name="email"
+                label="Email Address"
+                placeholder="Enter email"
+                editable={
+                  false
+                }
+              />
+
+              {/* FIRST NAME */}
+
+              <FormInput
+                control={
+                  control
+                }
+                name="firstName"
+                label="First Name"
+                placeholder="Enter first name"
+              />
+
+              {/* LAST NAME */}
+
+              <FormInput
+                control={
+                  control
+                }
+                name="lastName"
+                label="Last Name"
+                placeholder="Enter last name"
+              />
+
+              {/* GENDER */}
+
+              <FormInput
+                control={
+                  control
+                }
+                name="gender"
+                variant="dropdown"
+                label="Gender"
+                placeholder="Select your gender"
+                dropdownData={[
+                  {
+                    label:
+                      "Male",
+                    value:
+                      "male",
+                  },
+
+                  {
+                    label:
+                      "Female",
+                    value:
+                      "female",
+                  },
+
+                  {
+                    label:
+                      "Non-binary",
+
+                    value:
+                      "non_binary",
+                  },
+                ]}
+              />
+
+              {/* INTENTS */}
+
+              <FormInput
+                control={
+                  control
+                }
+                name="intents"
+                variant="dropdown"
+                multiple
+                label="Intent"
+                placeholder="Select intent"
+                dropdownData={[
+                  {
+                    label:
+                      "Wealth & Finance",
+
+                    value:
+                      "Wealth & Finance",
+
+                    icon:
+                      TieIcon,
+                  },
+
+                  {
+                    label:
+                      "Education",
+
+                    value:
+                      "Education",
+
+                    icon:
+                      BookIcon,
+                  },
+
+                  {
+                    label:
+                      "Marriage",
+
+                    value:
+                      "Marriage",
+
+                    icon:
+                      MarriageIcon,
+                  },
+
+                  {
+                    label:
+                      "Health & Wellness",
+
+                    value:
+                      "Health & Wellness",
+
+                    icon:
+                      WellnessIcon,
+                  },
+
+                  {
+                    label:
+                      "Career Growth",
+
+                    value:
+                      "Career Growth",
+
+                    icon:
+                      BriefcaseIcon,
+                  },
+
+                  {
+                    label:
+                      "Love & Relationship",
+
+                    value:
+                      "Love & Relationship",
+
+                    icon:
+                      HeartIcon,
+                  },
+                ]}
+              />
+
+              {/* PHONE */}
+
+              <FormInput
+                control={
+                  control
+                }
+                name="phoneNumber"
+                label="Phone number"
+                placeholder="Enter phone number"
+                keyboardType="numeric"
+              />
+
+              {/* DOB */}
+
+              <FormInput
+                control={
+                  control
+                }
+                name="dateOfBirth"
+                label="Date of birth"
+                placeholder="DD/MM/YYYY"
+                rules={{
+                  validate:
+                    (
+                      value: string
+                    ) =>
+                      isValidDate(
+                        value
+                      ) ||
+                      "Invalid DOB",
+                }}
+              />
+            </ScrollView>
+
+            {/* BUTTON */}
+
+            <View
+              style={
+                styles.bottomContainer
+              }
+            >
+              <ReusableButton
+                title="Save changes"
+                onPress={handleSubmit(
+                  onSubmit
+                )}
+                width="100%"
+                loading={
+                  updateLoading
+                }
+                disabled={
+                  updateLoading
+                }
+              />
+            </View>
+          </View>
+        </ScreenWrapper>
+      </AnimatedScreen>
+    );
+  };
+
+export default
+  PersonalInformation;
 
 const styles =
   StyleSheet.create({
@@ -571,7 +712,8 @@ const styles =
 
       borderRadius: 999,
 
-      overflow: "hidden",
+      overflow:
+        "hidden",
 
       backgroundColor:
         "#E9E9E9",

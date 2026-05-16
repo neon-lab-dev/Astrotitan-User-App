@@ -96,3 +96,42 @@ export const isValidTime = (time: string) => {
 
   return regex.test(time);
 };
+
+export const isValidFutureDate = (date: string) => {
+  if (!date) return false;
+
+  const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/;
+
+  if (!regex.test(date)) {
+    return false;
+  }
+
+  const [day, month, year] = date.split("/").map(Number);
+
+  const parsedDate = new Date(year, month - 1, day);
+
+  const isRealDate =
+    parsedDate.getFullYear() === year &&
+    parsedDate.getMonth() === month - 1 &&
+    parsedDate.getDate() === day;
+
+  if (!isRealDate) {
+    return false;
+  }
+
+  /* REMOVE TIME */
+
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+
+  parsedDate.setHours(0, 0, 0, 0);
+
+  /* ONLY FUTURE DATES */
+
+  if (parsedDate <= today) {
+    return false;
+  }
+
+  return true;
+};

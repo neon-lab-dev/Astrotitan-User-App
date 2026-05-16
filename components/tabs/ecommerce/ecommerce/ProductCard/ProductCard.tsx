@@ -48,7 +48,25 @@ const ProductCard = ({
 
     return (
         <TouchableOpacity onPress={() => {
-            router.push(`/remedies/${id}`);
+            if (variant === "product") {
+                router.push({
+                    pathname:
+                        "/(tabs)/remedies/(ecommerce)/product-details",
+                    params: {
+                        id,
+                    },
+                });
+            }
+
+            if (variant === "pooja") {
+                router.push({
+                    pathname:
+                        "/(tabs)/remedies/(ecommerce)/pooja-details",
+                    params: {
+                        id,
+                    },
+                });
+            }
         }} style={styles.card}>
             <ImageBackground
                 source={{
@@ -122,9 +140,15 @@ const ProductCard = ({
                     style={{ marginTop: 10 }}
                     variant="outline"
                     title="View Details"
-                    onPress={() => {router.push(`/remedies/${id}`); }}
-                    iconName="ArrowIcon"
-                    iconPosition="right"
+                    onPress={() => {
+                        router.push({
+                            pathname:
+                                "/(tabs)/remedies/(ecommerce)/pooja-details",
+                            params: {
+                                id,
+                            },
+                        });
+                    }}
                 />
             )}
         </TouchableOpacity>

@@ -1,6 +1,6 @@
 import BottomSheetService from "@/redux/features/ui/GlobalSheet/BottomSheetService";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -63,30 +63,37 @@ export default function AppInput({
   const showError = !!error;
   const isIconInput = variant === "icon";
   /* DROPDOWN STATE */
+  const [localSelected, setLocalSelected] =
+    useState<string[]>(
+      selectedOptions || [],
+    );
 
+  useEffect(() => {
+    setLocalSelected(
+      selectedOptions || [],
+    );
+  }, [selectedOptions]);
 
   const isPassword = variant === "password";
   const isPhone = variant === "phone";
   const isDropdown = variant === "dropdown";
   const isMultiline = variant === "multiline";
 
-const selectedLabel = multiple
-  ? dropdownData
+  const selectedLabel = multiple
+    ? dropdownData
       .filter((item) =>
-        selectedOptions.includes(
-          item.value
-        )
+        localSelected.includes(
+          item.value,
+        ),
       )
       .map(
-        (item) => item.label
+        (item) => item.label,
       )
       .join(", ")
-  : dropdownData.find(
-        (i) =>
-          i.value === value
-      )?.label || "";
-
-
+    : dropdownData.find(
+      (i) =>
+        i.value === value,
+    )?.label || "";
   return (
     <View style={containerStyle}>
       {props.label && <SansText style={styles.label}>{props.label}</SansText>}
@@ -138,77 +145,52 @@ const selectedLabel = multiple
             ]}
             onPress={() => {
               BottomSheetService.open(
-                <View
-                  style={{
-                    paddingHorizontal: 16,
-                    paddingTop: 28,
-                    paddingBottom: 40,
-                    gap: 24,
+                <DropdownSheetContent
+                  options={dropdownData.map(
+                    (item) => ({
+                      label: item.label,
+                      value: item.value,
+                    }),
+                  )}
+                  initialValue={
+                    multiple
+                      ? localSelected
+                      : value || ""
+                  }
+                  multiple={multiple}
+                  onSubmit={(val: any) => {
+                    if (multiple) {
+                      const updated =
+                        val as string[];
+
+                      setLocalSelected(updated);
+
+                      onMultiSelect?.(updated);
+                    } else {
+                      props.onChangeText?.(
+                        val as string,
+                      );
+
+                      const selected =
+                        dropdownData.find(
+                          (item) =>
+                            item.value === val,
+                        );
+
+                      if (selected) {
+                        onSelectItem?.(
+                          selected,
+                        );
+                      }
+
+                      BottomSheetService.close();
+                    }
                   }}
-                >
-                  {/* TITLE */}
-
-                  <SansText
-                    style={{
-                      fontSize: 24,
-                      color: "#111",
-                      fontFamily:
-                        "SatoshiBold",
-                    }}
-                  >
-                    {props.label ||
-                      "Select Option"}
-                  </SansText>
-
-                  {/* OPTIONS */}
-
-                  <SelectableOptions
-  options={dropdownData.map(
-    (item) => ({
-      label: item.label,
-      value: item.value,
-    })
-  )}
-  value={
-    multiple
-      ? selectedOptions
-      : value || ""
-  }
-  multiple={multiple}
-  onChange={(val) => {
-    if (multiple) {
-      onMultiSelect?.(
-        val as string[]
-      );
-    } else {
-      props.onChangeText?.(
-        val as string
-      );
-
-      const selected =
-        dropdownData.find(
-          (
-            item
-          ) =>
-            item.value ===
-            val
-        );
-
-      if (selected) {
-        onSelectItem?.(
-          selected
-        );
-      }
-
-      BottomSheetService.close();
-    }
-  }}
-/>
-                </View>,
+                />,
                 {
                   height: 500,
                   hasGradient: true,
-                }
+                },
               );
             }}
           >
@@ -431,3 +413,47 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
 });
+
+
+
+const DropdownSheetContent = ({
+  options,
+  initialValue,
+  multiple,
+  onSubmit,
+}: any) => {
+  const [selected, setSelected] =
+    useState(initialValue);
+
+  return (
+    <View
+      style={{
+        paddingHorizontal: 16,
+        paddingTop: 28,
+        paddingBottom: 40,
+        gap: 24,
+      }}
+    >
+      <SansText
+        style={{
+          fontSize: 24,
+          color: "#111",
+          fontFamily: "SatoshiBold",
+        }}
+      >
+        Select Option
+      </SansText>
+
+      <SelectableOptions
+        options={options}
+        value={selected}
+        multiple={multiple}
+        onChange={(val) => {
+          setSelected(val);
+
+          onSubmit(val);
+        }}
+      />
+    </View>
+  );
+};

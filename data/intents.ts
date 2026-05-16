@@ -1,4 +1,4 @@
-import { IconName } from "@/components/icons";
+import { IconName } from "@/components/reusable/Icons";
 
 type Intent = {
   id: string;

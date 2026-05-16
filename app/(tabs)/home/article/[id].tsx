@@ -4,12 +4,16 @@ import ContentSection from "@/components/reusable/ContentSectoin/ContentSection"
 import ReusableButton from "@/components/reusable/ReusableButton/ReusableButton";
 import { SansText } from "@/components/reusable/Text/SansText";
 import { SatoshiText } from "@/components/reusable/Text/SatoshiText";
+import { useGetBlogByIdQuery } from "@/redux/features/blog/blogApi";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+
 import React from "react";
+
 import {
+  ActivityIndicator,
   Dimensions,
   ScrollView,
   StyleSheet,
@@ -20,182 +24,171 @@ import {
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function BlogDetailsPage() {
-  return (<AnimatedScreen>
-    <ScreenWrapper>
-      <View style={styles.container}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 140 }}
-        >
-          {/* HERO IMAGE */}
-          <View style={styles.heroContainer}>
-            <Image
-              source={require("@/assets/images/consmos1.png")}
-              style={styles.heroImage}
-              contentFit="cover"
-            />
+  const { id } = useLocalSearchParams<{
+    id: string;
+  }>();
 
-            {/* OVERLAY */}
-            <LinearGradient
-              colors={[
-                "rgba(0,0,0,0)",
-                "rgba(0,0,0,0.85)",
-              ]}
-              style={styles.gradient}
-            />
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetBlogByIdQuery(id!, {
+    skip: !id,
+  });
 
-            {/* BACK BUTTON */}
-            <TouchableOpacity
-              style={styles.backBtn}
-              activeOpacity={0.8}
-              onPress={() => router.back()}
-            >
-              <Ionicons
-                name="arrow-back"
-                size={22}
-                color="#4A4A4A"
+  const blog = data?.data;
+console.log(blog)
+  /* ---------------- LOADING ---------------- */
+
+  if (isLoading || isFetching) {
+    return (
+      <AnimatedScreen>
+        <ScreenWrapper>
+          <View style={styles.centerContainer}>
+            <ActivityIndicator
+              size="large"
+              color="#8B6F47"
+            />
+          </View>
+        </ScreenWrapper>
+      </AnimatedScreen>
+    );
+  }
+
+  /* ---------------- ERROR ---------------- */
+
+  if (isError || !blog) {
+    return (
+      <AnimatedScreen>
+        <ScreenWrapper>
+          <View style={styles.centerContainer}>
+            <SansText style={styles.errorText}>
+              Failed to load blog
+            </SansText>
+          </View>
+        </ScreenWrapper>
+      </AnimatedScreen>
+    );
+  }
+
+  return (
+    <AnimatedScreen>
+      <ScreenWrapper>
+        <View style={styles.container}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: 140,
+            }}
+          >
+            {/* HERO */}
+
+            <View style={styles.heroContainer}>
+              <Image
+                source={{
+                  uri:
+                    blog?.thumbnail ||
+                    "https://via.placeholder.com/800x600",
+                }}
+                style={styles.heroImage}
+                contentFit="cover"
+                transition={300}
               />
-            </TouchableOpacity>
 
-            {/* TEXT OVERLAY */}
-            <View style={styles.overlayContent}>
-              <SatoshiText style={styles.title}>
-                Why Patience Matters During Saturn Transits
-              </SatoshiText>
+              <LinearGradient
+                colors={[
+                  "rgba(0,0,0,0)",
+                  "rgba(0,0,0,0.85)",
+                ]}
+                style={styles.gradient}
+              />
 
-              <SansText style={styles.meta}>
-                Saturn • Life Guidance • 3 min read
-              </SansText>
+              {/* BACK BUTTON */}
+
+              <TouchableOpacity
+                style={styles.backBtn}
+                activeOpacity={0.8}
+                onPress={() => router.back()}
+              >
+                <Ionicons
+                  name="arrow-back"
+                  size={22}
+                  color="#4A4A4A"
+                />
+              </TouchableOpacity>
+
+              {/* OVERLAY */}
+
+              <View style={styles.overlayContent}>
+                <SatoshiText style={styles.title}>
+                  {blog?.title}
+                </SatoshiText>
+
+                <SansText style={styles.meta}>
+                  {blog?.category} •{" "}
+                  {new Date(
+                    blog?.createdAt,
+                  ).toLocaleDateString()}
+                </SansText>
+              </View>
             </View>
-          </View>
 
-          {/* CONTENT */}
-          <View style={styles.contentContainer}>
-            <View style={styles.card}>
-              {/* OVERVIEW */}
-              <ContentSection title="Overview">
-                <SansText style={styles.bodyText}>
-                  Saturn is often associated with discipline,
-                  responsibility, and long-term growth in astrology.
-                  During Saturn-influenced periods, progress may feel
-                  slower than expected. This article explains why
-                  patience becomes important during such times and how
-                  approaching situations calmly can lead to better
-                  outcomes.
-                </SansText>
-              </ContentSection>
+            {/* CONTENT */}
 
-              <View style={styles.divider} />
-
-              {/* SECTION 1 */}
-              <ContentSection title="What Saturn Represents in Astrology">
-                <SansText style={styles.bodyText}>
-                  In astrology, Saturn is linked to structure,
-                  effort, and lessons that unfold over time.
-                  Unlike fast-moving planets, Saturn’s influence
-                  encourages steady progress rather than quick
-                  results. Its role is often to highlight areas
-                  where consistency and responsibility are needed.
-                </SansText>
-
-                <SansText style={styles.bodyText}>
-                  This doesn’t indicate negativity — it signals a
-                  phase of learning and strengthening foundations.
-                </SansText>
-              </ContentSection>
-
-              {/* <View style={styles.divider} /> */}
-
-              {/* SECTION 2 */}
-              {/* <ContentSection title="Why Things May Feel Slower">
-                <SansText style={styles.bodyText}>
-                  During Saturn transits, outcomes often require:
-                </SansText>
-
-                <View style={styles.bulletContainer}>
-                  <SansText style={styles.bullet}>
-                    • More discipline and focus
+            <View style={styles.contentContainer}>
+              <View style={styles.card}>
+                <ContentSection title="Article">
+                  <SansText style={styles.bodyText}>
+                    {blog?.content}
                   </SansText>
-
-                  <SansText style={styles.bullet}>
-                    • Long-term thinking
-                  </SansText>
-
-                  <SansText style={styles.bullet}>
-                    • Emotional maturity
-                  </SansText>
-
-                  <SansText style={styles.bullet}>
-                    • Better decision-making
-                  </SansText>
-                </View>
-
-                <SansText style={styles.bodyText}>
-                  These phases may initially feel restrictive,
-                  but they often help create stronger life
-                  foundations over time.
-                </SansText>
-              </ContentSection> */}
-
-              {/* <View style={styles.divider} /> */}
-
-              {/* SECTION 3 */}
-              {/* <ContentSection title="How To Navigate Saturn Periods">
-                <SansText style={styles.bodyText}>
-                  Instead of rushing outcomes, focus on:
-                </SansText>
-
-                <View style={styles.bulletContainer}>
-                  <SansText style={styles.bullet}>
-                    • Maintaining healthy routines
-                  </SansText>
-
-                  <SansText style={styles.bullet}>
-                    • Building patience gradually
-                  </SansText>
-
-                  <SansText style={styles.bullet}>
-                    • Taking practical decisions
-                  </SansText>
-
-                  <SansText style={styles.bullet}>
-                    • Avoiding emotional impulsiveness
-                  </SansText>
-                </View>
-
-                <SansText style={styles.bodyText}>
-                  Saturn periods can become powerful growth phases
-                  when approached with consistency and calmness.
-                </SansText>
-              </ContentSection> */}
+                </ContentSection>
+              </View>
             </View>
+          </ScrollView>
+
+          {/* FIXED BOTTOM */}
+
+          <View style={styles.fixedBottom}>
+            <ReusableButton
+              title="Consult An Astrologer"
+              onPress={() => {router.push({
+                          pathname: "/(tabs)/astrologers/(astrologer)/[id]",
+                          params: {
+                            id: blog.addedBy,
+                          },
+                        });}}
+              width="100%"
+              variant="solid"
+              iconName="CallIcon"
+              iconPosition="left"
+            />
+
+            <SansText style={styles.footerText}>
+              For personalized guidance based on your
+              chart
+            </SansText>
           </View>
-        </ScrollView>
-
-        {/* FIXED BOTTOM BUTTON */}
-        <View style={styles.fixedBottom}>
-          <ReusableButton
-            title="Consult An Astrologer"
-            onPress={() => { }}
-            width="100%"
-            variant="solid"
-            iconName="CallIcon"
-            iconPosition="left"
-          />
-
-          <SansText style={styles.footerText}>
-            For personalized guidance based on your chart
-          </SansText>
         </View>
-      </View> 
-    </ScreenWrapper>
-  </AnimatedScreen>
+      </ScreenWrapper>
+    </AnimatedScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  errorText: {
+    color: "red",
+    fontSize: 16,
   },
 
   heroContainer: {
@@ -251,36 +244,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  contentContainer: { 
-  },
+  contentContainer: {},
 
   card: {
-    // backgroundColor: "#F6F0DA",
     borderRadius: 24,
     padding: 20,
-    gap: 24,
   },
 
   bodyText: {
     color: "#4A4A4A",
     fontSize: 16,
-    lineHeight: 28,
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: "#D8CCAA",
-  },
-
-  bulletContainer: {
-    marginTop: 12,
-    gap: 10,
-  },
-
-  bullet: {
-    color: "#4A4A4A",
-    fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 30,
   },
 
   fixedBottom: {

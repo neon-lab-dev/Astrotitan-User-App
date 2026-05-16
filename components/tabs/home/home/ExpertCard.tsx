@@ -13,6 +13,7 @@ type AstrologerType = {
 };
 
 type Props = {
+  _id:string;
   name: string;
   experience: string;
   description: string;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const ExpertCard = ({
+  _id,
   name,
   experience,
   description,
@@ -40,7 +42,7 @@ const ExpertCard = ({
           router.push({
             pathname: "/(tabs)/astrologers/(astrologer)/[id]",
             params: {
-              id: "1",
+              id: _id,
             },
           });
         }}

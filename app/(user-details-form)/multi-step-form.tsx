@@ -127,12 +127,12 @@ const questions = [
             <View style={{ marginTop: 24 }}>
                 <SelectableOptions
                     options={[
-                        { label: 'Job', value: 'job', icon: TieIcon },
-                        { label: 'Education', value: 'education', icon: BookIcon },
+                        { label: 'Wealth & Finance', value: 'Wealth & Finance', icon: TieIcon },
+                        { label: 'Education', value: 'Education', icon: BookIcon },
                         { label: 'Marriage', value: 'marriage', icon: MarriageIcon },
-                        { label: 'Health', value: 'health', icon: WellnessIcon },
-                        { label: 'Business', value: 'business', icon: BriefcaseIcon },
-                        { label: 'Love', value: 'love', icon: HeartIcon },
+                        { label: 'Health & Wellness', value: 'Health & Wellness', icon: WellnessIcon },
+                        { label: 'Career Growth', value: 'Career Growth', icon: BriefcaseIcon },
+                        { label: 'Love & Relationship', value: 'Love & Relationship', icon: HeartIcon },
                     ]}
                     value={value}
                     onChange={setValue}

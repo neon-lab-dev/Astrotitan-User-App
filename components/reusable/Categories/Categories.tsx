@@ -15,7 +15,11 @@ const Categories = ({
   allCategories,
   isLoading = false,
 }: any) => {
-  const data = ["All", ...allCategories];
+
+  const formattedCategories = [
+    { category: "All" },
+    ...(allCategories || []),
+  ];
 
   return (
     <View style={styles.categoriesContainer}>
@@ -23,24 +27,42 @@ const Categories = ({
         <Text>Loading categories...</Text>
       ) : (
         <FlatList
-          data={data}
+          data={formattedCategories}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item}
-          contentContainerStyle={{ paddingLeft: 16, gap: 10 }}
+          keyExtractor={(item, index) =>
+            `${item?.category}-${index}`
+          }
+          contentContainerStyle={{
+            paddingLeft: 16,
+            gap: 10,
+          }}
           renderItem={({ item }) => {
+
+            const isAll =
+              item?.category === "All";
+
             const isActive =
-              selectedCategory === item ||
-              (item === "All" && selectedCategory === "");
+              (isAll &&
+                selectedCategory === "") ||
+              selectedCategory ===
+                item?.category;
 
             return (
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
                   Haptics.impactAsync(
-                    Haptics.ImpactFeedbackStyle.Light
+                    Haptics
+                      .ImpactFeedbackStyle
+                      .Light
                   );
-                  setSelectedCategory(item === "All" ? "" : item);
+
+                  setSelectedCategory(
+                    isAll
+                      ? ""
+                      : item?.category
+                  );
                 }}
               >
                 <View
@@ -57,7 +79,7 @@ const Categories = ({
                         : styles.inactiveText
                     }
                   >
-                    {item}
+                    {item?.category}
                   </SansText>
                 </View>
               </TouchableOpacity>
@@ -75,6 +97,7 @@ const styles = StyleSheet.create({
   categoriesContainer: {
     paddingVertical: 16,
   },
+
   categoryChip: {
     flexDirection: "row",
     alignItems: "center",
@@ -85,34 +108,38 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: 8,
   },
+
   categoryChipActive: {
     backgroundColor: "#38A169",
     borderColor: "#38A169",
   },
+
   categoryText: {
     fontSize: 14,
     fontWeight: "500",
   },
+
   categoryTextActive: {
     color: "#FFFFFF",
   },
+
   activeChip: {
     borderRadius: 48,
     paddingHorizontal: 32,
     paddingVertical: 12,
-    backgroundColor:"#D4AF37"
+    backgroundColor: "#D4AF37",
   },
 
   inactiveChip: {
     borderRadius: 48,
-  paddingHorizontal: 32,
+    paddingHorizontal: 32,
     paddingVertical: 12,
     borderWidth: 1,
     borderColor: "#D4AF37",
   },
 
   activeText: {
-     fontSize: 16,
+    fontSize: 16,
     fontFamily: "SansMedium",
     color: "#0D0D0D",
   },

@@ -13,20 +13,24 @@ import ReusableButton from '@/components/reusable/ReusableButton/ReusableButton'
 import SectionTitle from "@/components/reusable/SectionTitle/SectionTitle";
 import { SansText } from "@/components/reusable/Text/SansText";
 import { SatoshiText } from '@/components/reusable/Text/SatoshiText';
-import { clearAuth } from '@/redux/features/auth/authSlice';
+import { useLazyGetMeQuery } from '@/redux/features/auth/authApi';
+import { clearAuth, updateUser } from '@/redux/features/auth/authSlice';
 import BottomSheetService from '@/redux/features/ui/GlobalSheet/BottomSheetService';
 import { RootState } from "@/redux/store";
 import { Image } from "expo-image";
 import { router } from 'expo-router';
 import * as SecureStore from "expo-secure-store";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { RefreshControl } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from "react-redux";
 
 const Profile = () => {
   const dispatch = useDispatch()
+  const [getMe] =
+    useLazyGetMeQuery();
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log("USER FROM REDUX:", user);
+  const [refreshing, setRefreshing] = useState(false);
   const resetAuth = async () => {
     await SecureStore.deleteItemAsync("ACCESS_TOKEN");
     await SecureStore.deleteItemAsync("USER");
@@ -34,6 +38,40 @@ const Profile = () => {
     dispatch(clearAuth());
     alert("Auth reset (logged out).");
   };
+
+  const fetchLatestUser =
+    async () => {
+      try {
+        const meRes =
+          await getMe({}).unwrap();
+
+        const finalUser =
+          meRes.data;
+
+        /* SAVE USER */
+
+        await SecureStore.setItemAsync(
+          "USER",
+          JSON.stringify(finalUser),
+        );
+
+        /* UPDATE REDUX */
+
+        dispatch(
+          updateUser(finalUser)
+        );
+
+        console.log(
+          "UPDATED USER:",
+          finalUser,
+        );
+      } catch (error) {
+        console.log(
+          "GET ME ERROR:",
+          error,
+        );
+      }
+    };
 
   const onPressLogout = () => {
     BottomSheetService.open(
@@ -54,6 +92,26 @@ const Profile = () => {
     );
   };
 
+  const onRefresh =
+    useCallback(async () => {
+      if (refreshing) return;
+
+      try {
+        setRefreshing(true);
+
+        await Promise.all([
+          fetchLatestUser(),
+        ]);
+      } catch (error) {
+        console.log(
+          "REFRESH ERROR:",
+          error,
+        );
+      } finally {
+        setRefreshing(false);
+      }
+    }, [refreshing]);
+
   return (
     <AnimatedScreen>
       <ScreenWrapper>
@@ -65,7 +123,15 @@ const Profile = () => {
             </SansText>
           </AuthTitle>
         </AppHeader>
-        <ScrollView style={{ flex: 1, paddingBottom: 0 }}>
+        <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#816B22"
+            colors={["#816B22"]}
+            progressBackgroundColor="#FBF7EB"
+          />
+        } style={{ flex: 1, paddingBottom: 0 }}>
           <View style={{ paddingHorizontal: 16, gap: 24, paddingVertical: 24 }}>
             <View style={styles.profileCard}>
               {/* PROFILE IMAGE */}
@@ -107,13 +173,13 @@ const Profile = () => {
                     {/* {user?.account
                       ?.email ||
                       "No email found"} */}
-                      content info, user details
+                    content info, user details
                   </SansText>
                 </View>
 
                 {/* ARROW */}
                 <TouchableOpacity
-                onPress={()=>{router.push("/(tabs)/profile/personal-information")}}
+                  onPress={() => { router.push("/(tabs)/profile/personal-information") }}
                   style={{
                     backgroundColor:
                       "#F5F5F5",

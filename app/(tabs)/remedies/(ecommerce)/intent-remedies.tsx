@@ -10,33 +10,54 @@ import AppHeader from "@/components/reusable/AppHeader/AppHeader";
 import Categories from '@/components/reusable/Categories/Categories';
 import { SansText } from "@/components/reusable/Text/SansText";
 import RemedyCard from "@/components/tabs/ecommerce/ecommerce/RemedyCard/RemedyCard";
-import { PRODUCTS } from "@/data/dummy/products";
-import { router } from 'expo-router';
+import { useGetAllCategoriesByAreaNameQuery } from "@/redux/features/categories/categoriesApi";
+import { useGetAllProductsQuery } from "@/redux/features/product/productsApi";
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
 const Products = () => {
+
+
+    const params = useLocalSearchParams();
+
+    const slug = Array.isArray(params.slug)
+        ? params.slug[0]
+        : params.slug;
     const [selectedCategory, setSelectedCategory] = useState("");
-    const categories = ["Mala", "Puja Materials", "Yantra"];
+    const { data: categories, isLoading } = useGetAllCategoriesByAreaNameQuery("Product");
+    const {
+        data: productsResponse,
+        isLoading: isProductLoading,
+    } = useGetAllProductsQuery({
+
+        limit: 20,
+        skip: 0,
+        category: selectedCategory,
+        intent: slug
+    });
+
+    const products =
+        productsResponse?.data?.data || [];
     return (
         <AnimatedScreen>
             <ScreenWrapper>
-
                 <AppHeader onPressBack={() => { router.back() }}>
-                    <AuthTitle title="Career Growth Remedies">
+                    <AuthTitle title={`${slug} Remedies`}>
                         <SansText style={{ fontSize: 18 }}>Curated tools to strengthen focus, stability, and professional momentum.</SansText>
                     </AuthTitle>
                 </AppHeader>
 
                 <View style={{ flex: 1, }}>
                     <Categories
-                        selectedCategory={selectedCategory}
+                        selectedCategory={selectedCategory}W
                         setSelectedCategory={setSelectedCategory}
-                        allCategories={categories}
+                        allCategories={categories?.data || []}
+                        isLoading={isLoading}
                     />
                     <FlatList
-                        data={PRODUCTS}
+                        data={products}
                         numColumns={2}
                         keyExtractor={(item, index) => index.toString()}
                         columnWrapperStyle={{

@@ -786,10 +786,5 @@ const styles =
 
       backgroundColor:
         "#FBF7EB",
-
-      borderTopWidth: 1,
-
-      borderTopColor:
-        "#E7D7A8",
     },
   });

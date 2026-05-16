@@ -75,7 +75,7 @@ export const authApi = baseApi.injectEndpoints({
 
     updateProfile: builder.mutation({
       query: ({
-        profilePicture,
+        file,
         intents = [],
         dateOfBirth,
         firstName,
@@ -86,32 +86,41 @@ export const authApi = baseApi.injectEndpoints({
         timeOfBirth,
       }) => {
         const formData = new FormData();
-        if (profilePicture?.uri) {
-          formData.append("profilePicture", {
-            uri: profilePicture.uri,
 
-            name: profilePicture.name || "profile.jpg",
+        /* IMAGE */
 
-            type:
-              profilePicture.mimeType || profilePicture.type || "image/jpeg",
+        if (file?.uri) {
+          formData.append("file", {
+            uri: file.uri,
+            name: file.fileName || `profile-${Date.now()}.jpg`,
+            type: file.mimeType || "image/jpeg",
           } as any);
         }
+
+        /* TEXT FIELDS */
+
         formData.append("intents", JSON.stringify(intents));
+
         if (dateOfBirth) {
           formData.append("dateOfBirth", dateOfBirth);
         }
+
         if (firstName) {
           formData.append("firstName", firstName);
         }
+
         if (gender) {
           formData.append("gender", gender);
         }
+
         if (lastName) {
           formData.append("lastName", lastName);
         }
+
         if (phoneNumber) {
           formData.append("phoneNumber", phoneNumber);
         }
+
         if (placeOfBirth) {
           formData.append("placeOfBirth", placeOfBirth);
         }
@@ -120,6 +129,8 @@ export const authApi = baseApi.injectEndpoints({
           formData.append("timeOfBirth", timeOfBirth);
         }
 
+        console.log("UPLOADING FILE:", file);
+
         return {
           url: "/account/update-profile",
 
@@ -127,7 +138,7 @@ export const authApi = baseApi.injectEndpoints({
 
           body: formData,
 
-          formData: true,
+          credentials: "include",
         };
       },
 

@@ -2,6 +2,7 @@
 // Assumes you already have SatoshiText and SansText components
 
 import AuthTitle from "@/components/auth/AuthTitle";
+import AnimatedScreen from "@/components/layout/AnimatedScreen";
 import ScreenWrapper from "@/components/layout/ScreenWrapper";
 import AppHeader from "@/components/reusable/AppHeader/AppHeader";
 import LogoutSection from '@/components/reusable/BottomSheet/LogoutSection';
@@ -11,7 +12,6 @@ import { RootState } from "@/redux/store";
 import { router } from "expo-router";
 import React from "react";
 import { ScrollView, View } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from "react-redux";
 
 const Subscription = () => {
@@ -29,7 +29,7 @@ const Subscription = () => {
   };
 
   return (
-     <SafeAreaView style={{ flex: 1 }}>
+    <AnimatedScreen>
     <ScreenWrapper>
 
       <AppHeader  onPressBack={()=>{router.back()}}>
@@ -48,7 +48,6 @@ const Subscription = () => {
 
         {/* DELETE */}
 
-      </ScrollView></ScreenWrapper></SafeAreaView>
-  );
+      </ScrollView></ScreenWrapper></AnimatedScreen>)
 };
 export default Subscription;

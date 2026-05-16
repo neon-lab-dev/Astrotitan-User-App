@@ -9,13 +9,30 @@ type Props = {
   title: string;
   description: string;
   icon: keyof typeof ICONS;
+  variant?:"product" | "pooja"
 };
 
-const IntentCard = ({ title, description, icon }: Props) => {
- const Icon = ICONS[icon] as React.ComponentType<any>;
+const IntentCard = ({ title, description, icon ,variant="product"}: Props) => {
+  const Icon = ICONS[icon] as React.ComponentType<any>;
 
   return (
-    <TouchableOpacity onPress={()=>{router.push("/(tabs)/remedies/(ecommerce)/intent-remedies")}} style={styles.card}>
+    <TouchableOpacity onPress={() => {
+      if(variant=="product"){router.push({
+        pathname:
+          "/(tabs)/remedies/(ecommerce)/intent-remedies",
+        params: {
+          slug: title,
+        },
+      });}
+      if(variant=="pooja"){router.push({
+        pathname:
+          "/(tabs)/remedies/(ecommerce)/intent-puja",
+        params: {
+          slug: title,
+        },
+      });}
+
+    }} style={styles.card}>
       <Icon width={24} height={24} />
 
       <View style={{ marginTop: 12 }}>
@@ -48,7 +65,7 @@ const styles = StyleSheet.create({
 
   desc: {
     fontSize: 14,
-      color: "#0D0D0D",
+    color: "#0D0D0D",
     marginTop: 2,
   },
 });

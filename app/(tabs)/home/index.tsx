@@ -325,19 +325,12 @@ const HomeScreen = () => {
                       style={{
                         width: 160,
                         height: 255,
-
                         borderRadius: 16,
-
                         backgroundColor: "#FBF7EB",
-
                         borderWidth: 1,
-
                         borderColor: "#E7D7A8",
-
                         paddingVertical: 20,
-
                         paddingHorizontal: 12,
-
                         alignItems: "center",
                       }}
                     >
@@ -433,6 +426,7 @@ const HomeScreen = () => {
                   )}
                   renderItem={({ item }) => (
                     <ExpertCard
+                    _id={item._id}
                       name={
                         item?.displayName ||
                         `${item?.firstName || ""} ${item?.lastName || ""}`
@@ -493,8 +487,6 @@ const HomeScreen = () => {
                 )}
               />
             </View>
-
-            {/* BLOGS */}
 
             {/* BLOGS */}
 
@@ -631,7 +623,7 @@ const HomeScreen = () => {
                     height={194}
                     onPress={() =>
                       router.push({
-                        pathname: "/home/article/[id]",
+                        pathname: "/(tabs)/home/article/[id]",
 
                         params: {
                           id: blog?._id,

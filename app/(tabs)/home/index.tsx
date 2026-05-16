@@ -18,13 +18,9 @@ import GemCard from "@/components/tabs/home/home/GemCard/GemCard";
 
 import { GEMS } from "@/data/dummy/gems";
 
-import {
-  useGetAstrologersQuery,
-} from "@/redux/features/astrologer/astrologerApi";
+import { useGetAstrologersQuery } from "@/redux/features/astrologer/astrologerApi";
 
-import {
-  useGetBlogsQuery,
-} from "@/redux/features/blog/blogApi";
+import { useGetBlogsQuery } from "@/redux/features/blog/blogApi";
 
 import { RootState } from "@/redux/store";
 
@@ -32,68 +28,52 @@ import { getTimeBasedGreeting } from "@/utils/greetings";
 
 import { router } from "expo-router";
 
-import React, {
-  useCallback,
-  useState,
-} from "react";
+import React, { useCallback, useState } from "react";
 
-import {
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  View,
-} from "react-native";
+import { FlatList, RefreshControl, ScrollView, View } from "react-native";
 
 import { useSelector } from "react-redux";
 
 const HomeScreen = () => {
   /* ---------------- USER ---------------- */
 
-  const user = useSelector(
-    (state: RootState) =>
-      state.auth.user
-  );
-  console.log(user)
+  const user = useSelector((state: RootState) => state.auth.user);
+  console.log(user);
 
   /* ---------------- REFRESH ---------------- */
 
-  const [refreshing, setRefreshing] =
-    useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   /* ---------------- ASTROLOGERS API ---------------- */
 
   const {
     data: astrologersResponse,
 
-    isLoading:
-    astrologersLoading,
-    refetch:
-    refetchAstrologers,
-    isFetching: astrologerFetching
-  } =
-    useGetAstrologersQuery(
-      {
-        isIdentityVerified: true,
+    isLoading: astrologersLoading,
+    refetch: refetchAstrologers,
+    isFetching: astrologerFetching,
+  } = useGetAstrologersQuery(
+    {
+      isIdentityVerified: true,
 
-        country: "India",
+      country: "India",
 
-        gender: "",
+      gender: "",
 
-        skip: 0,
+      skip: 0,
 
-        limit: 10,
+      limit: 10,
 
-        areaOfPractice: "",
+      areaOfPractice: "",
 
-        consultLanguages:
-          "",
-      },
-      {
-        refetchOnFocus: true,
+      consultLanguages: "",
+    },
+    {
+      refetchOnFocus: true,
 
-        refetchOnReconnect: true,
-      }
-    );
+      refetchOnReconnect: true,
+    },
+  );
 
   /* ---------------- BLOGS API ---------------- */
 
@@ -103,7 +83,7 @@ const HomeScreen = () => {
     isLoading: blogsLoading,
 
     refetch: refetchBlogs,
-    isFetching: blogFetching
+    isFetching: blogFetching,
   } = useGetBlogsQuery(
     {
       skip: 0,
@@ -114,67 +94,47 @@ const HomeScreen = () => {
       refetchOnFocus: true,
 
       refetchOnReconnect: true,
-    }
+    },
   );
 
   /* ---------------- DATA ---------------- */
 
-  const astrologers =
-    astrologersResponse
-      ?.data?.astrologers || [];
+  const astrologers = astrologersResponse?.data?.astrologers || [];
 
-  const blogs =
-    blogsResponse?.data
-      ?.data || [];
+  const blogs = blogsResponse?.data?.data || [];
 
   /* ---------------- REFRESH ---------------- */
 
-  const onRefresh =
-    useCallback(async () => {
-      if (refreshing) return;
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
 
-      try {
-        setRefreshing(true);
+    try {
+      setRefreshing(true);
 
-        await Promise.all([
-          refetchAstrologers().unwrap(),
+      await Promise.all([
+        refetchAstrologers().unwrap(),
 
-          refetchBlogs().unwrap(),
-        ]);
-      } catch (error) {
-        console.log(
-          "REFRESH ERROR:",
-          error
-        );
-      } finally {
-        setRefreshing(false);
-      }
-    }, [
-      refreshing,
-      refetchAstrologers,
-      refetchBlogs,
-    ]);
+        refetchBlogs().unwrap(),
+      ]);
+    } catch (error) {
+      console.log("REFRESH ERROR:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetchAstrologers, refetchBlogs]);
 
   return (
     <AnimatedScreen>
       <ScreenWrapper>
         <ScrollView
           style={{ flex: 1 }}
-          showsVerticalScrollIndicator={
-            false
-          }
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
-              refreshing={
-                refreshing
-              }
-              onRefresh={
-                onRefresh
-              }
+              refreshing={refreshing}
+              onRefresh={onRefresh}
               tintColor="#816B22"
-              colors={[
-                "#816B22",
-              ]}
+              colors={["#816B22"]}
               progressBackgroundColor="#FBF7EB"
             />
           }
@@ -185,8 +145,7 @@ const HomeScreen = () => {
             style={{
               flexDirection: "row",
 
-              alignItems:
-                "flex-end",
+              alignItems: "flex-end",
             }}
           >
             {/* LEFT */}
@@ -204,39 +163,26 @@ const HomeScreen = () => {
                 style={{
                   fontSize: 18,
 
-                  color:
-                    "#4A4A4A",
+                  color: "#4A4A4A",
 
                   lineHeight: 26,
                 }}
               >
-                {
-                  getTimeBasedGreeting()
-                }
-                ,
+                {getTimeBasedGreeting()},
               </SansText>
 
               <SatoshiText
                 style={{
                   fontSize: 18,
 
-                  color:
-                    "#0D0D0D",
+                  color: "#0D0D0D",
 
-                  fontFamily:
-                    "SatoshiBold",
+                  fontFamily: "SatoshiBold",
 
                   lineHeight: 26,
                 }}
               >
-                {
-                  user?.profile
-                    ?.firstName
-                }{" "}
-                {
-                  user?.profile
-                    ?.lastName
-                }
+                {user?.profile?.firstName} {user?.profile?.lastName}
               </SatoshiText>
             </View>
 
@@ -244,8 +190,7 @@ const HomeScreen = () => {
 
             <View
               style={{
-                flexDirection:
-                  "row",
+                flexDirection: "row",
 
                 gap: 18,
 
@@ -253,14 +198,10 @@ const HomeScreen = () => {
               }}
             >
               <IconButton
-                Icon={
-                  NotificationIcon
-                }
+                Icon={NotificationIcon}
                 iconColor="#0D0D0D"
                 onPress={() => {
-                  router.push(
-                    "/notification/notification"
-                  );
+                  router.push("/notification/notification");
                 }}
               />
 
@@ -268,9 +209,7 @@ const HomeScreen = () => {
                 Icon={CrownIcon}
                 iconColor="#0D0D0D"
                 onPress={() => {
-                  router.push(
-                    "/subscription/subscription"
-                  );
+                  router.push("/(tabs)/profile/subscription/subscription");
                 }}
               />
             </View>
@@ -308,12 +247,8 @@ const HomeScreen = () => {
             >
               <ContentSection title="Daily Horoscope">
                 <SansText>
-                  A quick overview
-                  of how today’s
-                  planetary
-                  positions may
-                  influence your
-                  day.
+                  A quick overview of how today’s planetary positions may
+                  influence your day.
                 </SansText>
               </ContentSection>
 
@@ -323,9 +258,7 @@ const HomeScreen = () => {
                 ctaText="Reveal Today’s Insight"
                 image={require("@/assets/images/consmos1.png")}
                 onPress={() =>
-                  router.push(
-                    "/(tabs)/home/(astrology)/select-zodiac-signs"
-                  )
+                  router.push("/(tabs)/home/(astrology)/select-zodiac-signs")
                 }
                 date={new Date()}
               />
@@ -342,12 +275,8 @@ const HomeScreen = () => {
             >
               <ContentSection title="Kundli">
                 <SansText>
-                  A short insight
-                  from your birth
-                  chart based on
-                  today’s
-                  planetary
-                  movement.
+                  A short insight from your birth chart based on today’s
+                  planetary movement.
                 </SansText>
               </ContentSection>
 
@@ -355,20 +284,14 @@ const HomeScreen = () => {
                 title="Today’s Chart Insight"
                 description="Saturn influences discipline & patience."
                 image={require("@/assets/images/consmos2.png")}
-                onPress={() =>
-                  router.push(
-                    "/(tabs)/kundali"
-                  )
-                }
+                onPress={() => router.push("/(tabs)/kundali")}
                 height={214}
               />
             </View>
 
             {/* ASTROLOGERS */}
 
-            <View
-              style={{ gap: 12 }}
-            >
+            <View style={{ gap: 12 }}>
               <View
                 style={{
                   paddingHorizontal: 16,
@@ -376,10 +299,7 @@ const HomeScreen = () => {
               >
                 <ContentSection title="Featured Astrologers">
                   <SansText>
-                    Verified experts
-                    who help
-                    interpret charts
-                    and planetary
+                    Verified experts who help interpret charts and planetary
                     periods.
                   </SansText>
                 </ContentSection>
@@ -389,9 +309,7 @@ const HomeScreen = () => {
                 <FlatList
                   data={[1, 2, 3]}
                   horizontal
-                  showsHorizontalScrollIndicator={
-                    false
-                  }
+                  showsHorizontalScrollIndicator={false}
                   contentContainerStyle={{
                     paddingHorizontal: 16,
                   }}
@@ -410,13 +328,11 @@ const HomeScreen = () => {
 
                         borderRadius: 16,
 
-                        backgroundColor:
-                          "#FBF7EB",
+                        backgroundColor: "#FBF7EB",
 
                         borderWidth: 1,
 
-                        borderColor:
-                          "#E7D7A8",
+                        borderColor: "#E7D7A8",
 
                         paddingVertical: 20,
 
@@ -427,8 +343,7 @@ const HomeScreen = () => {
                     >
                       <View
                         style={{
-                          alignItems:
-                            "center",
+                          alignItems: "center",
 
                           marginBottom: 18,
                         }}
@@ -442,8 +357,7 @@ const HomeScreen = () => {
 
                         <View
                           style={{
-                            marginTop:
-                              -10,
+                            marginTop: -10,
                           }}
                         >
                           <SkeletonLoader
@@ -481,8 +395,7 @@ const HomeScreen = () => {
 
                           gap: 6,
 
-                          alignItems:
-                            "center",
+                          alignItems: "center",
                         }}
                       >
                         <SkeletonLoader
@@ -504,16 +417,10 @@ const HomeScreen = () => {
                 />
               ) : (
                 <FlatList
-                  data={
-                    astrologers
-                  }
+                  data={astrologers}
                   horizontal
-                  showsHorizontalScrollIndicator={
-                    false
-                  }
-                  keyExtractor={(
-                    item
-                  ) => item._id}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(item) => item._id}
                   contentContainerStyle={{
                     paddingHorizontal: 16,
                   }}
@@ -524,33 +431,18 @@ const HomeScreen = () => {
                       }}
                     />
                   )}
-                  renderItem={({
-                    item,
-                  }) => (
+                  renderItem={({ item }) => (
                     <ExpertCard
                       name={
                         item?.displayName ||
                         `${item?.firstName || ""} ${item?.lastName || ""}`
                       }
-                      experience={
-                        item?.experience ||
-                        "0 Years"
-                      }
-                      description={
-                        item?.bio ||
-                        "Experienced astrologer"
-                      }
-                      tags={
-                        item?.areaOfPractice ||
-                        []
-                      }
-                      rating={
-                        item?.rating ||
-                        4.5
-                      }
+                      experience={item?.experience || "0 Years"}
+                      description={item?.bio || "Experienced astrologer"}
+                      tags={item?.areaOfPractice || []}
+                      rating={item?.rating || 4.5}
                       image={{
-                        uri:
-                          item?.profilePicture,
+                        uri: item?.profilePicture,
                       }}
                     />
                   )}
@@ -560,9 +452,7 @@ const HomeScreen = () => {
 
             {/* GEMS */}
 
-            <View
-              style={{ gap: 12 }}
-            >
+            <View style={{ gap: 12 }}>
               <View
                 style={{
                   paddingHorizontal: 16,
@@ -570,11 +460,7 @@ const HomeScreen = () => {
               >
                 <ContentSection title="Recommended Gems">
                   <SansText>
-                    Spiritual tools
-                    recommended
-                    based on
-                    planetary
-                    alignment and
+                    Spiritual tools recommended based on planetary alignment and
                     energies.
                   </SansText>
                 </ContentSection>
@@ -583,12 +469,8 @@ const HomeScreen = () => {
               <FlatList
                 data={GEMS}
                 horizontal
-                showsHorizontalScrollIndicator={
-                  false
-                }
-                keyExtractor={(
-                  item
-                ) => item.id}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.id}
                 contentContainerStyle={{
                   paddingHorizontal: 16,
 
@@ -601,22 +483,12 @@ const HomeScreen = () => {
                     }}
                   />
                 )}
-                renderItem={({
-                  item,
-                }) => (
+                renderItem={({ item }) => (
                   <GemCard
-                    title={
-                      item.title
-                    }
-                    description={
-                      item.description
-                    }
-                    benefits={
-                      item.benefits
-                    }
-                    image={
-                      item.image
-                    }
+                    title={item.title}
+                    description={item.description}
+                    benefits={item.benefits}
+                    image={item.image}
                   />
                 )}
               />
@@ -635,12 +507,7 @@ const HomeScreen = () => {
             >
               <ContentSection title="Today’s Insights">
                 <SansText>
-                  Short reads to
-                  help you
-                  understand
-                  ongoing
-                  planetary
-                  themes.
+                  Short reads to help you understand ongoing planetary themes.
                 </SansText>
               </ContentSection>
 
@@ -650,152 +517,131 @@ const HomeScreen = () => {
                     gap: 14,
                   }}
                 >
-                  {[1, 2].map(
-                    (item) => (
-                      <SkeletonLoader
-                        key={item}
-                        width={"100%"}
-                        height={214}
-                        array={[1]}
-                        borderRadius={16}
-                        innerSkeleton={
+                  {[1, 2].map((item) => (
+                    <SkeletonLoader
+                      key={item}
+                      width={"100%"}
+                      height={214}
+                      array={[1]}
+                      borderRadius={16}
+                      innerSkeleton={
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: "space-between",
+                            padding: 24,
+                          }}
+                        >
+                          {/* TOP DATE */}
+
                           <View
                             style={{
-                              flex: 1,
-                              justifyContent: "space-between",
-                              padding: 24,
+                              width: 90,
+                              height: 30,
+                              borderRadius: 20,
+                              backgroundColor: "#E7D7A8",
+                            }}
+                          />
+
+                          {/* BOTTOM CONTENT */}
+
+                          <View
+                            style={{
+                              gap: 10,
                             }}
                           >
-                            {/* TOP DATE */}
+                            {/* TITLE */}
 
                             <View
                               style={{
-                                width: 90,
-                                height: 30,
-                                borderRadius: 20,
+                                width: "78%",
+                                height: 22,
+                                borderRadius: 8,
                                 backgroundColor: "#E7D7A8",
                               }}
                             />
 
-                            {/* BOTTOM CONTENT */}
+                            {/* DESCRIPTION LINE 1 */}
 
                             <View
                               style={{
-                                gap: 10,
+                                width: "100%",
+                                height: 12,
+                                borderRadius: 6,
+                                backgroundColor: "#E7D7A8",
+                              }}
+                            />
+
+                            {/* DESCRIPTION LINE 2 */}
+
+                            <View
+                              style={{
+                                width: "82%",
+                                height: 12,
+                                borderRadius: 6,
+                                backgroundColor: "#E7D7A8",
+                              }}
+                            />
+
+                            {/* CTA */}
+
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 8,
+                                marginTop: 6,
                               }}
                             >
-                              {/* TITLE */}
-
                               <View
                                 style={{
-                                  width: "78%",
-                                  height: 22,
-                                  borderRadius: 8,
-                                  backgroundColor: "#E7D7A8",
-                                }}
-                              />
-
-                              {/* DESCRIPTION LINE 1 */}
-
-                              <View
-                                style={{
-                                  width: "100%",
-                                  height: 12,
+                                  width: 110,
+                                  height: 14,
                                   borderRadius: 6,
                                   backgroundColor: "#E7D7A8",
                                 }}
                               />
 
-                              {/* DESCRIPTION LINE 2 */}
-
                               <View
                                 style={{
-                                  width: "82%",
-                                  height: 12,
-                                  borderRadius: 6,
+                                  width: 18,
+                                  height: 18,
+                                  borderRadius: 100,
                                   backgroundColor: "#E7D7A8",
                                 }}
                               />
-
-                              {/* CTA */}
-
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  gap: 8,
-                                  marginTop: 6,
-                                }}
-                              >
-                                <View
-                                  style={{
-                                    width: 110,
-                                    height: 14,
-                                    borderRadius: 6,
-                                    backgroundColor: "#E7D7A8",
-                                  }}
-                                />
-
-                                <View
-                                  style={{
-                                    width: 18,
-                                    height: 18,
-                                    borderRadius: 100,
-                                    backgroundColor: "#E7D7A8",
-                                  }}
-                                />
-                              </View>
                             </View>
                           </View>
-                        }
-                      />
-                    )
-                  )}
-                </View>
-              ) : blogs?.length >
-                0 ? (
-                blogs.map(
-                  (
-                    blog: any
-                  ) => (
-                    <FeatureCard
-                      key={blog._id}
-                      title={
-                        blog?.title ||
-                        "Untitled Blog"
-                      }
-                      description={
-                        blog?.content?.slice(
-                          0,
-                          60
-                        ) + "..."
-                      }
-                      image={{
-                        uri:
-                          blog?.thumbnail,
-                      }}
-                      date={new Date(
-                        blog?.createdAt
-                      )}
-                      ctaText="Read Article"
-                      height={194}
-                      onPress={() =>
-                        router.push({
-                          pathname:
-                            "/home/article/[id]",
-
-                          params: {
-                            id: blog?._id,
-                          },
-                        })
+                        </View>
                       }
                     />
-                  )
-                )
+                  ))}
+                </View>
+              ) : blogs?.length > 0 ? (
+                blogs.map((blog: any) => (
+                  <FeatureCard
+                    key={blog._id}
+                    title={blog?.title || "Untitled Blog"}
+                    description={blog?.content?.slice(0, 60) + "..."}
+                    image={{
+                      uri: blog?.thumbnail,
+                    }}
+                    date={new Date(blog?.createdAt)}
+                    ctaText="Read Article"
+                    height={194}
+                    onPress={() =>
+                      router.push({
+                        pathname: "/home/article/[id]",
+
+                        params: {
+                          id: blog?._id,
+                        },
+                      })
+                    }
+                  />
+                ))
               ) : (
-                <SansText>
-                  No blogs available
-                </SansText>
+                <SansText>No blogs available</SansText>
               )}
             </View>
           </View>

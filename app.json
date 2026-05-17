@@ -14,12 +14,13 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjSPZ4BoFK_dkKehRLnT1uilprFiBx6TscrQ&s",
+        "backgroundImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjSPZ4BoFK_dkKehRLnT1uilprFiBx6TscrQ&s",
+        "monochromeImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjSPZ4BoFK_dkKehRLnT1uilprFiBx6TscrQ&s"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.prernabadwane.astro_titan"
     },
     "web": {
       "output": "static",

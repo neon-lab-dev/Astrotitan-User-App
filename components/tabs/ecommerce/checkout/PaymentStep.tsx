@@ -3,154 +3,111 @@ import SectionTitle from "@/components/reusable/SectionTitle/SectionTitle";
 
 import { SansText } from "@/components/reusable/Text/SansText";
 import { selectToken } from "@/redux/features/auth/authSlice";
+import { useCheckoutMutation } from "@/redux/features/product/productsApi";
 import { RootState } from "@/redux/store";
-import axios from 'axios';
+import axios from "axios";
 
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import RazorpayCheckout from "react-native-razorpay";
-import {
-  useSelector,
-} from "react-redux";
+import { useSelector } from "react-redux";
 
 interface Props {
   value: any;
   setValue: (data: any) => void;
 }
 
-const PaymentStep = ({
-  value,
-  setValue,
-}: Props) => {
-  const cartItems = useSelector(
-    (state: RootState) =>
-      state.cart.items
-  );
- const token =
-  useSelector(
-    selectToken
-  );
-  const [selected, setSelected] =
-    useState(
-      value?.paymentMethod ||
-      "cod"
-    );
+const PaymentStep = ({ value, setValue }: Props) => {
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const token = useSelector(selectToken);
+  const [selected, setSelected] = useState(value?.paymentMethod || "cod");
 
   // 🔥 SYNC TO PARENT
   useEffect(() => {
     setValue({
-      paymentMethod:
-        selected,
+      paymentMethod: selected,
     });
   }, [selected]);
 
-  const subtotal =
-    cartItems.reduce(
-      (acc, item) =>
-        acc +
-        item.price *
-        item.quantity,
-      0
-    );
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
 
-  const shipping =
-    cartItems.length > 0
-      ? 100
-      : 0;
+  const [checkout] = useCheckoutMutation();
 
-  const total =
-    subtotal + shipping;
+  const shipping = cartItems.length > 0 ? 100 : 0;
 
+  const total = subtotal + shipping;
 
   const handleCheckout = async () => {
-  try {
-    // 1. Get Razorpay Key
-    const keyData = await axios.get(
-      "https://astrotitan-server.onrender.com/api/v1/get-key"
-    );
+    try {
+      // 1. Get Razorpay Key
+      const keyData = await axios.get(
+        "https://astrotitan-server.onrender.com/api/v1/get-key",
+      );
 
-    // 2. Create Order
-    const response = await axios.post(
-      "https://astrotitan-server.onrender.com/api/v1/product-order/checkout",
-      {
-        amount: Number(total),
-      },
-      {headers:{Authorization: `${token}`}
+      // 2. Create Order
+      const payload = { amount: total };
+      const response = await checkout(payload).unwrap();
 
-      }
-    );
-    console.log(
-      "api response",response
-    )
+      // 3. Razorpay Options
+      const order = response.data;
+      console.log("api response", order);
 
-    // 3. Razorpay Options
-    const options = {
-      description: "Course Purchase",
-      image: "https://i.ibb.co.com/fzB3sKkh/mitr-consultancy.png",
-      currency: "INR",
-      key: keyData.data.key,
-      amount: response.data.order.amount,
-      name: "MITRA Consultancy",
-      order_id: response.data.order.id,
+      const options = {
+        key: keyData.data.key,
+        amount: order.amount,
+        order_id: order.id,
+        currency: "INR",
+        name: "MITRA Consultancy",
+        description: "Course Purchase",
+        image: "https://i.ibb.co.com/fzB3sKkh/mitr-consultancy.png",
+        prefill: {
+          email: "prernabadwane@gmail.com",
+          name: "prerna",
+        },
+        theme: {
+          color: "#0099FF",
+        },
+      };
 
-      // prefill: {
-      //   email: user?.email,
-      //   contact: user?.phone || "",
-      //   name: user?.name,
-      // },
-      prefill: {
-        email: "prernabadwane@gmail.com",
-        name: "prerna",
-      },
+      // 4. Open Razorpay Native Window
+      RazorpayCheckout.open(options)
+        .then(async (data) => {
+          // SUCCESS
 
-      theme: {
-        color: "#0099FF",
-      },
-    };
+          console.log("Payment Success", data);
 
-    // 4. Open Razorpay Native Window
-    RazorpayCheckout.open(options)
-      .then(async (data) => {
-        // SUCCESS
-
-        console.log("Payment Success", data);
-
-        /*
+          /*
           data contains:
           razorpay_payment_id
           razorpay_order_id
           razorpay_signature
         */
 
-        // OPTIONAL:
-        // verify payment manually from frontend
+          // OPTIONAL:
+          // verify payment manually from frontend
 
-        await axios.post(
-          "https://astrotitan-server.onrender.com/api/v1/product-order/verify-payment",
-          {
-            razorpay_payment_id: data.razorpay_payment_id,
-            razorpay_order_id: data.razorpay_order_id,
-            razorpay_signature: data.razorpay_signature,
-          }
-        );
-      })
-      .catch((error) => {
-        // FAILED / CANCELLED
+          await axios.post(
+            "https://astrotitan-server.onrender.com/api/v1/product-order/verify-payment",
+            {
+              razorpay_payment_id: data.razorpay_payment_id,
+              razorpay_order_id: data.razorpay_order_id,
+              razorpay_signature: data.razorpay_signature,
+            },
+          );
+        })
+        .catch((error) => {
+          // FAILED / CANCELLED
 
-        console.log(error);
-      });
-  } catch (error) {
-    console.log(error);
-  }
-};  
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View
@@ -159,15 +116,8 @@ const PaymentStep = ({
       }}
     >
       {/* PRICE SUMMARY */}
-      <View
-        style={
-          styles.summaryCard
-        }
-      >
-        <SectionTitle
-          title="Price Summary"
-          titleFontSize={16}
-        />
+      <View style={styles.summaryCard}>
+        <SectionTitle title="Price Summary" titleFontSize={16} />
 
         <View
           style={{
@@ -175,31 +125,15 @@ const PaymentStep = ({
             gap: 10,
           }}
         >
-          <Row
-            label="Subtotal"
-            value={`₹ ${subtotal}/-`}
-          />
+          <Row label="Subtotal" value={`₹ ${subtotal}/-`} />
 
-          <Row
-            label="Shipping Charges"
-            value={`₹ ${shipping}/-`}
-          />
+          <Row label="Shipping Charges" value={`₹ ${shipping}/-`} />
 
-          <Row
-            label="Discount Applied"
-            value="NA"
-          />
+          <Row label="Discount Applied" value="NA" />
 
-          <View
-            style={
-              styles.divider
-            }
-          />
+          <View style={styles.divider} />
 
-          <Row
-            label="Total"
-            value={`₹ ${total}/-`}
-          />
+          <Row label="Total" value={`₹ ${total}/-`} />
         </View>
       </View>
 
@@ -223,14 +157,10 @@ const PaymentStep = ({
       </View> */}
 
       <ReusableButton
-                  title={
-                  "Proceed to Pay"
-                  }
-                  variant="solid"
-                  onPress={
-                    handleCheckout
-                  }
-                />
+        title={"Proceed to Pay"}
+        variant="solid"
+        onPress={handleCheckout}
+      />
     </View>
   );
 };
@@ -253,29 +183,11 @@ const PaymentOption = ({
   return (
     <Pressable
       onPress={onPress}
-      style={[
-        styles.optionCard,
-
-        selected &&
-        styles.activeOption,
-      ]}
+      style={[styles.optionCard, selected && styles.activeOption]}
     >
-      <SansText
-        style={
-          styles.optionText
-        }
-      >
-        {title}
-      </SansText>
+      <SansText style={styles.optionText}>{title}</SansText>
 
-      <View
-        style={[
-          styles.radio,
-
-          selected &&
-          styles.radioActive,
-        ]}
-      />
+      <View style={[styles.radio, selected && styles.radioActive]} />
     </Pressable>
   );
 };
@@ -294,21 +206,9 @@ const Row = ({
   bold?: boolean;
 }) => (
   <View style={styles.row}>
-    <SansText
-      style={
-        bold
-          ? styles.bold
-          : styles.normal
-      }
-    >
-      {label}
-    </SansText>
+    <SansText style={bold ? styles.bold : styles.normal}>{label}</SansText>
 
-    <SansText
-      style={styles.bold}
-    >
-      {value}
-    </SansText>
+    <SansText style={styles.bold}>{value}</SansText>
   </View>
 );
 
@@ -316,98 +216,84 @@ const Row = ({
 /* STYLES */
 /* ------------------------- */
 
-const styles =
-  StyleSheet.create({
-    summaryCard: {
-      backgroundColor:
-        "#FBF7EB",
-      borderRadius: 18,
-      padding: 16,
-      borderWidth: 1,
-      borderColor:
-        "#E6D18B",
-    },
+const styles = StyleSheet.create({
+  summaryCard: {
+    backgroundColor: "#FBF7EB",
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#E6D18B",
+  },
 
-    divider: {
-      height: 1,
+  divider: {
+    height: 1,
 
-      backgroundColor:
-        "#E6D18B",
+    backgroundColor: "#E6D18B",
 
-      marginVertical: 4,
-    },
+    marginVertical: 4,
+  },
 
-    row: {
-      flexDirection: "row",
+  row: {
+    flexDirection: "row",
 
-      justifyContent:
-        "space-between",
+    justifyContent: "space-between",
 
-      alignItems: "center",
-    },
+    alignItems: "center",
+  },
 
-    bold: {
-      fontFamily:
-        "SatoshiBold",
+  bold: {
+    fontFamily: "SatoshiBold",
 
-      fontSize: 18,
-    },
+    fontSize: 18,
+  },
 
-    normal: {
-      color: "#444",
-    },
+  normal: {
+    color: "#444",
+  },
 
-    optionCard: {
-      backgroundColor:
-        "#FBF7EB",
+  optionCard: {
+    backgroundColor: "#FBF7EB",
 
-      borderRadius: 16,
+    borderRadius: 16,
 
-      padding: 24,
+    padding: 24,
 
-      borderWidth: 1,
+    borderWidth: 1,
 
-      borderColor:
-        "#D4AF37",
+    borderColor: "#D4AF37",
 
-      flexDirection: "row",
+    flexDirection: "row",
 
-      justifyContent:
-        "space-between",
+    justifyContent: "space-between",
 
-      alignItems: "center",
-    },
+    alignItems: "center",
+  },
 
-    activeOption: {
-      borderColor:
-        "#D4AF37",
+  activeOption: {
+    borderColor: "#D4AF37",
 
-      backgroundColor:
-        "#FFF8E1",
-    },
+    backgroundColor: "#FFF8E1",
+  },
 
-    optionText: {
-      fontSize: 15,
+  optionText: {
+    fontSize: 15,
 
-      fontFamily:
-        "SatoshiMedium",
-    },
+    fontFamily: "SatoshiMedium",
+  },
 
-    radio: {
-      width: 18,
+  radio: {
+    width: 18,
 
-      height: 18,
+    height: 18,
 
-      borderRadius: 999,
+    borderRadius: 999,
 
-      borderWidth: 1.5,
+    borderWidth: 1.5,
 
-      borderColor:
-        "#D4AF37",
-    },
+    borderColor: "#D4AF37",
+  },
 
-    radioActive: {
-      backgroundColor:
-        "#D4AF37",
-    },
-  });
+  radioActive: {
+    backgroundColor: "#D4AF37",
+  },
+});

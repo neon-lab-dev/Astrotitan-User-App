@@ -1,8 +1,10 @@
+import ReusableButton from "@/components/reusable/ReusableButton/ReusableButton";
 import SectionTitle from "@/components/reusable/SectionTitle/SectionTitle";
 
 import { SansText } from "@/components/reusable/Text/SansText";
-
+import { selectToken } from "@/redux/features/auth/authSlice";
 import { RootState } from "@/redux/store";
+import axios from 'axios';
 
 import React, {
   useEffect,
@@ -14,7 +16,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-
+import RazorpayCheckout from "react-native-razorpay";
 import {
   useSelector,
 } from "react-redux";
@@ -32,7 +34,10 @@ const PaymentStep = ({
     (state: RootState) =>
       state.cart.items
   );
-
+ const token =
+  useSelector(
+    selectToken
+  );
   const [selected, setSelected] =
     useState(
       value?.paymentMethod ||
@@ -63,6 +68,89 @@ const PaymentStep = ({
 
   const total =
     subtotal + shipping;
+
+
+  const handleCheckout = async () => {
+  try {
+    // 1. Get Razorpay Key
+    const keyData = await axios.get(
+      "https://astrotitan-server.onrender.com/api/v1/get-key"
+    );
+
+    // 2. Create Order
+    const response = await axios.post(
+      "https://astrotitan-server.onrender.com/api/v1/product-order/checkout",
+      {
+        amount: Number(total),
+      },
+      {headers:{Authorization: `${token}`}
+
+      }
+    );
+    console.log(
+      "api response",response
+    )
+
+    // 3. Razorpay Options
+    const options = {
+      description: "Course Purchase",
+      image: "https://i.ibb.co.com/fzB3sKkh/mitr-consultancy.png",
+      currency: "INR",
+      key: keyData.data.key,
+      amount: response.data.order.amount,
+      name: "MITRA Consultancy",
+      order_id: response.data.order.id,
+
+      // prefill: {
+      //   email: user?.email,
+      //   contact: user?.phone || "",
+      //   name: user?.name,
+      // },
+      prefill: {
+        email: "prernabadwane@gmail.com",
+        name: "prerna",
+      },
+
+      theme: {
+        color: "#0099FF",
+      },
+    };
+
+    // 4. Open Razorpay Native Window
+    RazorpayCheckout.open(options)
+      .then(async (data) => {
+        // SUCCESS
+
+        console.log("Payment Success", data);
+
+        /*
+          data contains:
+          razorpay_payment_id
+          razorpay_order_id
+          razorpay_signature
+        */
+
+        // OPTIONAL:
+        // verify payment manually from frontend
+
+        await axios.post(
+          "https://astrotitan-server.onrender.com/api/v1/product-order/verify-payment",
+          {
+            razorpay_payment_id: data.razorpay_payment_id,
+            razorpay_order_id: data.razorpay_order_id,
+            razorpay_signature: data.razorpay_signature,
+          }
+        );
+      })
+      .catch((error) => {
+        // FAILED / CANCELLED
+
+        console.log(error);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};  
 
   return (
     <View
@@ -116,32 +204,33 @@ const PaymentStep = ({
       </View>
 
       {/* PAYMENT OPTIONS */}
-      <View
+      {/* <View
         style={{
           marginTop: 24,
           gap: 14,
         }}
       >
         <PaymentOption
-          title="Online Payment"
+          title="Proceed to Payment"
           selected={
             selected === "online"
           }
           onPress={() =>
-            setSelected("online")
+            handleCheckout()
           }
         />
 
-        <PaymentOption
-          title="Cash On Delivery (COD)"
-          selected={
-            selected === "cod"
-          }
-          onPress={() =>
-            setSelected("cod")
-          }
-        />
-      </View>
+      </View> */}
+
+      <ReusableButton
+                  title={
+                  "Proceed to Pay"
+                  }
+                  variant="solid"
+                  onPress={
+                    handleCheckout
+                  }
+                />
     </View>
   );
 };

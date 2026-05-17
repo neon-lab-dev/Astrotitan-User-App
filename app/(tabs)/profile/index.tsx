@@ -18,7 +18,7 @@ import { clearAuth, updateUser } from '@/redux/features/auth/authSlice';
 import BottomSheetService from '@/redux/features/ui/GlobalSheet/BottomSheetService';
 import { RootState } from "@/redux/store";
 import { Image } from "expo-image";
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import * as SecureStore from "expo-secure-store";
 import React, { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -111,6 +111,13 @@ const Profile = () => {
         setRefreshing(false);
       }
     }, [refreshing]);
+
+
+    useFocusEffect(
+  React.useCallback(() => {
+    fetchLatestUser();
+  }, [])
+);
 
   return (
     <AnimatedScreen>

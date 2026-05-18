@@ -1,20 +1,31 @@
 import AuthTitle from "@/components/auth/AuthTitle";
 import AnimatedScreen from "@/components/layout/AnimatedScreen";
 import ScreenWrapper from "@/components/layout/ScreenWrapper";
+
 import AppHeader from "@/components/reusable/AppHeader/AppHeader";
+
+import SkeletonLoader from "@/components/reusable/SkeletonLoader/SkeletonLoade";
+
 import { SansText } from "@/components/reusable/Text/SansText";
+
 import ReviewCard from "@/components/tabs/ecommerce/ecommerce/ReviewCard/ReviewCard";
+
+import ReviewCardSkeleton from "@/components/tabs/ecommerce/ecommerce/ReviewCard/ReviewCardSkeleton";
+
 import {
-    useGetSingleProductByIdQuery,
+  useGetSingleProductByIdQuery,
 } from "@/redux/features/product/productsApi";
+
 import {
-    router,
-    useLocalSearchParams,
+  router,
+  useLocalSearchParams,
 } from "expo-router";
+
 import React from "react";
+
 import {
-    FlatList,
-    View,
+  FlatList,
+  View,
 } from "react-native";
 
 const ProductReviews = () => {
@@ -39,22 +50,106 @@ const ProductReviews = () => {
   const product =
     productResponse?.data;
 
+  /* LOADING */
+
   if (isLoading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent:
-            "center",
-          alignItems: "center",
-        }}
-      >
-        <SansText>
-          Loading reviews...
-        </SansText>
-      </View>
+      <AnimatedScreen>
+        <ScreenWrapper>
+          <AppHeader
+            onPressBack={() => {
+              router.back();
+            }}
+          >
+            <AuthTitle title="Reviews & Ratings">
+              <SansText
+                style={{
+                  fontSize: 18,
+                }}
+              >
+                Real experiences
+                shared by verified
+                users.
+              </SansText>
+            </AuthTitle>
+          </AppHeader>
+
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
+            {/* HEADER SKELETON */}
+
+            <View
+              style={{
+                paddingHorizontal: 16,
+                paddingTop: 18,
+                gap: 12,
+              }}
+            >
+              <SkeletonLoader
+                width="48%"
+                height={28}
+                borderRadius={8}
+                array={[1]}
+              />
+
+              <SkeletonLoader
+                width="88%"
+                height={14}
+                borderRadius={6}
+                array={[1]}
+              />
+            </View>
+
+            {/* REVIEWS */}
+
+            <FlatList
+              data={[1, 2, 3]}
+              keyExtractor={(
+                item
+              ) =>
+                item.toString()
+              }
+              showsVerticalScrollIndicator={
+                false
+              }
+              contentContainerStyle={{
+                paddingHorizontal: 16,
+                paddingTop: 24,
+                paddingBottom: 40,
+              }}
+              renderItem={({
+                index,
+              }) => {
+                const isLast =
+                  index === 2;
+
+                return (
+                  <View
+                    style={{
+                      borderBottomWidth:
+                        isLast
+                          ? 0
+                          : 1,
+
+                      borderBottomColor:
+                        "#D8C48E",
+                    }}
+                  >
+                    <ReviewCardSkeleton />
+                  </View>
+                );
+              }}
+            />
+          </View>
+        </ScreenWrapper>
+      </AnimatedScreen>
     );
   }
+
+  /* ERROR */
 
   if (
     isError ||
@@ -66,7 +161,8 @@ const ProductReviews = () => {
           flex: 1,
           justifyContent:
             "center",
-          alignItems: "center",
+          alignItems:
+            "center",
         }}
       >
         <SansText>
@@ -76,6 +172,8 @@ const ProductReviews = () => {
       </View>
     );
   }
+
+  /* MAIN */
 
   return (
     <AnimatedScreen>

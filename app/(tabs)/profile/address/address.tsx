@@ -5,13 +5,13 @@ import ScreenWrapper from "@/components/layout/ScreenWrapper";
 import AppHeader from "@/components/reusable/AppHeader/AppHeader";
 import DeleteAddressSection from "@/components/reusable/BottomSheet/DeleteAddressSectoin";
 import ReusableButton from "@/components/reusable/ReusableButton/ReusableButton";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader/SkeletonLoade";
 import { SansText } from "@/components/reusable/Text/SansText";
 import AddressCard from "@/components/tabs/profile/address/AddressCard";
+import AddressCardSkeleton from "@/components/tabs/profile/address/AddressCardSkeleton/AddressCardSkeleton";
 
 import {
-    useDeleteAddressMutation,
-    useGetMyAddressesQuery,
+  useDeleteAddressMutation,
+  useGetMyAddressesQuery,
 } from "@/redux/features/address/addressApi";
 
 import BottomSheetService from "@/redux/features/ui/GlobalSheet/BottomSheetService";
@@ -21,15 +21,12 @@ import { router } from "expo-router";
 import React from "react";
 
 import {
-    RefreshControl,
-    ScrollView,
-    View,
+  RefreshControl,
+  ScrollView,
+  View,
 } from "react-native";
 
 const Address = () => {
-  /* =======================================================
-   * API
-   * ======================================================= */
 
   const {
     data,
@@ -42,13 +39,10 @@ const Address = () => {
     deleteAddress,
     {
       isLoading:
-        deleteLoading,
+      deleteLoading,
     },
   ] = useDeleteAddressMutation();
 
-  /* =======================================================
-   * STATES
-   * ======================================================= */
 
   const [refreshing, setRefreshing] =
     React.useState(false);
@@ -56,9 +50,6 @@ const Address = () => {
   const addresses =
     data?.data || [];
 
-  /* =======================================================
-   * REFRESH
-   * ======================================================= */
 
   const onRefresh = async () => {
     try {
@@ -75,9 +66,6 @@ const Address = () => {
     }
   };
 
-  /* =======================================================
-   * DELETE
-   * ======================================================= */
 
   const onPressDelete = (
     id: string
@@ -109,9 +97,6 @@ const Address = () => {
     );
   };
 
-  /* =======================================================
-   * SKELETON LOADER
-   * ======================================================= */
 
   if (isLoading || isFetching) {
     return (
@@ -133,181 +118,9 @@ const Address = () => {
           >
             {[1, 2, 3].map(
               (item) => (
-                 <View
-                 key={item}
-      style={{
-        gap: 14,
-      }}
-    >
-      {/* CARD */}
-      <View
-        style={{
-          backgroundColor: "#FBF7EB",
-
-          borderRadius: 16,
-
-          padding: 16,
-
-          borderWidth: 1,
-
-          borderColor: "#D4AF37",
-
-          gap: 14,
-        }}
-      >
-        {/* NAME ROW */}
-        <View
-          style={{
-            flexDirection: "row",
-
-            alignItems: "flex-start",
-
-            justifyContent:
-              "space-between",
-
-            gap: 12,
-          }}
-        >
-          {/* LEFT */}
-          <View
-            style={{
-              flexDirection: "row",
-
-              alignItems: "center",
-
-              gap: 10,
-
-              flex: 1,
-            }}
-          >
-            {/* USER ICON */}
-            <SkeletonLoader
-              width={18}
-              height={18}
-              borderRadius={999}
-              array={[1]}
-            />
-
-            {/* NAME */}
-            <SkeletonLoader
-              width="58%"
-              height={16}
-              borderRadius={8}
-              array={[1]}
-            />
-          </View>
-
-          {/* TYPE BADGE */}
-          <SkeletonLoader
-            width={68}
-            height={28}
-            borderRadius={999}
-            array={[1]}
-          />
-        </View>
-
-        {/* PHONE */}
-        <View
-          style={{
-            flexDirection: "row",
-
-            alignItems: "center",
-
-            gap: 10,
-          }}
-        >
-          {/* CALL ICON */}
-          <SkeletonLoader
-            width={18}
-            height={18}
-            borderRadius={999}
-            array={[1]}
-          />
-
-          {/* PHONE TEXT */}
-          <SkeletonLoader
-            width="42%"
-            height={14}
-            borderRadius={8}
-            array={[1]}
-          />
-        </View>
-
-        {/* ADDRESS */}
-        <View
-          style={{
-            flexDirection: "row",
-
-            gap: 10,
-          }}
-        >
-          {/* LOCATION ICON */}
-          <SkeletonLoader
-            width={18}
-            height={18}
-            borderRadius={999}
-            array={[1]}
-          />
-
-          {/* ADDRESS LINES */}
-          <View
-            style={{
-              flex: 1,
-
-              gap: 10,
-            }}
-          >
-            <SkeletonLoader
-              width="95%"
-              height={14}
-              borderRadius={8}
-              array={[1]}
-            />
-
-            <SkeletonLoader
-              width="78%"
-              height={14}
-              borderRadius={8}
-              array={[1]}
-            />
-
-            <SkeletonLoader
-              width="55%"
-              height={14}
-              borderRadius={8}
-              array={[1]}
-            />
-          </View>
-        </View>
-      </View>
-
-      {/* BUTTONS */}
-      <View
-        style={{
-          flexDirection: "row",
-
-          gap: 12,
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonLoader
-            width="100%"
-            height={52}
-            borderRadius={999}
-            array={[1]}
-          />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <SkeletonLoader
-            width="100%"
-            height={52}
-            borderRadius={999}
-            array={[1]}
-          />
-        </View>
-      </View>
-    </View>
+                <AddressCardSkeleton
+                  key={item}
+                />
               )
             )}
           </ScrollView>
@@ -328,45 +141,36 @@ const Address = () => {
           <AuthTitle
             title={
               addresses.length <
-              1
+                1
                 ? "No saved addresses"
                 : "Saved Address"
             }
           >
             {addresses.length <
               1 && (
-              <SansText>
-                Add an address
-                for deliveries,
-                prasad, or home
-                pooja.
-              </SansText>
-            )}
+                <SansText> Add an address for deliveries, prasad, or home pooja.
+                </SansText>
+              )}
           </AuthTitle>
         </AppHeader>
 
         <View
           style={{
             flex: 1,
-
             paddingHorizontal: 16,
-
             paddingBottom: 16,
           }}
         >
           {/* EMPTY STATE */}
           {addresses.length <
-          1 ? (
+            1 ? (
             <View
               style={{
                 flex: 1,
-
                 justifyContent:
                   "center",
-
                 alignItems:
                   "center",
-
                 paddingHorizontal: 20,
               }}
             >
@@ -378,18 +182,12 @@ const Address = () => {
               <SansText
                 style={{
                   marginTop: 18,
-
-                  textAlign:
-                    "center",
-
+                  textAlign:"center",
                   lineHeight: 24,
-
-                  color:
-                    "#6B6B6B",
+                  color:"#6B6B6B",
                 }}
               >
-                No saved
-                addresses found.
+                No saved addresses found.
               </SansText>
             </View>
           ) : (
@@ -435,14 +233,14 @@ const Address = () => {
                             "/(tabs)/profile/address/add-address",
 
                           params:
-                            {
-                              mode:
-                                "edit",
+                          {
+                            mode:
+                              "edit",
 
-                              data: JSON.stringify(
-                                item
-                              ),
-                            },
+                            data: JSON.stringify(
+                              item
+                            ),
+                          },
                         }
                       );
                     }}

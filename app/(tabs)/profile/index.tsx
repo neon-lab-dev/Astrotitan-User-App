@@ -36,7 +36,9 @@ const Profile = () => {
     await SecureStore.deleteItemAsync("USER");
     await SecureStore.deleteItemAsync("IS_PROFILE_COMPLETE");
     dispatch(clearAuth());
-    alert("Auth reset (logged out).");
+    router.replace("/(auth)/login");
+
+
   };
 
   const fetchLatestUser =
@@ -75,9 +77,12 @@ const Profile = () => {
 
   const onPressLogout = () => {
     BottomSheetService.open(
-      <LogoutSection onCancel={BottomSheetService.close} onLogout={() => { resetAuth() }} />,
+      <LogoutSection onCancel={BottomSheetService.close} onLogout={() => {
+        resetAuth()
+        BottomSheetService.close()
+      }} />,
       {
-        height: 300,
+        height: 400,
         hasGradient: true,
       }
     );
@@ -113,11 +118,11 @@ const Profile = () => {
     }, [refreshing]);
 
 
-    useFocusEffect(
-  React.useCallback(() => {
-    fetchLatestUser();
-  }, [])
-);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchLatestUser();
+    }, [])
+  );
 
   return (
     <AnimatedScreen>

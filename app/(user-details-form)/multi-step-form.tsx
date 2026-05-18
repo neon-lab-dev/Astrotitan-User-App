@@ -182,7 +182,7 @@ const MultiStepForm = () => {
             console.log("🟢 REDUX AFTER setAuth:", store.getState().auth);
             await SecureStore.setItemAsync("IS_PROFILE_COMPLETE", "true");
 
-            router.replace("/home");
+            router.replace("/(auth)/profile-completed");
 
         } catch (err) {
             console.log("PROFILE ERROR:", err);

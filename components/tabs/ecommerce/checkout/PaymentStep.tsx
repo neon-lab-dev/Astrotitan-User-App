@@ -6,8 +6,9 @@ import { selectToken } from "@/redux/features/auth/authSlice";
 import { useCheckoutMutation } from "@/redux/features/product/productsApi";
 import { RootState } from "@/redux/store";
 import axios from "axios";
+import { router } from "expo-router";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Pressable, StyleSheet, View } from "react-native";
 import RazorpayCheckout from "react-native-razorpay";
@@ -21,14 +22,7 @@ interface Props {
 const PaymentStep = ({ value, setValue }: Props) => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const token = useSelector(selectToken);
-  const [selected, setSelected] = useState(value?.paymentMethod || "cod");
-
-  // 🔥 SYNC TO PARENT
-  useEffect(() => {
-    setValue({
-      paymentMethod: selected,
-    });
-  }, [selected]);
+  
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -43,69 +37,181 @@ const PaymentStep = ({ value, setValue }: Props) => {
 
   const handleCheckout = async () => {
     try {
-      // 1. Get Razorpay Key
+      // 1. GET RAZORPAY KEY
+
       const keyData = await axios.get(
-        "https://astrotitan-server.onrender.com/api/v1/get-key",
+        "https://astrotitan-server.onrender.com/api/v1/get-key"
       );
 
-      // 2. Create Order
-      const payload = { amount: total };
-      const response = await checkout(payload).unwrap();
+      // 2. CREATE RAZORPAY ORDER
 
-      // 3. Razorpay Options
+      const payload = {
+        amount: total,
+      };
+
+      const response =
+        await checkout(payload).unwrap();
+
       const order = response.data;
-      console.log("api response", order);
 
-      const options = {
+      console.log(
+        "RAZORPAY ORDER",
+        order
+      );
+
+      // 3. RAZORPAY OPTIONS
+
+      const options: any = {
         key: keyData.data.key,
+
         amount: order.amount,
+
         order_id: order.id,
+
         currency: "INR",
+
         name: "MITRA Consultancy",
-        description: "Course Purchase",
-        image: "https://i.ibb.co.com/fzB3sKkh/mitr-consultancy.png",
+
+        description: "Product Purchase",
+
+        image:
+          "https://i.ibb.co.com/fzB3sKkh/mitr-consultancy.png",
+
         prefill: {
-          email: "prernabadwane@gmail.com",
-          name: "prerna",
+          email:
+            "prernabadwane@gmail.com",
+
+          name: "Prerna",
+
+          contact: "919999999999",
         },
+
         theme: {
           color: "#0099FF",
         },
+
+        method: {
+          upi: true,
+
+          card: true,
+
+          netbanking: true,
+
+          wallet: true,
+
+          emi: true,
+
+          paylater: true,
+        },
       };
 
-      // 4. Open Razorpay Native Window
+      // 4. OPEN RAZORPAY
+
       RazorpayCheckout.open(options)
-        .then(async (data) => {
-          // SUCCESS
 
-          console.log("Payment Success", data);
+        .then(async (data: any) => {
+          try {
+            console.log(
+              "PAYMENT SUCCESS",
+              data
+            );
 
-          /*
-          data contains:
-          razorpay_payment_id
-          razorpay_order_id
-          razorpay_signature
-        */
+            // 5. VERIFY PAYMENT
 
-          // OPTIONAL:
-          // verify payment manually from frontend
+            const verifyResponse =
+              await axios.post(
+                "https://astrotitan-server.onrender.com/api/v1/product-order/verify-payment",
+              );
 
-          await axios.post(
-            "https://astrotitan-server.onrender.com/api/v1/product-order/verify-payment",
-            {
-              razorpay_payment_id: data.razorpay_payment_id,
-              razorpay_order_id: data.razorpay_order_id,
-              razorpay_signature: data.razorpay_signature,
-            },
-          );
+            console.log(
+              "VERIFY RESPONSE",
+              verifyResponse.data
+            );
+            console.log(
+              "VERIFY SUCCESS VALUE",
+              verifyResponse?.data?.success
+            );
+            // 6. CHECK VERIFY SUCCESS
+
+            if (
+              verifyResponse?.data
+                ?.success
+            ) {
+              // 7. CREATE FINAL ORDER
+
+              const orderPayload = {
+                orderedItems:
+                  cartItems.map(
+                    (item: any) => ({
+                      productId:
+                        item._id,
+
+                      name:
+                        item.name,
+
+                      quantity:
+                        item.quantity,
+
+                      price:
+                        item.price,
+                    })
+                  ),
+
+                totalAmount: total,
+              };
+
+              const createOrderResponse =
+                await axios.post(
+                  "https://astrotitan-server.onrender.com/api/v1/product-order/create",
+
+                  orderPayload,
+
+                  {
+                    headers: {
+                      Authorization:
+                        token,
+                    },
+                  }
+                );
+
+              console.log(
+                "FINAL ORDER CREATED",
+                createOrderResponse.data
+              );
+
+
+              router.replace({
+                pathname:
+                  "/(tabs)/remedies/(ecommerce)/order-sucessfull",
+
+                params: {
+                  slug: order.id,
+                },
+              });
+            } else {
+              console.log(
+                "PAYMENT VERIFICATION FAILED"
+              );
+            }
+          } catch (error) {
+            console.log(
+              "POST PAYMENT ERROR",
+              error
+            );
+          }
         })
-        .catch((error) => {
-          // FAILED / CANCELLED
 
-          console.log(error);
+        .catch((error: any) => {
+          console.log(
+            "PAYMENT FAILED",
+            error
+          );
         });
     } catch (error) {
-      console.log(error);
+      console.log(
+        "CHECKOUT ERROR",
+        error
+      );
     }
   };
 
@@ -139,22 +245,22 @@ const PaymentStep = ({ value, setValue }: Props) => {
 
       {/* PAYMENT OPTIONS */}
       {/* <View
-        style={{
-          marginTop: 24,
-          gap: 14,
-        }}
-      >
-        <PaymentOption
-          title="Proceed to Payment"
-          selected={
-            selected === "online"
-          }
-          onPress={() =>
-            handleCheckout()
-          }
-        />
+          style={{
+            marginTop: 24,
+            gap: 14,
+          }}
+        >
+          <PaymentOption
+            title="Proceed to Payment"
+            selected={
+              selected === "online"
+            }
+            onPress={() =>
+              handleCheckout()
+            }
+          />
 
-      </View> */}
+        </View> */}
 
       <ReusableButton
         title={"Proceed to Pay"}

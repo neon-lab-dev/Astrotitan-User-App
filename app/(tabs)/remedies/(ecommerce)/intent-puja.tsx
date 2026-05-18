@@ -5,24 +5,25 @@ import AppHeader from "@/components/reusable/AppHeader/AppHeader";
 import Categories from "@/components/reusable/Categories/Categories";
 import { SansText } from "@/components/reusable/Text/SansText";
 import RemedyCard from "@/components/tabs/ecommerce/ecommerce/RemedyCard/RemedyCard";
+import RemedyCardSkeleton from "@/components/tabs/ecommerce/ecommerce/RemedyCard/RemedyCardSkeleton";
 
 import { useGetAllCategoriesByAreaNameQuery } from "@/redux/features/categories/categoriesApi";
 
 import { useGetAllPujasQuery } from "@/redux/features/puja/pujaApi";
 
 import {
-    router,
-    useLocalSearchParams,
+  router,
+  useLocalSearchParams,
 } from "expo-router";
 
 import React, {
-    useCallback,
-    useState,
+  useCallback,
+  useState,
 } from "react";
 
 import {
-    RefreshControl,
-    View,
+  RefreshControl,
+  View,
 } from "react-native";
 
 import { FlatList } from "react-native-gesture-handler";
@@ -48,9 +49,7 @@ const IntentPuja = () => {
     setRefreshing,
   ] = useState(false);
 
-  /* =======================================================
-   * CATEGORIES
-   * ======================================================= */
+  /* CATEGORIES */
 
   const {
     data: categories,
@@ -61,14 +60,13 @@ const IntentPuja = () => {
       "Puja"
     );
 
-  /* =======================================================
-   * PUJAS
-   * ======================================================= */
+  /* PUJAS */
 
   const {
     data: pujasResponse,
     isLoading:
       isPujasLoading,
+    isFetching,
     refetch,
   } =
     useGetAllPujasQuery(
@@ -88,9 +86,7 @@ const IntentPuja = () => {
     pujasResponse?.data
       ?.pujas || [];
 
-  /* =======================================================
-   * REFRESH
-   * ======================================================= */
+  /* REFRESH */
 
   const onRefresh =
     useCallback(
@@ -116,6 +112,8 @@ const IntentPuja = () => {
       },
       [refetch]
     );
+
+  /* RENDER */
 
   return (
     <AnimatedScreen>
@@ -168,21 +166,36 @@ const IntentPuja = () => {
           {/* PUJAS */}
 
           <FlatList
-            data={pujas}
+            data={
+              isPujasLoading
+                ? [1, 2, 3, 4]
+                : pujas
+            }
             numColumns={2}
             refreshControl={
               <RefreshControl
                 refreshing={
-                  refreshing
+                  refreshing ||
+                  isFetching
                 }
                 onRefresh={
                   onRefresh
                 }
+                tintColor="#D4AF37"
+                colors={[
+                  "#D4AF37",
+                ]}
+                progressBackgroundColor="#FBF7EB"
               />
             }
             keyExtractor={(
-              item
-            ) => item._id}
+              item,
+              index
+            ) =>
+              isPujasLoading
+                ? index.toString()
+                : item._id
+            }
             showsVerticalScrollIndicator={
               false
             }
@@ -197,40 +210,54 @@ const IntentPuja = () => {
 
               paddingBottom: 40,
 
-              rowGap: 12,
+              rowGap: 16,
             }}
             renderItem={({
               item,
-            }) => (
-              <RemedyCard
-                title={
-                  item.name
-                }
-                description={
-                  item.description
-                }
-                price={item.discountedPrice.toString()}
-                image={
-                  item
-                    ?.imageUrls?.[0]
-                }
-                rating={
-                  item.rating
-                }
-                onPress={() => {
-                  router.push(
-                    {
-                      pathname:
-                        "/(tabs)/remedies/(ecommerce)/pooja-details",
+            }) => {
+              /* SKELETON */
 
-                      params: {
-                        id: item._id,
-                      },
-                    }
-                  );
-                }}
-              />
-            )}
+              if (
+                isPujasLoading
+              ) {
+                return (
+                  <RemedyCardSkeleton />
+                );
+              }
+
+              /* CARD */
+
+              return (
+                <RemedyCard
+                  title={
+                    item.name
+                  }
+                  description={
+                    item.description
+                  }
+                  price={item.discountedPrice.toString()}
+                  image={
+                    item
+                      ?.imageUrls?.[0]
+                  }
+                  rating={
+                    item.rating
+                  }
+                  onPress={() => {
+                    router.push(
+                      {
+                        pathname:
+                          "/(tabs)/remedies/(ecommerce)/pooja-details",
+
+                        params: {
+                          id: item._id,
+                        },
+                      }
+                    );
+                  }}
+                />
+              );
+            }}
             ListEmptyComponent={
               !isPujasLoading ? (
                 <View

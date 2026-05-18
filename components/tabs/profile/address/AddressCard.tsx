@@ -119,10 +119,7 @@ const AddressCard = ({
           />
 
           <SansText style={styles.infoText}>
-            {data.addressLine1}
-            {"\n"}
-
-            {data.addressLine2}
+            {data.addressLine1} {data.addressLine2}
             {"\n"}
 
             {data.city},{" "}

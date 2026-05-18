@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "astrotitan",
+    "scheme": "astro_titan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -14,9 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjSPZ4BoFK_dkKehRLnT1uilprFiBx6TscrQ&s",
-        "backgroundImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjSPZ4BoFK_dkKehRLnT1uilprFiBx6TscrQ&s",
-        "monochromeImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjSPZ4BoFK_dkKehRLnT1uilprFiBx6TscrQ&s"
+        "foregroundImage": "./assets/images/planets.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -25,9 +23,6 @@
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
-    },
-    "splash": {
-      "backgroundColor": "#ffffff"
     },
     "plugins": [
       "expo-router",

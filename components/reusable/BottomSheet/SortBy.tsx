@@ -30,7 +30,7 @@ const SortBySection = ({ onApply }: Props) => {
       />
 
       <SansText style={styles.footer}>
-        Sorting won't affect availability
+        Sorting won&apos;t affect availability
       </SansText>
     </View>
   );
@@ -40,8 +40,10 @@ export default SortBySection;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
     gap: 20,
+    paddingBottom:56
   },
 
   title: {

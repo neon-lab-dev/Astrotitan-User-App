@@ -17,6 +17,7 @@ export default function TabsLayout() {
   const currentRoute = segments[segments.length - 1];
 
   const hiddenRoutes = [
+    "(astrology)",
     "remedy-details",
     "category",
     "saved-remedies",

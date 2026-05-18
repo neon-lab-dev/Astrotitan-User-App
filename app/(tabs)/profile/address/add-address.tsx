@@ -1,5 +1,6 @@
 import AuthTitle from "@/components/auth/AuthTitle";
 import AnimatedScreen from "@/components/layout/AnimatedScreen";
+import KeyboardSafeSection from "@/components/layout/KeyboardSafeSection";
 import ScreenWrapper from "@/components/layout/ScreenWrapper";
 import AppHeader from "@/components/reusable/AppHeader/AppHeader";
 import FormInput from "@/components/reusable/InputField/FormInput";
@@ -23,9 +24,8 @@ import React, {
 import { useForm } from "react-hook-form";
 
 import {
-  ScrollView,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 type FormType = {
@@ -59,8 +59,8 @@ const AddAddress = () => {
   const parsedData =
     params.data
       ? JSON.parse(
-          params.data as string
-        )
+        params.data as string
+      )
       : null;
 
   const [
@@ -219,15 +219,11 @@ const AddAddress = () => {
             padding: 16,
           }}
         >
-          <ScrollView
-            style={{ flex: 1 }}
+          <KeyboardSafeSection
             contentContainerStyle={{
               gap: 16,
               paddingBottom: 24,
             }}
-            showsVerticalScrollIndicator={
-              false
-            }
           >
             {/* FULL NAME */}
             <FormInput
@@ -399,8 +395,8 @@ const AddAddress = () => {
                         setValue(
                           "type",
                           type as
-                            | "home"
-                            | "office"
+                          | "home"
+                          | "office"
                         )
                       }
                       style={{
@@ -462,7 +458,7 @@ const AddAddress = () => {
                 })}
               </View>
             </View>
-          </ScrollView>
+          </KeyboardSafeSection>
 
           {/* BUTTON */}
           <ReusableButton

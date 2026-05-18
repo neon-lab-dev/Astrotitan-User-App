@@ -22,12 +22,13 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { LinearGradient } from "expo-linear-gradient";
 
-import React from "react";
+import React, { useState } from "react";
 
-import SkeletonLoader from "@/components/reusable/SkeletonLoader/SkeletonLoade";
+import AstrologerDetailSkeleton from "@/components/tabs/astrologer/astrologer/AstrologerDetailSkeleton/AstrologerDetailSkeleton ";
 import {
   Dimensions,
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -39,14 +40,10 @@ const SCREEN_WIDTH =
 
 const AstrologerDetail =
   () => {
-    const params =
-      useLocalSearchParams();
+    const params = useLocalSearchParams();
 
-    const id =
-      params?.id as string;
-
-    /* ---------------- PREVIEW DATA ---------------- */
-
+    const id = params?.id as string;
+    const [refreshing, setRefreshing] = useState(false);
     const previewAstrologer =
       params?.astrologer
         ? JSON.parse(
@@ -54,11 +51,11 @@ const AstrologerDetail =
         )
         : null;
 
-    /* ---------------- API ---------------- */
-
     const {
       data,
       isLoading,
+      isFetching,
+      refetch,
     } =
       useGetAstrologerByIdQuery(
         id,
@@ -67,58 +64,25 @@ const AstrologerDetail =
         }
       );
 
-    /* ---------------- FINAL DATA ---------------- */
-
     const astrologer =
       data?.data ||
       previewAstrologer;
+    const onRefresh =
+      async () => {
+        try {
+          setRefreshing(true);
 
-    /* ---------------- LOADING ---------------- */
-
+          await refetch();
+        } finally {
+          setRefreshing(false);
+        }
+      };
     if (
       isLoading &&
       !previewAstrologer
     ) {
       return (
-        <AnimatedScreen>
-        <ScreenWrapper>
-          <View
-            style={{
-              padding: 16,
-
-              gap: 20,
-            }}
-          >
-            <SkeletonLoader
-              width="100%"
-              height={
-                SCREEN_WIDTH
-              }
-              array={[1]}
-              borderRadius={
-                0
-              }
-            />
-
-            <SkeletonLoader
-              width="100%"
-              height={120}
-              array={[1]}
-              borderRadius={
-                16
-              }
-            />
-
-            <SkeletonLoader
-              width="100%"
-              height={180}
-              array={[1]}
-              borderRadius={
-                16
-              }
-            />
-          </View>
-        </ScreenWrapper></AnimatedScreen>
+        <AstrologerDetailSkeleton />
       );
     }
 
@@ -128,6 +92,15 @@ const AstrologerDetail =
           <ScrollView
             showsVerticalScrollIndicator={
               false
+            }
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#816B22"
+                colors={["#816B22",]}
+                progressBackgroundColor="#FBF7EB"
+              />
             }
             contentContainerStyle={{
               paddingBottom: 120,

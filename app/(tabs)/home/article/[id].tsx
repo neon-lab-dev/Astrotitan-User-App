@@ -2,6 +2,7 @@ import AnimatedScreen from "@/components/layout/AnimatedScreen";
 import ScreenWrapper from "@/components/layout/ScreenWrapper";
 import ContentSection from "@/components/reusable/ContentSectoin/ContentSection";
 import ReusableButton from "@/components/reusable/ReusableButton/ReusableButton";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader/SkeletonLoade";
 import { SansText } from "@/components/reusable/Text/SansText";
 import { SatoshiText } from "@/components/reusable/Text/SatoshiText";
 import { useGetBlogByIdQuery } from "@/redux/features/blog/blogApi";
@@ -13,12 +14,11 @@ import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 
 import {
-  ActivityIndicator,
   Dimensions,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -38,19 +38,86 @@ export default function BlogDetailsPage() {
   });
 
   const blog = data?.data;
-console.log(blog)
+  console.log(blog)
   /* ---------------- LOADING ---------------- */
 
   if (isLoading || isFetching) {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          <View style={styles.centerContainer}>
-            <ActivityIndicator
-              size="large"
-              color="#8B6F47"
-            />
-          </View>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: 140,
+            }}
+          >
+            {/* HERO IMAGE */}
+
+            <View style={styles.skeletonHeroContainer}>
+              <SkeletonLoader
+                width="100%"
+                height={SCREEN_WIDTH * 0.95}
+                borderTopLeftRadius={0}
+                borderTopRightRadius={0}
+                borderBottomLeftRadius={24}
+                borderBottomRightRadius={24}
+              />
+
+              {/* BACK BUTTON */}
+
+              <View style={styles.skeletonBackWrapper}>
+                <SkeletonLoader
+                  width={42}
+                  height={42}
+                  borderRadius={999}
+                  array={[1]}
+                />
+              </View>
+
+              {/* OVERLAY TEXT */}
+
+              <View style={styles.skeletonOverlayContent}>
+                <SkeletonLoader
+                  width="78%"
+                  height={32}
+                  borderRadius={10}
+                  array={[1]}
+                />
+
+                <SkeletonLoader
+                  width="40%"
+                  height={14}
+                  borderRadius={8}
+                  array={[1]}
+                />
+              </View>
+            </View>
+
+            {/* CONTENT */}
+
+            <View style={styles.skeletonContentContainer}>
+              <SkeletonLoader
+                width="25%"
+                height={24}
+                borderRadius={8}
+              />
+
+              <View style={{ marginTop: 24, gap: 14 }}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((_, index) => (
+                  <SkeletonLoader
+                    key={index}
+                    width={
+                      index % 2 === 0 ? "100%" : "88%"
+                    }
+                    height={16}
+                    borderRadius={8}
+                  />
+                ))}
+              </View>
+            </View>
+          </ScrollView>
+
+
         </ScreenWrapper>
       </AnimatedScreen>
     );
@@ -152,12 +219,14 @@ console.log(blog)
           <View style={styles.fixedBottom}>
             <ReusableButton
               title="Consult An Astrologer"
-              onPress={() => {router.push({
-                          pathname: "/(tabs)/astrologers/(astrologer)/[id]",
-                          params: {
-                            id: blog.addedBy,
-                          },
-                        });}}
+              onPress={() => {
+                router.push({
+                  pathname: "/(tabs)/astrologers/(astrologer)/[id]",
+                  params: {
+                    id: blog.addedBy,
+                  },
+                });
+              }}
               width="100%"
               variant="solid"
               iconName="CallIcon"
@@ -275,5 +344,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 12,
     color: "#8C8C8C",
+  },
+  skeletonHeroContainer: {
+    marginTop: 12,
+    position: "relative",
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: "#D4AF37",
+    backgroundColor: "#FBF7EB",
+    borderBottomRightRadius: 24,
+    borderBottomLeftRadius: 24,
+
+  },
+
+  skeletonBackWrapper: {
+    position: "absolute",
+    top: 20,
+    left: 20,
+  },
+
+  skeletonOverlayContent: {
+    position: "absolute",
+    bottom: 24,
+    left: 20,
+    right: 20,
+    gap: 12,
+  },
+
+  skeletonContentContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 28,
   },
 });

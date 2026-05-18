@@ -80,7 +80,7 @@ const [deleteQuery, { isLoading }] =
 
     {
       title: "Under review",
-      time: queryData?.updatedAt,
+      // time: queryData?.updatedAt,
       description:
         "Support team is reviewing your query",
       active:
@@ -90,7 +90,7 @@ const [deleteQuery, { isLoading }] =
 
     {
       title: "Resolved",
-      time: queryData?.updatedAt,
+      // time: queryData?.updatedAt,
       description: "Issue resolved successfully",
       active: queryData?.status === "resolved",
     },
@@ -307,7 +307,7 @@ const [deleteQuery, { isLoading }] =
                                 month: "short",
                               }
                             )
-                            : "Expected by 8 May"}
+                           :""}
                         </SansText>
 
                         {!!item.description &&
@@ -402,7 +402,7 @@ const [deleteQuery, { isLoading }] =
             
           </View>
         </ScrollView>
-        <View
+        {queryData?.status === "resolved" && <View
               style={{
                 position: "absolute",
                 bottom: 0,
@@ -423,7 +423,7 @@ const [deleteQuery, { isLoading }] =
                 loading={isLoading}
                 disabled={isLoading}
               />
-            </View>
+            </View>}
       </ScreenWrapper>
     </AnimatedScreen>
   );

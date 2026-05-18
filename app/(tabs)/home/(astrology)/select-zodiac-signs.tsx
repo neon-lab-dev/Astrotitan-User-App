@@ -23,11 +23,11 @@ const SelectZodiacSign = () => {
     <AnimatedScreen>
       <ScreenWrapper>
         <AppHeader showBack={true}>
-            <AuthTitle title="Select your zodiac sign"></AuthTitle>
+          <AuthTitle title="Select your zodiac sign"></AuthTitle>
         </AppHeader>
-      <SelectZodiacScreen handleContinue={handleContinue} />
+        <SelectZodiacScreen handleContinue={handleContinue} />
       </ScreenWrapper>
-      </AnimatedScreen>
+    </AnimatedScreen>
   );
 };
 

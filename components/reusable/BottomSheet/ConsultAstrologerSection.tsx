@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 56,
-    paddingBottom:16,
+    paddingVertical: 56,
     justifyContent: "flex-end",
+
   },
 
   avatar: {

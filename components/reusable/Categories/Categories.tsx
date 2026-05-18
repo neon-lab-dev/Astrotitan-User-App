@@ -1,12 +1,16 @@
 import * as Haptics from "expo-haptics";
+
+import SkeletonLoader from "@/components/reusable/SkeletonLoader/SkeletonLoade";
+
 import React from "react";
+
 import {
   FlatList,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
+
 import { SansText } from "../Text/SansText";
 
 const Categories = ({
@@ -15,78 +19,130 @@ const Categories = ({
   allCategories,
   isLoading = false,
 }: any) => {
-
   const formattedCategories = [
     { category: "All" },
     ...(allCategories || []),
   ];
 
-  return (
-    <View style={styles.categoriesContainer}>
-      {isLoading ? (
-        <Text>Loading categories...</Text>
-      ) : (
+  /* LOADING */
+
+  if (isLoading) {
+    return (
+      <View
+        style={
+          styles.categoriesContainer
+        }
+      >
         <FlatList
-          data={formattedCategories}
           horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) =>
-            `${item?.category}-${index}`
+          data={[
+            1, 2, 3, 4,
+          ]}
+          showsHorizontalScrollIndicator={
+            false
+          }
+          keyExtractor={(
+            item
+          ) =>
+            item.toString()
           }
           contentContainerStyle={{
             paddingLeft: 16,
             gap: 10,
           }}
-          renderItem={({ item }) => {
+          renderItem={() => (
+            <SkeletonLoader
+              width={110}
+              height={48}
+              borderRadius={999}
+              array={[1]}
+            />
+          )}
+        />
+      </View>
+    );
+  }
 
-            const isAll =
-              item?.category === "All";
+  /* MAIN UI */
 
-            const isActive =
-              (isAll &&
-                selectedCategory === "") ||
+  return (
+    <View
+      style={
+        styles.categoriesContainer
+      }
+    >
+      <FlatList
+        data={
+          formattedCategories
+        }
+        horizontal
+        showsHorizontalScrollIndicator={
+          false
+        }
+        keyExtractor={(
+          item,
+          index
+        ) =>
+          `${item?.category}-${index}`
+        }
+        contentContainerStyle={{
+          paddingLeft: 16,
+          gap: 10,
+        }}
+        renderItem={({ item }) => {
+          const isAll =
+            item?.category ===
+            "All";
+
+          const isActive =
+            (isAll &&
               selectedCategory ===
-                item?.category;
+                "") ||
+            selectedCategory ===
+              item?.category;
 
-            return (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  Haptics.impactAsync(
-                    Haptics
-                      .ImpactFeedbackStyle
-                      .Light
-                  );
+          return (
+            <TouchableOpacity
+              activeOpacity={
+                0.8
+              }
+              onPress={() => {
+                Haptics.impactAsync(
+                  Haptics
+                    .ImpactFeedbackStyle
+                    .Light
+                );
 
-                  setSelectedCategory(
-                    isAll
-                      ? ""
-                      : item?.category
-                  );
-                }}
+                setSelectedCategory(
+                  isAll
+                    ? ""
+                    : item?.category
+                );
+              }}
+            >
+              <View
+                style={
+                  isActive
+                    ? styles.activeChip
+                    : styles.inactiveChip
+                }
               >
-                <View
+                <SansText
                   style={
                     isActive
-                      ? styles.activeChip
-                      : styles.inactiveChip
+                      ? styles.activeText
+                      : styles.inactiveText
                   }
                 >
-                  <SansText
-                    style={
-                      isActive
-                        ? styles.activeText
-                        : styles.inactiveText
-                    }
-                  >
-                    {item?.category}
-                  </SansText>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      )}
+                  {
+                    item?.category
+                  }
+                </SansText>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
     </View>
   );
 };
@@ -110,8 +166,10 @@ const styles = StyleSheet.create({
   },
 
   categoryChipActive: {
-    backgroundColor: "#38A169",
-    borderColor: "#38A169",
+    backgroundColor:
+      "#38A169",
+    borderColor:
+      "#38A169",
   },
 
   categoryText: {
@@ -127,7 +185,8 @@ const styles = StyleSheet.create({
     borderRadius: 48,
     paddingHorizontal: 32,
     paddingVertical: 12,
-    backgroundColor: "#D4AF37",
+    backgroundColor:
+      "#D4AF37",
   },
 
   inactiveChip: {
@@ -135,18 +194,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "#D4AF37",
+    borderColor:
+      "#D4AF37",
   },
 
   activeText: {
     fontSize: 16,
-    fontFamily: "SansMedium",
+    fontFamily:
+      "SansMedium",
     color: "#0D0D0D",
   },
 
   inactiveText: {
     fontSize: 16,
-    fontFamily: "SansMedium",
+    fontFamily:
+      "SansMedium",
     color: "#0D0D0D",
   },
 });

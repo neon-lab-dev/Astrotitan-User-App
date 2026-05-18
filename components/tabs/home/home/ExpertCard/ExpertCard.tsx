@@ -48,7 +48,7 @@ const ExpertCard = ({
         }}
       />,
       {
-        height: 360,
+        height: 400,
         hasGradient: true,
       }
     );

@@ -1,110 +1,72 @@
 import CrownIcon from "@/assets/icons/navigation/crown.svg";
 import NotificationIcon from "@/assets/icons/navigation/notifications.svg";
-
 import AnimatedScreen from "@/components/layout/AnimatedScreen";
 import ScreenWrapper from "@/components/layout/ScreenWrapper";
-
 import ContentSection from "@/components/reusable/ContentSectoin/ContentSection";
 import IconButton from "@/components/reusable/IconButton/IconButton";
 import SectionTitle from "@/components/reusable/SectionTitle/SectionTitle";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader/SkeletonLoade";
-
 import { SansText } from "@/components/reusable/Text/SansText";
 import { SatoshiText } from "@/components/reusable/Text/SatoshiText";
-
-import ExpertCard from "@/components/tabs/home/home/ExpertCard";
+import ExpertCard from "@/components/tabs/home/home/ExpertCard/ExpertCard";
+import ExpertCardSkeleton from "@/components/tabs/home/home/ExpertCard/ExpertCardSkeleton";
 import FeatureCard from "@/components/tabs/home/home/FeatureCard/FeatureCard";
+import FeatureCardSkeleton from "@/components/tabs/home/home/FeatureCard/FeatureCardSkeleton";
 import GemCard from "@/components/tabs/home/home/GemCard/GemCard";
-
 import { GEMS } from "@/data/dummy/gems";
-
 import { useGetAstrologersQuery } from "@/redux/features/astrologer/astrologerApi";
-
+import { useLazyGetMeQuery } from "@/redux/features/auth/authApi";
+import { updateUser } from "@/redux/features/auth/authSlice";
 import { useGetBlogsQuery } from "@/redux/features/blog/blogApi";
-
 import { RootState } from "@/redux/store";
-
 import { getTimeBasedGreeting } from "@/utils/greetings";
-
-import { router } from "expo-router";
-
+import { router, useFocusEffect } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React, { useCallback, useState } from "react";
-
 import { FlatList, RefreshControl, ScrollView, View } from "react-native";
-
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
 const HomeScreen = () => {
-  /* ---------------- USER ---------------- */
-
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user);
-
-  /* ---------------- REFRESH ---------------- */
-
   const [refreshing, setRefreshing] = useState(false);
-
-  /* ---------------- ASTROLOGERS API ---------------- */
-
+  const [getMe] = useLazyGetMeQuery();
+  const dispatch = useDispatch();
   const {
     data: astrologersResponse,
-
     isLoading: astrologersLoading,
     refetch: refetchAstrologers,
     isFetching: astrologerFetching,
   } = useGetAstrologersQuery(
     {
       isIdentityVerified: true,
-
       country: "India",
-
       gender: "",
-
       skip: 0,
-
       limit: 10,
-
       areaOfPractice: "",
-
       consultLanguages: "",
     },
     {
       refetchOnFocus: true,
-
       refetchOnReconnect: true,
     },
   );
-
-  /* ---------------- BLOGS API ---------------- */
-
   const {
     data: blogsResponse,
-
     isLoading: blogsLoading,
-
     refetch: refetchBlogs,
     isFetching: blogFetching,
   } = useGetBlogsQuery(
     {
       skip: 0,
-
       limit: 5,
     },
     {
       refetchOnFocus: true,
-
       refetchOnReconnect: true,
     },
   );
 
-  /* ---------------- DATA ---------------- */
-
   const astrologers = astrologersResponse?.data?.astrologers || [];
-
   const blogs = blogsResponse?.data?.data || [];
-
-  /* ---------------- REFRESH ---------------- */
-
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
 
@@ -122,6 +84,32 @@ const HomeScreen = () => {
       setRefreshing(false);
     }
   }, [refreshing, refetchAstrologers, refetchBlogs]);
+  const fetchLatestUser =
+    async () => {
+      try {
+        const meRes =
+          await getMe({}).unwrap();
+        const finalUser =
+          meRes.data;
+        await SecureStore.setItemAsync(
+          "USER",
+          JSON.stringify(finalUser),
+        );
+        dispatch(
+          updateUser(finalUser)
+        );
+      } catch (error) {
+        console.log(
+          "GET ME ERROR:",
+          error,
+        );
+      }
+    };
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchLatestUser();
+    }, [])
+  );
 
   return (
     <AnimatedScreen>
@@ -144,27 +132,20 @@ const HomeScreen = () => {
           <View
             style={{
               flexDirection: "row",
-
               alignItems: "flex-end",
             }}
           >
-            {/* LEFT */}
-
             <View
               style={{
                 flex: 1,
-
                 gap: 8,
-
                 paddingHorizontal: 16,
               }}
             >
               <SansText
                 style={{
                   fontSize: 18,
-
                   color: "#4A4A4A",
-
                   lineHeight: 26,
                 }}
               >
@@ -174,11 +155,8 @@ const HomeScreen = () => {
               <SatoshiText
                 style={{
                   fontSize: 18,
-
                   color: "#0D0D0D",
-
                   fontFamily: "SatoshiBold",
-
                   lineHeight: 26,
                 }}
               >
@@ -191,9 +169,7 @@ const HomeScreen = () => {
             <View
               style={{
                 flexDirection: "row",
-
                 gap: 18,
-
                 padding: 16,
               }}
             >
@@ -220,9 +196,7 @@ const HomeScreen = () => {
           <View
             style={{
               paddingTop: 26,
-
               gap: 24,
-
               marginBottom: 40,
             }}
           >
@@ -241,7 +215,6 @@ const HomeScreen = () => {
             <View
               style={{
                 gap: 12,
-
                 paddingHorizontal: 16,
               }}
             >
@@ -269,7 +242,6 @@ const HomeScreen = () => {
             <View
               style={{
                 gap: 12,
-
                 paddingHorizontal: 16,
               }}
             >
@@ -321,91 +293,7 @@ const HomeScreen = () => {
                     />
                   )}
                   renderItem={() => (
-                    <View
-                      style={{
-                        width: 160,
-                        height: 255,
-                        borderRadius: 16,
-                        backgroundColor: "#FBF7EB",
-                        borderWidth: 1,
-                        borderColor: "#E7D7A8",
-                        paddingVertical: 20,
-                        paddingHorizontal: 12,
-                        alignItems: "center",
-                      }}
-                    >
-                      <View
-                        style={{
-                          alignItems: "center",
-
-                          marginBottom: 18,
-                        }}
-                      >
-                        <SkeletonLoader
-                          width={84}
-                          height={84}
-                          array={[1]}
-                          borderRadius={100}
-                        />
-
-                        <View
-                          style={{
-                            marginTop: -10,
-                          }}
-                        >
-                          <SkeletonLoader
-                            width={58}
-                            height={24}
-                            array={[1]}
-                            borderRadius={40}
-                          />
-                        </View>
-                      </View>
-
-                      <SkeletonLoader
-                        width={110}
-                        height={18}
-                        array={[1]}
-                        borderRadius={8}
-                      />
-
-                      <View
-                        style={{
-                          marginTop: 10,
-                        }}
-                      >
-                        <SkeletonLoader
-                          width={80}
-                          height={14}
-                          array={[1]}
-                          borderRadius={8}
-                        />
-                      </View>
-
-                      <View
-                        style={{
-                          marginTop: 16,
-
-                          gap: 6,
-
-                          alignItems: "center",
-                        }}
-                      >
-                        <SkeletonLoader
-                          width={120}
-                          height={10}
-                          array={[1]}
-                          borderRadius={6}
-                        />
-
-                        <SkeletonLoader
-                          width={100}
-                          height={10}
-                          array={[1]}
-                          borderRadius={6}
-                        />
-                      </View>
-                    </View>
+                    <ExpertCardSkeleton />
                   )}
                 />
               ) : (
@@ -426,7 +314,7 @@ const HomeScreen = () => {
                   )}
                   renderItem={({ item }) => (
                     <ExpertCard
-                    _id={item._id}
+                      _id={item._id}
                       name={
                         item?.displayName ||
                         `${item?.firstName || ""} ${item?.lastName || ""}`
@@ -504,111 +392,23 @@ const HomeScreen = () => {
               </ContentSection>
 
               {blogsLoading || blogFetching ? (
-                <View
-                  style={{
-                    gap: 14,
+                <FlatList
+                  data={[1, 2]}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{
+                    gap: 16
                   }}
-                >
-                  {[1, 2].map((item) => (
-                    <SkeletonLoader
-                      key={item}
-                      width={"100%"}
-                      height={214}
-                      array={[1]}
-                      borderRadius={16}
-                      innerSkeleton={
-                        <View
-                          style={{
-                            flex: 1,
-                            justifyContent: "space-between",
-                            padding: 24,
-                          }}
-                        >
-                          {/* TOP DATE */}
-
-                          <View
-                            style={{
-                              width: 90,
-                              height: 30,
-                              borderRadius: 20,
-                              backgroundColor: "#E7D7A8",
-                            }}
-                          />
-
-                          {/* BOTTOM CONTENT */}
-
-                          <View
-                            style={{
-                              gap: 10,
-                            }}
-                          >
-                            {/* TITLE */}
-
-                            <View
-                              style={{
-                                width: "78%",
-                                height: 22,
-                                borderRadius: 8,
-                                backgroundColor: "#E7D7A8",
-                              }}
-                            />
-
-                            {/* DESCRIPTION LINE 1 */}
-
-                            <View
-                              style={{
-                                width: "100%",
-                                height: 12,
-                                borderRadius: 6,
-                                backgroundColor: "#E7D7A8",
-                              }}
-                            />
-
-                            {/* DESCRIPTION LINE 2 */}
-
-                            <View
-                              style={{
-                                width: "82%",
-                                height: 12,
-                                borderRadius: 6,
-                                backgroundColor: "#E7D7A8",
-                              }}
-                            />
-
-                            {/* CTA */}
-
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                gap: 8,
-                                marginTop: 6,
-                              }}
-                            >
-                              <View
-                                style={{
-                                  width: 110,
-                                  height: 14,
-                                  borderRadius: 6,
-                                  backgroundColor: "#E7D7A8",
-                                }}
-                              />
-
-                              <View
-                                style={{
-                                  width: 18,
-                                  height: 18,
-                                  borderRadius: 100,
-                                  backgroundColor: "#E7D7A8",
-                                }}
-                              />
-                            </View>
-                          </View>
-                        </View>
-                      }
+                  ItemSeparatorComponent={() => (
+                    <View
+                      style={{
+                        width: 12,
+                      }}
                     />
-                  ))}
-                </View>
+                  )}
+                  renderItem={() => (
+                    <FeatureCardSkeleton />
+                  )}
+                />
               ) : blogs?.length > 0 ? (
                 blogs.map((blog: any) => (
                   <FeatureCard

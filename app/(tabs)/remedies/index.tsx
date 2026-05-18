@@ -10,13 +10,14 @@ import { SansText } from "@/components/reusable/Text/SansText";
 import ECommerceFeatureCard from "@/components/tabs/ecommerce/ecommerce/ECommerceFeatureCard/ECommerceFeatureCard";
 import IntentCard from "@/components/tabs/ecommerce/ecommerce/IntentCard/IntentCard";
 import ProductCard from "@/components/tabs/ecommerce/ecommerce/ProductCard/ProductCard";
+import ProductCardSkeleton from "@/components/tabs/ecommerce/ecommerce/ProductCard/ProductCardSkeleton";
 import { INTENTS } from "@/data/intents";
 import { useGetAllProductsQuery } from "@/redux/features/product/productsApi";
 import { useGetAllPujasQuery } from "@/redux/features/puja/pujaApi";
 import { RootState } from "@/redux/store";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
-import { Animated, Pressable, ScrollView, StyleSheet, View, } from "react-native";
+import { Animated, Pressable, RefreshControl, ScrollView, StyleSheet, View, } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 
@@ -57,13 +58,16 @@ const Remedies = () => {
     new Animated.Value(1)
   ).current;
 
-
+  const [refreshing, setRefreshing] =
+    useState(false);
 
 
   const {
     data: productsResponse,
     isLoading,
+    isFetching,
     isError,
+    refetch: refetchProducts,
   } = useGetAllProductsQuery({
     limit: 20,
     skip: 0,
@@ -72,7 +76,9 @@ const Remedies = () => {
   const {
     data: pujasResponse,
     isLoading: isPujasLoading,
+    isFetching: isPujasFetching,
     isError: isPujasError,
+    refetch: refetchPujas,
   } = useGetAllPujasQuery({
     limit: 20,
     skip: 0,
@@ -354,6 +360,19 @@ const Remedies = () => {
     }).start();
   };
 
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+
+      await Promise.all([
+        refetchProducts(),
+        refetchPujas(),
+      ]);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "store":
@@ -383,6 +402,7 @@ const Remedies = () => {
             personalizedIntentSections={
               personalizedIntentSections
             }
+            isLoading={isLoading}
           />
         );
 
@@ -413,6 +433,7 @@ const Remedies = () => {
             personalizedIntentPujas={
               personalizedIntentPujas
             }
+         isLoading={isPujasLoading}
           />
         );
 
@@ -421,21 +442,6 @@ const Remedies = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <SansText>
-          Loading products...
-        </SansText>
-      </View>
-    );
-  }
 
   if (isError) {
     return (
@@ -529,7 +535,17 @@ const Remedies = () => {
           </View>
         </AppHeader>
 
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#D4AF37"
+              colors={["#D4AF37"]}
+              progressBackgroundColor="#FBF7EB"
+            />
+          }
+        >
           <Animated.View
             style={{
               flex: 1,
@@ -573,6 +589,7 @@ const StoreContent = ({
   premiumProducts,
   malaProducts,
   personalizedIntentSections,
+  isLoading,
 }: any) => {
   return (
     <View>
@@ -638,12 +655,14 @@ const StoreContent = ({
         </View>
 
         <ProductSection
+          isLoading={isLoading}
           title="Recommended For You"
           description="Curated spiritual remedies based on your journey."
           products={recommendedProducts}
         />
 
         <ProductSection
+          isLoading={isLoading}
           title="Expert Recommended"
           description="Highly rated remedies trusted by spiritual experts."
           products={
@@ -652,6 +671,7 @@ const StoreContent = ({
         />
 
         <ProductSection
+          isLoading={isLoading}
           title="Most Loved By Community"
           description="Frequently chosen and positively reviewed by users."
           products={communityProducts}
@@ -659,6 +679,7 @@ const StoreContent = ({
         {personalizedIntentSections.map(
           (section: any) => (
             <ProductSection
+              isLoading={isLoading}
               key={section.title}
               title={section.title}
               description={`Specially curated remedies for ${section.title.toLowerCase()}.`}
@@ -670,24 +691,25 @@ const StoreContent = ({
         )}
 
         <ProductSection
+          isLoading={isLoading}
           title="Affordable Remedies"
           description="Powerful spiritual products at accessible prices."
           products={affordableProducts}
         />
 
-        <ProductSection
+        <ProductSection isLoading={isLoading}
           title="Premium Collection"
           description="Premium spiritual items crafted for deeper experiences."
           products={premiumProducts}
         />
 
-        <ProductSection
+        <ProductSection isLoading={isLoading}
           title="Recently Added"
           description="Fresh additions to the spiritual store."
           products={recentProducts}
         />
 
-        <ProductSection
+        <ProductSection isLoading={isLoading}
           title="Mala Collection"
           description="Sacred malas for meditation and spiritual growth."
           products={malaProducts}
@@ -707,6 +729,7 @@ const PoojaContent = ({
   premiumPujas,
   rudraPujas,
   personalizedIntentPujas,
+  isLoading,
 }: any) => {
   return (
     <View>
@@ -772,7 +795,7 @@ const PoojaContent = ({
           />
         </View>
 
-        <PoojaSection
+        <PoojaSection isLoading={isLoading}
           title="Recommended Pujas"
           description="Curated spiritual rituals aligned with your current energy."
           products={
@@ -781,7 +804,7 @@ const PoojaContent = ({
           suffix="Pooja"
         />
 
-        <PoojaSection
+        <PoojaSection isLoading={isLoading}
           title="Expert Recommended"
           description="Highly trusted rituals suggested by experienced pandits."
           products={
@@ -790,7 +813,7 @@ const PoojaContent = ({
           suffix="Ritual"
         />
 
-        <PoojaSection
+        <PoojaSection isLoading={isLoading}
           title="Most Booked"
           description="Popular spiritual ceremonies booked by the community."
           products={
@@ -801,7 +824,7 @@ const PoojaContent = ({
 
         {personalizedIntentPujas.map(
           (section: any) => (
-            <PoojaSection
+            <PoojaSection isLoading={isLoading}
               key={section.title}
               title={section.title}
               description={`Specially curated rituals for ${section.title.toLowerCase()}.`}
@@ -813,7 +836,7 @@ const PoojaContent = ({
           )
         )}
 
-        <PoojaSection
+        <PoojaSection isLoading={isLoading}
           title="Affordable Pujas"
           description="Accessible spiritual rituals for daily guidance and healing."
           products={
@@ -822,7 +845,7 @@ const PoojaContent = ({
           suffix="Pooja"
         />
 
-        <PoojaSection
+        <PoojaSection isLoading={isLoading}
           title="Premium Rituals"
           description="Advanced ceremonies performed with complete Vedic procedures."
           products={
@@ -831,7 +854,7 @@ const PoojaContent = ({
           suffix="Ritual"
         />
 
-        <PoojaSection
+        <PoojaSection isLoading={isLoading}
           title="Recently Added"
           description="Freshly added spiritual ceremonies and rituals."
           products={
@@ -840,7 +863,7 @@ const PoojaContent = ({
           suffix="Pooja"
         />
 
-        <PoojaSection
+        <PoojaSection isLoading={isLoading}
           title="Rudra Pujas"
           description="Powerful Lord Shiva rituals for protection and healing."
           products={
@@ -857,6 +880,7 @@ const ProductSection = ({
   title,
   description,
   products,
+  isLoading
 }: any) => {
   return (
     <View>
@@ -873,13 +897,19 @@ const ProductSection = ({
       </ContentSection>
 
       <FlatList
-        data={products}
+        data={
+          isLoading
+            ? [1, 2, 3]
+            : products
+        }
         horizontal
         showsHorizontalScrollIndicator={
           false
         }
-        keyExtractor={(item) =>
-          item._id
+        keyExtractor={(item, index) =>
+          isLoading
+            ? index.toString()
+            : item._id
         }
         contentContainerStyle={{
           paddingHorizontal: 16,
@@ -891,6 +921,12 @@ const ProductSection = ({
           />
         )}
         renderItem={({ item }) => {
+          if (isLoading) {
+            return (
+              <ProductCardSkeleton />
+            );
+          }
+
           const product =
             mapProduct(item);
 
@@ -916,6 +952,7 @@ const PoojaSection = ({
   description,
   products,
   suffix,
+  isLoading
 }: any) => {
   return (
     <View>
@@ -932,13 +969,19 @@ const PoojaSection = ({
       </ContentSection>
 
       <FlatList
-        data={products}
+        data={
+          isLoading
+            ? [1, 2, 3]
+            : products
+        }
         horizontal
         showsHorizontalScrollIndicator={
           false
         }
-        keyExtractor={(item) =>
-          item._id
+        keyExtractor={(item, index) =>
+          isLoading
+            ? index.toString()
+            : item._id
         }
         contentContainerStyle={{
           paddingHorizontal: 16,
@@ -950,6 +993,11 @@ const PoojaSection = ({
           />
         )}
         renderItem={({ item }) => {
+          if (isLoading) {
+            return (
+              <ProductCardSkeleton />
+            );
+          }
           const product =
             mapProduct(item);
 

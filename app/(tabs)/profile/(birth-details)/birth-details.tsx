@@ -64,23 +64,18 @@ const BirthDetails = () => {
   useEffect(() => {
     const profile =
       user?.profile;
-
     if (!profile) return;
-
     /* DATE */
-
     if (profile?.dateOfBirth) {
       const date =
         new Date(
           profile.dateOfBirth
         );
-
       const formattedDate = `${String(
         date.getDate()
       ).padStart(2, "0")}/${String(
         date.getMonth() + 1
       ).padStart(2, "0")}/${date.getFullYear()}`;
-
       setValue(
         "dob",
         formattedDate
@@ -95,9 +90,6 @@ const BirthDetails = () => {
         profile.timeOfBirth
       );
     }
-
-    /* PLACE */
-
     if (profile?.placeOfBirth) {
       setValue(
         "place",
@@ -116,7 +108,7 @@ const BirthDetails = () => {
     data: FormValues
   ) => {
     try {
-      await updateProfile({
+      const res=await updateProfile({
         dateOfBirth:
           data.dob,
 
@@ -128,7 +120,7 @@ const BirthDetails = () => {
       }).unwrap();
 
       console.log(
-        "PROFILE UPDATED"
+        "PROFILE UPDATED",res
       );
     } catch (error) {
       console.log(
@@ -309,19 +301,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 24,
-
-    backgroundColor:
-      "#F7F1DF",
-
-    borderTopWidth: 1,
-    borderTopColor:
-      "#E4D7AE",
-
-    gap: 10,
+    backgroundColor: "#F7F1DF", gap: 10,
   },
 
   footerText: {

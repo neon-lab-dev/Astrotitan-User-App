@@ -148,7 +148,7 @@ const FilterSection = ({ value, onChange, onApply, onClear }: Props) => {
           />
         </View>
 
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 , marginBottom:56}}>
           <ReusableButton
             title="Apply Filters"
             width="100%"

@@ -99,7 +99,9 @@ export const authApi = baseApi.injectEndpoints({
 
         /* TEXT FIELDS */
 
-        formData.append("intents", JSON.stringify(intents));
+        if (intents && intents.length > 0) {
+          formData.append("intents", JSON.stringify(intents));
+        }
 
         if (dateOfBirth) {
           formData.append("dateOfBirth", dateOfBirth);
@@ -133,11 +135,8 @@ export const authApi = baseApi.injectEndpoints({
 
         return {
           url: "/account/update-profile",
-
           method: "PUT",
-
           body: formData,
-
           credentials: "include",
         };
       },
@@ -160,6 +159,8 @@ export const authApi = baseApi.injectEndpoints({
         url: `/pushNotification/${userId}`,
       }),
       providesTags: ["users"],
+
+      // notifications/my
     }),
   }),
 });

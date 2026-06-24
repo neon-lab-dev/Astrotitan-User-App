@@ -1,0 +1,1063 @@
+import CartIcon from "@/assets/icons/navigation/cart.svg";
+import React, { useCallback, useRef, useState } from "react";
+import { Animated, Pressable, RefreshControl, ScrollView, StyleSheet, View, } from "react-native";
+import { FlatList, } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { useGetAllProductsQuery } from "../../../redux/features/product/productsApi";
+import { SansText } from "../../../components/reusable/Text/SansText";
+import AnimatedScreen from "../../../components/layout/AnimatedScreen";
+import ScreenWrapper from "../../../components/layout/ScreenWrapper";
+import AppHeader from "../../../components/reusable/AppHeader/AppHeader";
+import SectionTitle from "../../../components/reusable/SectionTitle/SectionTitle";
+import IconButton from "../../../components/reusable/IconButton/IconButton";
+import ECommerceFeatureCard from "../../../components/tabs/ecommerce/ecommerce/ECommerceFeatureCard/ECommerceFeatureCard";
+import { ICONS } from "../../../assets/svg";
+import ContentSection from "../../../components/reusable/ContentSectoin/ContentSection";
+import { INTENTS } from "../../../data/intents";
+import IntentCard from "../../../components/tabs/ecommerce/ecommerce/IntentCard/IntentCard";
+import ProductCardSkeleton from "../../../components/tabs/ecommerce/ecommerce/ProductCard/ProductCardSkeleton";
+import ProductCard from "../../../components/tabs/ecommerce/ecommerce/ProductCard/ProductCard";
+import { useGetAllPujasQuery } from "../../../redux/features/puja/pujaApi";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../navigation/types";
+
+
+const RemediesScreen = () => {
+  type NavigationProp =
+    NativeStackNavigationProp<RootStackParamList>;
+
+  const navigation = useNavigation<NavigationProp>();
+  const [activeTab, setActiveTab] = useState("store");
+  const [containerWidth, setContainerWidth] = useState(0);
+  const opacity = useRef(
+    new Animated.Value(1)
+  ).current;
+
+  useFocusEffect(
+    useCallback(() => {
+      opacity.setValue(1); // Reset opacity when screen is focused
+    }, [opacity])
+  );
+
+  const cartItems = useSelector(
+    (state: RootState) => state.cart.items
+  );
+
+  const cartCount = cartItems.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
+
+  const tabs = [
+    {
+      key: "store",
+      label: "Store",
+      icon: "StoreIcon",
+    },
+    {
+      key: "pooja",
+      label: "Pooja",
+      icon: "firePitInactive",
+    },
+  ];
+
+  const TAB_WIDTH =
+    containerWidth / tabs.length;
+
+  const translateX = useRef(
+    new Animated.Value(0)
+  ).current;
+
+
+
+  const [refreshing, setRefreshing] =
+    useState(false);
+
+
+  const {
+    data: productsResponse,
+    isLoading,
+    isError,
+    refetch: refetchProducts,
+  } = useGetAllProductsQuery({
+    limit: 20,
+    skip: 0,
+  });
+
+  const {
+    data: pujasResponse,
+    isLoading: isPujasLoading,
+    refetch: refetchPujas,
+  } = useGetAllPujasQuery({
+    limit: 20,
+    skip: 0,
+  });
+
+  const pujas =
+    pujasResponse?.data
+      ?.pujas || [];
+
+  const products =
+    productsResponse?.data?.data || [];
+
+  const recommendedProducts = products.slice(
+    0,
+    10
+  );
+
+  const expertRecommendedProducts =
+    products.filter(
+      (item: any) =>
+        item.rating >= 4
+    );
+
+  const communityProducts = [
+    ...products,
+  ].sort(
+    (a: any, b: any) =>
+      b.reviews.length -
+      a.reviews.length
+  );
+
+  const recentProducts = [
+    ...products,
+  ].sort(
+    (a: any, b: any) =>
+      new Date(
+        b.createdAt
+      ).getTime() -
+      new Date(
+        a.createdAt
+      ).getTime()
+  );
+
+  const affordableProducts =
+    products.filter(
+      (item: any) =>
+        item.discountedPrice < 1000
+    );
+
+  const premiumProducts =
+    products.filter(
+      (item: any) =>
+        item.discountedPrice >= 2000
+    );
+
+  const malaProducts = products.filter(
+    (item: any) =>
+      item.category === "Mala"
+  );
+
+  const user = useSelector(
+    (state: RootState) =>
+      state.auth.user
+  );
+
+  const rawUserIntents =
+    user?.profile?.intents || [];
+
+  const parsedUserIntents =
+    rawUserIntents.flatMap(
+      (item: any) => {
+        try {
+          if (
+            typeof item ===
+            "string"
+          ) {
+            return JSON.parse(
+              item
+            );
+          }
+
+          return item;
+        } catch {
+          return [];
+        }
+      }
+    );
+
+  const normalizedUserIntents =
+    parsedUserIntents.map(
+      (intent: string) =>
+        intent
+          .trim()
+          .toLowerCase()
+    );
+
+  const groupedIntentProducts =
+    products.reduce(
+      (
+        acc: any,
+        product: any
+      ) => {
+        const intent =
+          product.intent;
+
+        if (!intent) {
+          return acc;
+        }
+
+        const normalizedIntent =
+          intent
+            .trim()
+            .toLowerCase();
+
+        if (
+          !acc[
+          normalizedIntent
+          ]
+        ) {
+          acc[
+            normalizedIntent
+          ] = {
+            title: intent,
+            products: [],
+          };
+        }
+
+        acc[
+          normalizedIntent
+        ].products.push(
+          product
+        );
+
+        return acc;
+      },
+      {}
+    );
+
+  const personalizedIntentSections =
+    Object.values(
+      groupedIntentProducts
+    ).filter(
+      (section: any) =>
+        normalizedUserIntents.includes(
+          section.title
+            .trim()
+            .toLowerCase()
+        )
+    );
+
+
+  const recommendedPujas =
+    pujas.slice(0, 10);
+
+  const expertRecommendedPujas =
+    pujas.filter(
+      (item: any) =>
+        item.rating >= 4
+    );
+
+  const communityPujas = [
+    ...pujas,
+  ].sort(
+    (a: any, b: any) =>
+      b.reviews.length -
+      a.reviews.length
+  );
+
+  const recentPujas = [
+    ...pujas,
+  ].sort(
+    (a: any, b: any) =>
+      new Date(
+        b.createdAt
+      ).getTime() -
+      new Date(
+        a.createdAt
+      ).getTime()
+  );
+
+  const affordablePujas =
+    pujas.filter(
+      (item: any) =>
+        item.discountedPrice < 5000
+    );
+
+  const premiumPujas =
+    pujas.filter(
+      (item: any) =>
+        item.discountedPrice >= 5000
+    );
+
+  const rudraPujas =
+    pujas.filter(
+      (item: any) =>
+        item.category ===
+        "Rudra"
+    );
+
+
+  const groupedIntentPujas =
+    pujas.reduce(
+      (
+        acc: any,
+        puja: any
+      ) => {
+        const intent =
+          puja.intent;
+
+        if (!intent) {
+          return acc;
+        }
+
+        const normalizedIntent =
+          intent
+            .trim()
+            .toLowerCase();
+
+        if (
+          !acc[
+          normalizedIntent
+          ]
+        ) {
+          acc[
+            normalizedIntent
+          ] = {
+            title: intent,
+            pujas: [],
+          };
+        }
+
+        acc[
+          normalizedIntent
+        ].pujas.push(
+          puja
+        );
+
+        return acc;
+      },
+      {}
+    );
+
+  const personalizedIntentPujas =
+    Object.values(
+      groupedIntentPujas
+    ).filter(
+      (section: any) =>
+        normalizedUserIntents.includes(
+          section.title
+            .trim()
+            .toLowerCase()
+        )
+    );
+  const handleTabPress = (
+    index: number,
+    key: string
+  ) => {
+    Animated.sequence([
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    setActiveTab(key);
+
+    Animated.spring(translateX, {
+      toValue: index * TAB_WIDTH,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+
+      await Promise.all([
+        refetchProducts(),
+        refetchPujas(),
+      ]);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "store":
+        return (
+          <StoreContent
+            recommendedProducts={
+              recommendedProducts
+            }
+            expertRecommendedProducts={
+              expertRecommendedProducts
+            }
+            communityProducts={
+              communityProducts
+            }
+            recentProducts={
+              recentProducts
+            }
+            affordableProducts={
+              affordableProducts
+            }
+            premiumProducts={
+              premiumProducts
+            }
+            malaProducts={
+              malaProducts
+            }
+            personalizedIntentSections={
+              personalizedIntentSections
+            }
+            isLoading={isLoading}
+          />
+        );
+
+      case "pooja":
+        return (
+          <PoojaContent
+            recommendedPujas={
+              recommendedPujas
+            }
+            expertRecommendedPujas={
+              expertRecommendedPujas
+            }
+            communityPujas={
+              communityPujas
+            }
+            recentPujas={
+              recentPujas
+            }
+            affordablePujas={
+              affordablePujas
+            }
+            premiumPujas={
+              premiumPujas
+            }
+            rudraPujas={
+              rudraPujas
+            }
+            personalizedIntentPujas={
+              personalizedIntentPujas
+            }
+            isLoading={isPujasLoading}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+
+  if (isError) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <SansText>
+          Failed to load products
+        </SansText>
+      </View>
+    );
+  }
+
+  return (
+    <AnimatedScreen>
+      <ScreenWrapper>
+        <AppHeader showBack={false}>
+          <SectionTitle title="Remedies">
+            <IconButton
+              Icon={CartIcon}
+              iconColor="#0D0D0D"
+              update={true}
+              updateCount={cartCount}
+              onPress={() => {
+                navigation.navigate("CartScreen")
+              }}
+            />
+          </SectionTitle>
+
+          <View
+            style={styles.tabsContainer}
+            onLayout={(e) =>
+              setContainerWidth(
+                e.nativeEvent.layout.width
+              )
+            }
+          >
+            {tabs.map((tab, index) => {
+              const isActive =
+                activeTab === tab.key;
+
+              const Icon =
+                ICONS[tab.icon];
+
+              return (
+                <Pressable
+                  key={tab.key}
+                  style={styles.tabItem}
+                  onPress={() =>
+                    handleTabPress(
+                      index,
+                      tab.key
+                    )
+                  }
+                >
+                  <Icon
+                    width={22}
+                    height={22}
+                  />
+
+                  <SansText
+                    style={[
+                      styles.tabText,
+                      isActive &&
+                      styles.activeTabText,
+                    ]}
+                  >
+                    {tab.label}
+                  </SansText>
+                </Pressable>
+              );
+            })}
+
+            <Animated.View
+              style={[
+                styles.animatedIndicator,
+                {
+                  width: TAB_WIDTH,
+                  transform: [
+                    { translateX },
+                  ],
+                },
+              ]}
+            />
+          </View>
+        </AppHeader>
+
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#D4AF37"
+              colors={["#D4AF37"]}
+              progressBackgroundColor="#FBF7EB"
+            />
+          }
+        >
+          <Animated.View
+            style={{
+              flex: 1,
+              opacity,
+            }}
+          >
+            {renderContent()}
+          </Animated.View>
+        </ScrollView>
+      </ScreenWrapper>
+    </AnimatedScreen>
+  );
+};
+
+export default RemediesScreen;
+
+const mapProduct = (item: any) => ({
+  id: item._id,
+  title: item.name,
+  description: item.description,
+  price: Number(
+    item.discountedPrice ||
+    item.basePrice ||
+    0
+  ),
+  image:
+    item.imageUrls?.[0] || "",
+  rating: item.rating || 0,
+  reviews: item.reviews || [],
+  category: item.category,
+  intent: item.intent,
+  quantity: item.quantity,
+});
+
+const StoreContent = ({
+  recommendedProducts,
+  expertRecommendedProducts,
+  communityProducts,
+  recentProducts,
+  affordableProducts,
+  premiumProducts,
+  malaProducts,
+  personalizedIntentSections,
+  isLoading,
+}: any) => {
+  return (
+    <View>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          marginTop: 12,
+        }}
+      >
+        <ECommerceFeatureCard
+          image={require("@/assets/images/consmos1.png")}
+          title="Find What Actually Works for You"
+          description="Get remedy suggestions based on your birth chart and current planetary phase."
+          ctaText="Start Analysis"
+        />
+      </View>
+
+      <View
+        style={{
+          gap: 24,
+          marginTop: 24,
+        }}
+      >
+        <View>
+          <ContentSection
+            title={
+              "Explore remedies by intents"
+            }
+            titleFontSize={24}
+            sectionStyle={{
+              paddingHorizontal: 16,
+            }}
+          />
+
+          <FlatList
+            data={INTENTS}
+            horizontal
+            showsHorizontalScrollIndicator={
+              false
+            }
+            keyExtractor={(item) =>
+              item.id
+            }
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              marginTop: 12,
+            }}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{ width: 6 }}
+              />
+            )}
+            renderItem={({ item }) => (
+              <IntentCard
+                title={item.title}
+                description={
+                  item.description
+                }
+                icon={item.icon}
+              />
+            )}
+          />
+        </View>
+
+        <ProductSection
+          isLoading={isLoading}
+          title="Recommended For You"
+          description="Curated spiritual remedies based on your journey."
+          products={recommendedProducts}
+        />
+
+        <ProductSection
+          isLoading={isLoading}
+          title="Expert Recommended"
+          description="Highly rated remedies trusted by spiritual experts."
+          products={
+            expertRecommendedProducts
+          }
+        />
+
+        <ProductSection
+          isLoading={isLoading}
+          title="Most Loved By Community"
+          description="Frequently chosen and positively reviewed by users."
+          products={communityProducts}
+        />
+        {personalizedIntentSections.map(
+          (section: any) => (
+            <ProductSection
+              isLoading={isLoading}
+              key={section.title}
+              title={section.title}
+              description={`Specially curated remedies for ${section.title.toLowerCase()}.`}
+              products={
+                section.products
+              }
+            />
+          )
+        )}
+
+        <ProductSection
+          isLoading={isLoading}
+          title="Affordable Remedies"
+          description="Powerful spiritual products at accessible prices."
+          products={affordableProducts}
+        />
+
+        <ProductSection isLoading={isLoading}
+          title="Premium Collection"
+          description="Premium spiritual items crafted for deeper experiences."
+          products={premiumProducts}
+        />
+
+        <ProductSection isLoading={isLoading}
+          title="Recently Added"
+          description="Fresh additions to the spiritual store."
+          products={recentProducts}
+        />
+
+        <ProductSection isLoading={isLoading}
+          title="Mala Collection"
+          description="Sacred malas for meditation and spiritual growth."
+          products={malaProducts}
+        />
+
+      </View>
+    </View>
+  );
+};
+
+const PoojaContent = ({
+  recommendedPujas,
+  expertRecommendedPujas,
+  communityPujas,
+  recentPujas,
+  affordablePujas,
+  premiumPujas,
+  rudraPujas,
+  personalizedIntentPujas,
+  isLoading,
+}: any) => {
+  return (
+    <View>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          marginTop: 12,
+        }}
+      >
+        <ECommerceFeatureCard
+          image={require("@/assets/images/consmos1.png")}
+          title="Book Poojas Aligned With Your Energy"
+          description="Discover rituals and spiritual practices based on your planetary positions and life intentions."
+          ctaText="Explore Poojas"
+        />
+      </View>
+
+      <View
+        style={{
+          gap: 24,
+          marginTop: 24,
+        }}
+      >
+        <View>
+          <ContentSection
+            title={
+              "Choose poojas by intention"
+            }
+            titleFontSize={24}
+            sectionStyle={{
+              paddingHorizontal: 16,
+            }}
+          />
+
+          <FlatList
+            data={INTENTS}
+            horizontal
+            showsHorizontalScrollIndicator={
+              false
+            }
+            keyExtractor={(item) =>
+              item.id
+            }
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              marginTop: 12,
+            }}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{ width: 6 }}
+              />
+            )}
+            renderItem={({ item }) => (
+              <IntentCard
+                title={item.title}
+                description={
+                  item.description
+                }
+                icon={item.icon}
+                variant="pooja"
+              />
+            )}
+          />
+        </View>
+
+        <PoojaSection isLoading={isLoading}
+          title="Recommended Poojas"
+          description="Curated spiritual rituals aligned with your current energy."
+          products={
+            recommendedPujas
+          }
+          suffix="Pooja"
+        />
+
+        <PoojaSection isLoading={isLoading}
+          title="Expert Recommended"
+          description="Highly trusted rituals suggested by experienced pandits."
+          products={
+            expertRecommendedPujas
+          }
+          suffix="Ritual"
+        />
+
+        <PoojaSection isLoading={isLoading}
+          title="Most Booked"
+          description="Popular spiritual ceremonies booked by the community."
+          products={
+            communityPujas
+          }
+          suffix="Ceremony"
+        />
+
+        {personalizedIntentPujas.map(
+          (section: any) => (
+            <PoojaSection isLoading={isLoading}
+              key={section.title}
+              title={section.title}
+              description={`Specially curated rituals for ${section.title.toLowerCase()}.`}
+              products={
+                section.pujas
+              }
+              suffix="Pooja"
+            />
+          )
+        )}
+
+        <PoojaSection isLoading={isLoading}
+          title="Affordable Poojas"
+          description="Accessible spiritual rituals for daily guidance and healing."
+          products={
+            affordablePujas
+          }
+          suffix="Pooja"
+        />
+
+        <PoojaSection isLoading={isLoading}
+          title="Premium Rituals"
+          description="Advanced ceremonies performed with complete Vedic procedures."
+          products={
+            premiumPujas
+          }
+          suffix="Ritual"
+        />
+
+        <PoojaSection isLoading={isLoading}
+          title="Recently Added"
+          description="Freshly added spiritual ceremonies and rituals."
+          products={
+            recentPujas
+          }
+          suffix="Pooja"
+        />
+
+        <PoojaSection isLoading={isLoading}
+          title="Rudra Poojas"
+          description="Powerful Lord Shiva rituals for protection and healing."
+          products={
+            rudraPujas
+          }
+          suffix="Pooja"
+        />
+      </View>
+    </View>
+  );
+};
+
+const ProductSection = ({
+  title,
+  description,
+  products,
+  isLoading
+}: any) => {
+  return (
+    <View>
+      <ContentSection
+        title={title}
+        titleFontSize={24}
+        sectionStyle={{
+          paddingHorizontal: 16,
+        }}
+      >
+        <SansText>
+          {description}
+        </SansText>
+      </ContentSection>
+
+      <FlatList
+        data={
+          isLoading
+            ? [1, 2, 3]
+            : products
+        }
+        horizontal
+        showsHorizontalScrollIndicator={
+          false
+        }
+        keyExtractor={(item, index) =>
+          isLoading
+            ? index.toString()
+            : item._id
+        }
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          marginTop: 12,
+        }}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{ width: 12 }}
+          />
+        )}
+        renderItem={({ item }) => {
+          if (isLoading) {
+            return (
+              <ProductCardSkeleton />
+            );
+          }
+
+          const product =
+            mapProduct(item);
+
+          return (
+            <ProductCard
+              id={product.id}
+              title={product.title}
+              description={
+                product.description
+              }
+              price={product.price}
+              image={product.image}
+            />
+          );
+        }}
+      />
+    </View>
+  );
+};
+
+const PoojaSection = ({
+  title,
+  description,
+  products,
+  suffix,
+  isLoading
+}: any) => {
+  return (
+    <View>
+      <ContentSection
+        title={title}
+        titleFontSize={24}
+        sectionStyle={{
+          paddingHorizontal: 16,
+        }}
+      >
+        <SansText>
+          {description}
+        </SansText>
+      </ContentSection>
+
+      <FlatList
+        data={
+          isLoading
+            ? [1, 2, 3]
+            : products
+        }
+        horizontal
+        showsHorizontalScrollIndicator={
+          false
+        }
+        keyExtractor={(item, index) =>
+          isLoading
+            ? index.toString()
+            : item._id
+        }
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          marginTop: 12,
+        }}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{ width: 12 }}
+          />
+        )}
+        renderItem={({ item }) => {
+          if (isLoading) {
+            return (
+              <ProductCardSkeleton />
+            );
+          }
+          const product =
+            mapProduct(item);
+
+          return (
+            <ProductCard
+              variant="pooja"
+              id={product.id}
+              title={`${product.title} ${suffix}`}
+              description="Performed by verified pandits with proper rituals and guidance."
+              price={product.price}
+              image={product.image}
+            />
+          );
+        }}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+  },
+
+  tabsContainer: {
+    flexDirection: "row",
+    position: "relative",
+  },
+
+  tabItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 20,
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  tabText: {
+    fontSize: 16,
+    color: "#0D0D0D",
+    fontFamily: "Satoshi-Bold",
+  },
+
+  activeTabText: {
+    color: "#0D0D0D",
+    fontFamily: "Satoshi-Bold",
+  },
+
+  animatedIndicator: {
+    position: "absolute",
+    bottom: 0,
+    height: 4,
+    backgroundColor: "#D4AF37",
+  },
+});

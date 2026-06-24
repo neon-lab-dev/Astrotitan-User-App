@@ -12,14 +12,15 @@ import { setAuth } from "../../redux/features/auth/authSlice";
 import ScreenWrapper from "../../components/layout/ScreenWrapper";
 import { SatoshiText } from "../../components/reusable/Text/SatoshiText";
 import { Storage } from "../../services/storage/storage";
-import ReusableButton from "../../components/reusable/ReusableButton/ReusableButton";
+import { useLazyGetMeQuery } from "../../redux/features/auth/authApi";
 
 const SplashScreen = () => {
   const dispatch = useDispatch();
   const scale = useSharedValue(0.9);
   const opacity = useSharedValue(0);
   const navigation = useNavigation<any>();
-
+  const [getMe] =
+      useLazyGetMeQuery();
   useEffect(() => {
     opacity.value = withTiming(1, { duration: 500 });
     scale.value = withTiming(1, { duration: 500 });
@@ -41,12 +42,14 @@ const SplashScreen = () => {
 
     setTimeout(() => {
       if (token) {
+
         dispatch(
           setAuth({
             token,
             user,
           })
         );
+          
 
         if (profileCompleted) {
           navigation.reset({

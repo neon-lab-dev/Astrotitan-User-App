@@ -170,7 +170,7 @@ const MultiStepForm = () => {
             };
 
             await completeProfile(payload).unwrap();
-            await Storage.getProfileCompleted();
+            await Storage.setProfileCompleted(true);
             navigation.replace("ProfileCompleted")
 
         } catch (err) {

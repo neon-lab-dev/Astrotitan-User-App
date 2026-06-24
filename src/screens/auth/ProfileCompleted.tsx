@@ -17,9 +17,10 @@ const ProfileCompleted = () => {
           title: "Go To Dashboard",
 
           onPress: () => {
-            navigation.replace(
-              "HomeScreen"
-            );
+           navigation.reset({
+        index: 0,
+        routes: [{ name: "HomeTabs" }],
+      });
           },
         },
       ]}

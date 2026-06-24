@@ -92,6 +92,7 @@ export default function EmailLogin() {
               variant="outline"
               onPress={() =>
                 navigation.replace("LoginWithPhone")}
+              
             />
           </View>
           <View style={{ gap: 24 }}>

@@ -17,17 +17,23 @@ export default function VerifiedPopup({ isProfileCompleted }: Props) {
   const handleClose = () => {
     ModalService.close();
 
-
     if (isProfileCompleted) {
       navigation.reset({
         index: 0,
         routes: [{ name: "HomeTabs" }],
       });
     } else {
-      navigation.replace("MultiStepForm");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MultiStepForm" }],
+      });
     }
   };
 
+  console.log("navigation =", navigation);
+  console.log("replace =", navigation.replace);
+  console.log("navigate =", navigation.navigate);
+  console.log("reset =", navigation.reset);
   return (
     <LinearGradient
       colors={["#EDDEAD", "#F1E8C9", "#F5F5F5"]}

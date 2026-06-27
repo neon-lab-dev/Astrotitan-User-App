@@ -51,14 +51,14 @@ export default function ArticleScreen() {
   const htmlStyles: Record<string, MixedStyleDeclaration> = {
     body: {
       color: "#4A4A4A",
-      fontSize: 16,
+      fontSize: 14,
       lineHeight: 28,
       fontFamily: "Satoshi-Regular",
     },
 
     div: {
       color: "#4A4A4A",
-      fontSize: 16,
+      fontSize: 14,
       lineHeight: 28,
       fontFamily: "Satoshi-Regular",
       marginBottom: 12,
@@ -66,7 +66,7 @@ export default function ArticleScreen() {
 
     p: {
       color: "#4A4A4A",
-      fontSize: 16,
+      fontSize: 14,
       lineHeight: 28,
       fontFamily: "Satoshi-Regular",
       marginBottom: 12,
@@ -102,7 +102,7 @@ export default function ArticleScreen() {
 
     li: {
       color: "#4A4A4A",
-      fontSize: 16,
+      fontSize: 14,
       lineHeight: 28,
       fontFamily: "Satoshi-Regular",
       marginBottom: 6,
@@ -250,7 +250,7 @@ export default function ArticleScreen() {
                     baseStyle={{
                       fontFamily: "Satoshi",
                       color: "#4A4A4A",
-                      fontSize: 16,
+                      fontSize: 14,
                       lineHeight: 28,
                     }}
                   />
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    fontSize: 16,
+    fontSize: 14,
   },
   heroContainer: {
     marginTop: 12,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 21,
     lineHeight: 34,
     color: "#F5F5F5",
     fontFamily: "Satoshi-Bold",

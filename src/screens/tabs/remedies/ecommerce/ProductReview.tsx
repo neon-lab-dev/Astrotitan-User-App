@@ -44,7 +44,7 @@ const ProductReviews = () => {
             <AuthTitle title="Reviews & Ratings">
               <SansText
                 style={{
-                  fontSize: 18,
+                  fontSize: 16,
                 }}
               >
                 Real experiences
@@ -163,7 +163,7 @@ const ProductReviews = () => {
           <AuthTitle title="Reviews & Ratings">
             <SansText
               style={{
-                fontSize: 18,
+                fontSize: 16,
               }}
             >
               Real experiences
@@ -244,7 +244,7 @@ const ProductReviews = () => {
               >
                 <SansText
                   style={{
-                    fontSize: 18,
+                    fontSize: 16,
                     color:
                       "#777",
                   }}

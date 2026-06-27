@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   },
 
   productTitle: {
-    fontSize: 18,
+    fontSize: 16,
 
     color: "#0D0D0D",
 
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   orderId: {
     marginTop: 2,
 
-    fontSize: 18,
+    fontSize: 14,
 
     color: "#0D0D0D",
 
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 28,
+    fontSize: 21,
 
     color: "#0D0D0D",
 
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
   uploadText: {
     textAlign: "center",
 
-    fontSize: 18,
+    fontSize: 14,
 
     lineHeight: 22,
 

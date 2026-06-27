@@ -208,14 +208,14 @@ const styles = StyleSheet.create({
 
   nameText: {
     flexShrink: 1,
-    fontSize: 18,
+    fontSize: 16,
     color: "#0D0D0D",
     fontFamily: "Satoshi-Bold",
     flex: 1,
   },
 
   infoText: {
-    fontSize: 15,
+    fontSize: 14,
     color: "#4B4B4B",
     lineHeight: 24,
     fontFamily: "Satoshi-Medium",

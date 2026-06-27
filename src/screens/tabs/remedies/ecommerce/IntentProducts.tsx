@@ -115,7 +115,7 @@ const IntentProducts = () => {
           >
             <SansText
               style={{
-                fontSize: 18,
+                fontSize: 16,
               }}
             >
               Curated tools to
@@ -250,7 +250,7 @@ const IntentProducts = () => {
                 >
                   <SansText
                     style={{
-                      fontSize: 18,
+                      fontSize: 16,
 
                       color:
                         "#777",

@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
 
   reviewText: {
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 26,
     color: "#2A2A2A",
   },
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#111",
     fontFamily: "Satoshi-Bold",
   },
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
 
   ratingText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#0D0D0D",
     fontFamily: "Satoshi-Bold",
   },

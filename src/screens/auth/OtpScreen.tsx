@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.2,
     borderColor: "#D4AF37",
     textAlign: "center",
-    fontSize: 24,
+    fontSize: 21,
     fontFamily: "Satoshi-Bold",
     color: "#816B22",
   },

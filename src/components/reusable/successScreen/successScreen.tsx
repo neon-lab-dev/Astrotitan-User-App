@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   description: {
     marginTop: 24,
 
-    fontSize: 16,
+    fontSize: 14,
 
     lineHeight: 26,
 

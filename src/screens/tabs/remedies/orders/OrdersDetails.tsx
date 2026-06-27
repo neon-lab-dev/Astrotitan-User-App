@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   },
 
   productTitle: {
-    fontSize: 18,
+    fontSize: 16,
 
     color: "#0d0d0d",
 
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
   orderId: {
     marginTop: 4,
 
-    fontSize: 16,
+    fontSize: 14,
 
     color: "#816B22",
 
@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
   },
 
   statusTitle: {
-    fontSize: 24,
+    fontSize: 21,
 
     lineHeight: 28,
 
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
   statusSubtitle: {
     marginTop: 4,
 
-    fontSize: 18,
+    fontSize: 14,
 
     color: "#0d0d0d",
 
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 21,
 
     color: "#111111",
 
@@ -623,13 +623,13 @@ const styles = StyleSheet.create({
   },
 
   totalLabel: {
-    fontSize: 18,
+    fontSize: 16,
 
     color: "#555",
   },
 
   totalAmount: {
-    fontSize: 24,
+    fontSize: 21,
 
     color: "#0D0D0D",
 

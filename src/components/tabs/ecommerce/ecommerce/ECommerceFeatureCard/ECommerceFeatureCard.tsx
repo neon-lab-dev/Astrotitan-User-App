@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
 
     title: {
         color: "#F5F5F5",
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: "Satoshi-Bold",
         lineHeight: 26,
         textAlign: "center"

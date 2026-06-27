@@ -21,79 +21,22 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../navigation/types";
 import { useNavigation } from "@react-navigation/native";
 import { SatoshiText } from "../../../../components/reusable/Text/SatoshiText";
+import { useGetMyConsultationBookingsQuery } from "../../../../redux/features/consultation/consultationApi";
+import { formatDate } from "../../../../utils/validators/dateValidators";
+import SkeletonLoader from "../../../../components/reusable/SkeletonLoader/SkeletonLoade";
 
 const ChatHistory = () => {
     type NavigationProp =
         NativeStackNavigationProp<RootStackParamList>;
 
     const navigation = useNavigation<NavigationProp>();
-    const dummySessions = [
-        {
-            title: "Today",
 
-            data: [
-                {
-                    id: "1",
-
-                    name: "Rahul Sharma",
-
-                    time: "09:30 AM",
-
-                    type: "Career & clarity guidance",
-
-                    image: require("@/assets/images/dummy/experts/expert1.png"),
-                },
-
-                {
-                    id: "2",
-
-                    name: "Kajal Agrawal",
-
-                    time: "08:30 AM",
-
-                    type: "Career & clarity guidance",
-
-                    image: require("@/assets/images/dummy/experts/expert2.png"),
-                },
-            ],
-        },
-
-        {
-            title: "Yesterday",
-
-            data: [
-                {
-                    id: "3",
-
-                    name: "Rahul Sharma",
-
-                    time: "09:30 AM",
-
-                    type: "Career & clarity guidance",
-
-                    image: require("@/assets/images/dummy/experts/expert1.png"),
-                },
-
-                {
-                    id: "4",
-
-                    name: "Kajal Agrawal",
-
-                    time: "08:30 AM",
-
-                    type: "Career & clarity guidance",
-
-                    image: require("@/assets/images/dummy/experts/expert2.png"),
-                },
-            ],
-        },
-    ];
-
-    const sessions = dummySessions;
-
-    const hasSessions =
-        sessions.length > 0;
-
+  
+  const {
+    data: consultationBookings,
+    isLoading: isBookingLoading,refetch:bookingRefetch
+  } = useGetMyConsultationBookingsQuery({status:"ended"});
+  const bookings = consultationBookings?.data?.data || [];
     return (
         <AnimatedScreen>
             <ScreenWrapper>
@@ -113,96 +56,51 @@ const ChatHistory = () => {
                         paddingHorizontal: 16,
                     }}
                 >
-                    {!hasSessions ? (
-                        /* EMPTY STATE */
+                   {isBookingLoading ? (
+    <SessionSkeleton />
+) : bookings.length <= 0 ? (
+    <View
+        style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+        }}
+    >
+        <NoteIcon
+            height={124}
+            width={124}
+        />
 
-                        <View
-                            style={{
-                                flex: 1,
-                                justifyContent:
-                                    "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            <NoteIcon
-                                height={124}
-                                width={124}
-                            />
-
-                            <SansText
-                                style={{
-                                    marginTop: 16,
-                                    textAlign: "center",
-                                }}
-                            >
-                                No sessions yet
-                            </SansText>
-                        </View>
-                    ) : (
-                        /* LIST */
-
-                        <ScrollView
-                            showsVerticalScrollIndicator={
-                                false
-                            }
-                        >
-                            <View
-                                style={{
-                                    paddingVertical: 16,
-                                }}
-                            >
-                                {sessions.map(
-                                    (
-                                        section,
-                                        sectionIndex
-                                    ) => (
-                                        <View
-                                            key={
-                                                sectionIndex
-                                            }
-                                        >
-                                            {/* SECTION TITLE */}
-
-                                            <ContentSection
-                                                title={
-                                                    section.title
-                                                }
-                                            />
-
-                                            {/* ITEMS */}
-
-                                            {section.data.map(
-                                                (item) => (
-                                                    <SessionItem
-                                                        key={
-                                                            item.id
-                                                        }
-                                                        name={
-                                                            item.name
-                                                        }
-                                                        time={
-                                                            item.time
-                                                        }
-                                                        image={
-                                                            item.image
-                                                        }
-                                                        description={
-                                                            item.type
-                                                        }
-                                                        onPress={() => {
-                                                            navigation.navigate(
-                                                             "AstrologerChatScreen"
-                                                            );
-                                                        }}
-                                                    />
-                                                )
-                                            )}
-                                        </View>
-                                    )
-                                )}
-                            </View>
-                        </ScrollView>
-                    )}
+        <SansText
+            style={{
+                marginTop: 16,
+                textAlign: "center",
+            }}
+        >
+            No sessions yet
+        </SansText>
+    </View>
+) : (
+    <ScrollView
+        showsVerticalScrollIndicator={false}
+    >
+        <View
+            style={{
+                paddingVertical: 16,
+            }}
+        >
+            {bookings.map((item: any) => (
+                <SessionItem
+                    key={item._id}
+                    name={item?.astrologer?.displayName}
+                    time={formatDate(item.createdAt)}
+                    image={item?.astrologer?.profilePicture}
+                    description={`${item?.method} Request`}
+                />
+            ))}
+        </View>
+    </ScrollView>
+)}
 
                     {/* BUTTON */}
 
@@ -256,16 +154,15 @@ const SessionItem = ({
             >
                 {/* IMAGE */}
 
-                <Image
-                    source={image}
-                    style={{
-                        width: 52,
-                        height: 52,
-                        borderRadius: 100,
-                        backgroundColor:
-                            "#D8D8D8",
-                    }}
-                />
+               <Image
+    source={{ uri: image }}
+    style={{
+        width: 52,
+        height: 52,
+        borderRadius: 26,
+        backgroundColor: "#D8D8D8",
+    }}
+/>
 
                 {/* CONTENT */}
 
@@ -289,7 +186,7 @@ const SessionItem = ({
                             numberOfLines={1}
                             style={{
                                 flex: 1,
-                                fontSize: 18,
+                                fontSize: 16,
                                 color: "#0D0D0D",
                                 fontFamily:
                                     "Satoshi-Bold",
@@ -352,5 +249,84 @@ const SessionItem = ({
 
 
         </TouchableOpacity>
+    );
+};
+
+
+const SessionSkeleton = () => {
+    return (
+        <View
+            style={{
+                paddingVertical: 16,
+                gap: 20,
+            }}
+        >
+            {[1, 2, 3, 4, 5].map((item) => (
+                <View
+                    key={item}
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        paddingVertical: 8,
+                    }}
+                >
+                    {/* Avatar */}
+
+                    <SkeletonLoader
+                        width={52}
+                        height={52}
+                        borderRadius={26}
+                        array={[1]}
+                    />
+
+                    <View
+                        style={{
+                            flex: 1,
+                            marginLeft: 12,
+                        }}
+                    >
+                        {/* Name */}
+
+                        <SkeletonLoader
+                            width={"55%"}
+                            height={16}
+                            borderRadius={8}
+                            array={[1]}
+                        />
+
+                        <View style={{ height: 8 }} />
+
+                        {/* Description */}
+
+                        <SkeletonLoader
+                            width={"35%"}
+                            height={12}
+                            borderRadius={8}
+                            array={[1]}
+                        />
+
+                        <View style={{ height: 8 }} />
+
+                        {/* Date */}
+
+                        <SkeletonLoader
+                            width={"25%"}
+                            height={12}
+                            borderRadius={8}
+                            array={[1]}
+                        />
+                    </View>
+
+                    {/* Arrow */}
+
+                    <SkeletonLoader
+                        width={20}
+                        height={20}
+                        borderRadius={10}
+                        array={[1]}
+                    />
+                </View>
+            ))}
+        </View>
     );
 };

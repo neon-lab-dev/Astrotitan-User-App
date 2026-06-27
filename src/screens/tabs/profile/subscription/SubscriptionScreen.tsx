@@ -18,7 +18,7 @@ const SubscriptionScreen = () => {
 
       <AppHeader>
         <AuthTitle title="Choose a plan">
-          <SansText style={{ fontSize: 18 }}>
+          <SansText style={{ fontSize: 16 }}>
             Get uninterrupted access to astrologers and personalized guidance.
           </SansText>
         </AuthTitle>

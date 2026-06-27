@@ -122,7 +122,7 @@ const IntentPuja = () => {
           >
             <SansText
               style={{
-                fontSize: 18,
+                fontSize: 16,
               }}
             >
               Sacred rituals
@@ -257,7 +257,7 @@ const IntentPuja = () => {
                 >
                   <SansText
                     style={{
-                      fontSize: 18,
+                      fontSize: 16,
 
                       color:
                         "#777",

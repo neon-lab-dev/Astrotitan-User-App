@@ -1328,7 +1328,7 @@ const styles =
     },
 
     productName: {
-      fontSize: 24,
+      fontSize: 21,
       fontFamily:
         "Satoshi-Bold",
       color: "#0D0D0D",
@@ -1356,7 +1356,7 @@ const styles =
     },
 
     price: {
-      fontSize: 18,
+      fontSize: 16,
       color: "#0D0D0D",
       fontFamily:
         "Satoshi",
@@ -1405,7 +1405,7 @@ const styles =
 
     smallDesc: {
       marginTop: 18,
-      fontSize: 18,
+      fontSize: 16,
       lineHeight: 26,
       color: "#0D0D0D",
     },

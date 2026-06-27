@@ -32,7 +32,7 @@ export default function CountrySelector({
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#0D0D0D",
     marginBottom: 8,
     lineHeight: 26,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
 
   flag: {
-    fontSize: 18,
+    fontSize: 16,
     includeFontPadding: false, // 🔥 same as text
     textAlignVertical: "center",
   },

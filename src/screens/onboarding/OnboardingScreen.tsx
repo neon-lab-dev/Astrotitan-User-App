@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 21,
     fontFamily: "Satoshi-Bold",
     color: "#0D0D0D",
     lineHeight: 32,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#0D0D0D",
     textAlign: "center",
     lineHeight: 24,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: "#000",
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Satoshi-Medium",
   },
 });

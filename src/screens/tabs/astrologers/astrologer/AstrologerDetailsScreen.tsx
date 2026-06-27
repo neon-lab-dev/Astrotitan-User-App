@@ -552,7 +552,7 @@ const styles =
     },
 
     name: {
-      fontSize: 28,
+      fontSize: 21,
 
       color:
         "#FFFFFF",
@@ -565,7 +565,7 @@ const styles =
       color:
         "#F5F5F5",
 
-      fontSize: 16,
+      fontSize: 14,
 
       lineHeight: 24,
     },
@@ -636,7 +636,7 @@ const styles =
     },
 
     statValue: {
-      fontSize: 22,
+      fontSize: 21,
 
       color:
         "#0D0D0D",
@@ -686,7 +686,7 @@ const styles =
     },
 
     tagText: {
-      fontSize: 15,
+      fontSize: 14,
 
       color:
         "#0D0D0D",

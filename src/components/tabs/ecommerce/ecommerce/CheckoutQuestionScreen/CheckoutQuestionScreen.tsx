@@ -227,7 +227,7 @@ const CheckoutQuestionScreen: React.FC<
         >
           <SansText
             style={{
-              fontSize: 18,
+              fontSize: 16,
             }}
           >
             {

@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
     color: "#4A4A4A",
     textAlign: "center"

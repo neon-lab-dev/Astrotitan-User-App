@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 22,
+    fontSize: 21,
     fontFamily: "Satoshi-Bold",
   },
 
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   },
 
   tabText: {
-    fontSize: 18,
+    fontSize: 16,
   },
 
   activeText: {
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
 
   optionText: {
-    fontSize: 16,
+    fontSize: 14,
   },
 
   checkbox: {

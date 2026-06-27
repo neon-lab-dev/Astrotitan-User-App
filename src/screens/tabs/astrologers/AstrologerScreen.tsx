@@ -214,7 +214,7 @@ const AstrologerScreen = () => {
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}><AuthTitle title="Astrologers">
             <SansText
               style={{
-                fontSize: 16,
+                fontSize: 14,
               }}
             >
               Experts available

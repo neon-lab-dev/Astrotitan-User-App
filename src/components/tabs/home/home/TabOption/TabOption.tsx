@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#444",
     fontFamily: "Satoshi-Bold",
   },

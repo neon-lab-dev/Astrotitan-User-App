@@ -98,7 +98,7 @@ const ProfileScreen = () => {
 
         <AppHeader showBack={false} >
           <AuthTitle title="Profile">
-            <SansText style={{ fontSize: 18 }}>
+            <SansText style={{ fontSize: 16 }}>
               Manage your personal details & preferences.
             </SansText>
           </AuthTitle>
@@ -180,7 +180,7 @@ const ProfileScreen = () => {
             </View>
 
             {/* PERSONAL */}
-            <View> <SectionTitle titleFontSize={18} title="Personal"></SectionTitle>
+            <View> <SectionTitle titleFontSize={16} title="Personal"></SectionTitle>
               <View style={styles.card}>
                 <ProfileItem title="Birth Details" icon="CalenderIcon" onPress={() => { navigation.navigate("BirthDetails") }} />
                 <ProfileItem title="Orders" icon="PackageIcon" onPress={() => { navigation.navigate("OrdersScreen") }} />
@@ -188,7 +188,7 @@ const ProfileScreen = () => {
                 <ProfileItem title="Saved Addresses" icon="LocationIcon" onPress={() => { navigation.navigate("AddressScreen") }} />
               </View></View>
 
-            <View><SectionTitle titleFontSize={18} title="General"></SectionTitle>
+            <View><SectionTitle titleFontSize={16} title="General"></SectionTitle>
               <View style={styles.card}>
                 <ProfileItem title="Subscription Status" icon="TransactionIcon" onPress={() => { navigation.navigate("SubscriptionScreen") }} />
                 <ProfileItem title="Raise a query" icon="HelpIcon" onPress={() => { navigation.navigate("Queries") }} />
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: "700",
   },
 
@@ -264,14 +264,14 @@ const styles = StyleSheet.create({
 
   name: {
     color: "#F5F5F5",
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
     lineHeight: 26,
   },
 
   desc: {
     color: "#F5F5F5",
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 26,
   },
 
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   },
 
   rowText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#0D0D0D"
   },
 

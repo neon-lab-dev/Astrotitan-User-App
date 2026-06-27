@@ -16,6 +16,7 @@ import QuestionScreen from '../../../../components/RequestConsultationForm/Quest
 import ChatIcon from '@/assets/icons/actions/bubble-chat.svg';
 import CallIcon from '@/assets/icons/visual/call.svg';
 import { useRoute } from '@react-navigation/native';
+import { useBookConsultationMutation} from '../../../../redux/features/consultation/consultationApi';
 const questions = [
     {
         key: 'mode',
@@ -54,7 +55,6 @@ const questions = [
                     ]}
                     value={value}
                     onChange={setValue}
-                    multiple
                 />
             </View>
         ),
@@ -67,18 +67,23 @@ const RequestConsultationForm = () => {
     const id = route.params?.id as string;
     const navigation = useNavigation<any>()
     const step = useSelector((state: RootState) => state.RequestDetailForm.step);
-
+    const [bookConsultation, { isLoading }] =
+        useBookConsultationMutation();
     const handleFinalSubmit = async (formData: any) => {
         try {
-            console.log(formData)
-            // const payload = {
-            // _id:id
-            //     mode: formData.gender,
-            //     intents: formData.guidance.map((g: string) =>
-            //         g.charAt(0).toUpperCase() + g.slice(1)
-            //     ),
-            // };
-             
+
+            const payload = {
+                astrologer: id,
+                method: formData.mode,
+                consultationFor: formData.guidance,
+            };
+
+            console.log(payload,"payload");
+
+            const response = await bookConsultation(payload).unwrap();
+
+            console.log("Success", response);
+
             navigation.reset({
                 index: 1,
                 routes: [
@@ -87,8 +92,8 @@ const RequestConsultationForm = () => {
                 ],
             });
 
-        } catch (err) {
-            console.log("PROFILE ERROR:", err);
+        } catch (error: any) {
+            console.log("Booking Failed", error);
         }
     };
 
@@ -106,7 +111,8 @@ const RequestConsultationForm = () => {
                     questionText={currentQuestion.text}
                     validate={currentQuestion.validate}
                     initialValue={currentQuestion.initialValue}
-                    onFinalSubmit={handleFinalSubmit} // 🔥 PASS THIS
+                    onFinalSubmit={handleFinalSubmit} 
+                    loading={isLoading}
                 >
                     {currentQuestion.render}
                 </QuestionScreen>

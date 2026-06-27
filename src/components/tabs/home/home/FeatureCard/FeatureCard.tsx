@@ -173,7 +173,7 @@ const FeatureCard = ({
                                 baseStyle={{
                                     fontFamily: "Satoshi",
                                     color: "#E0E0E0",
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     lineHeight: 28,
                                 }}
                             />
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
 
     title: {
         color: "#fff",
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: "Satoshi-Bold",
         lineHeight: 26
     },

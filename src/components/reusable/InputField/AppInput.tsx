@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#0D0D0D",
     marginBottom: 8,
     lineHeight: 26,
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   },
 
   codeText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#575757",
     includeFontPadding: false, // 🔥 ANDROID FIX
     textAlignVertical: "center",
@@ -438,7 +438,7 @@ const DropdownSheetContent = ({
     >
       <SatoshiText
         style={{
-          fontSize: 24,
+          fontSize: 21,
           color: "#111",
           fontFamily: "Satoshi-Bold",
         }}

@@ -188,7 +188,7 @@ console.log("astrologer",astrologersResponse)
             >
               <SansText
                 style={{
-                  fontSize: 18,
+                  fontSize: 16,
                   color: "#4A4A4A",
                   lineHeight: 26,
                 }}
@@ -198,7 +198,7 @@ console.log("astrologer",astrologersResponse)
 
               <SatoshiText
                 style={{
-                  fontSize: 18,
+                  fontSize: 16,
                   color: "#0D0D0D",
                   fontFamily: "Satoshi-Bold",
                   lineHeight: 26,

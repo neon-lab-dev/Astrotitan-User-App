@@ -13,7 +13,12 @@ export type RootStackParamList = {
   HomeTabs: undefined;
   HomeScreen: undefined;
   SelectZodiacSign: undefined;
-  AstrologerChatScreen: undefined;
+  AstrologerChatScreen: {
+    id: string;
+    consultationFor: string;
+    profilePicture: string;
+    name: string;
+  };
   AstrologerScreen: undefined;
   ArticleScreen: {
     id: string;

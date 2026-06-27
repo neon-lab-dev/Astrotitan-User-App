@@ -172,7 +172,7 @@ const OrdersScreen = () => {
           <AuthTitle title="Orders Tracking">
             <SansText
               style={{
-                fontSize: 16,
+                fontSize: 14,
               }}
             >
               Stay updated on your
@@ -277,7 +277,7 @@ const OrdersScreen = () => {
             >
               <SansText
                 style={{
-                  fontSize: 18,
+                  fontSize: 16,
 
                   color:
                     "#777",

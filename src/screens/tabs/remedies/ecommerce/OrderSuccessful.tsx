@@ -65,7 +65,7 @@ const OrderSuccessful = () => {
         <SansText
           style={{
             fontFamily: "GeneralSans-Bold",
-            fontSize: 16,
+            fontSize: 14,
             color: "#0D0D0D",
             letterSpacing: 0.4,
             textAlign: "center",

@@ -24,9 +24,10 @@ interface Props {
         value: string;
         setValue: (val: string) => void;
     }) => React.ReactNode;
+    loading:boolean
 }
 
-const QuestionScreen: React.FC<Props> = ({ questionKey, questionText, questionDescription, children, validate, initialValue,onFinalSubmit }) => {
+const QuestionScreen: React.FC<Props> = ({ questionKey, questionText, questionDescription, children, validate, initialValue,onFinalSubmit ,loading=false}) => {
 const navigation = useNavigation<any>();
     const dispatch = useDispatch();
     const savedValue = useSelector(
@@ -101,7 +102,7 @@ const handleBack = () => {
             <AppHeader onPressBack={handleBack} showBack={true}>
                 <StepHeader step={step} total={totalSteps} />
                 <AuthTitle title={questionText}>
-                    <SansText style={{ fontSize: 18 }}>
+                    <SansText style={{ fontSize: 16 }}>
                         {questionDescription}
                     </SansText>
                 </AuthTitle>
@@ -135,6 +136,7 @@ const handleBack = () => {
                         title="Continue"
                         variant="solid"
                         onPress={handleNext}
+                        loading={loading}
                     />
                 </View>
             )}

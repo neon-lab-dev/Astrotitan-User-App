@@ -152,17 +152,17 @@ const { sign } = route.params || {};
                 <ArrowRoundedIcon width={24} height={24} style={{ marginLeft: 6 }} />
 
               </TouchableOpacity>
-              <SatoshiText style={{ fontSize: 18, color: "#4A4A4A" }}>
+              <SatoshiText style={{ fontSize: 16, color: "#4A4A4A" }}>
                 Based on general planetary positions for {currentSign?.name}.
               </SatoshiText>
-              <SatoshiText style={{ fontSize: 22, fontFamily: "SatoshiBold", color: "#0D0D0D", marginBottom: 6, marginTop: 18 }}>`{
+              <SatoshiText style={{ fontSize: 21, fontFamily: "SatoshiBold", color: "#0D0D0D", marginBottom: 6, marginTop: 18 }}>`{
                 day === "today"
                   ? "Today's"
                   : day === "previous"
                     ? "Yesterday's"
                     : "Tomorrow's"
               } overview`</SatoshiText>
-              <SatoshiText style={{ fontSize: 18, color: "#4A4A4A" }}>
+              <SatoshiText style={{ fontSize: 16, color: "#4A4A4A" }}>
                 {dailyHoroscope}
               </SatoshiText>
             </View>
@@ -181,10 +181,10 @@ const { sign } = route.params || {};
               onChange={setRange}
             />
             <View style={{ paddingHorizontal: 16 }}>
-              <SatoshiText style={{ fontSize: 22, fontFamily: "SatoshiBold", color: "#0D0D0D", marginBottom: 6, marginTop: 18 }}>`{
+              <SatoshiText style={{ fontSize: 21, fontFamily: "SatoshiBold", color: "#0D0D0D", marginBottom: 6, marginTop: 18 }}>`{
                 range.charAt(0).toUpperCase() + range.slice(1)
               } insights`</SatoshiText>
-              <SatoshiText style={{ fontSize: 18, color: "#4A4A4A" }}>
+              <SatoshiText style={{ fontSize: 16, color: "#4A4A4A" }}>
                 {periodicHoroscope}
               </SatoshiText>
             </View>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 22,
+    fontSize: 21,
     fontFamily: "SatoshiBold",
     color: "#0d0d0d",
   },

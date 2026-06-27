@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   bold: {
     fontFamily: "Satoshi-Bold",
 
-    fontSize: 18,
+    fontSize: 16,
   },
 
   normal: {
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   },
 
   optionText: {
-    fontSize: 15,
+    fontSize: 14,
 
     fontFamily: "Satoshi-Medium",
   },

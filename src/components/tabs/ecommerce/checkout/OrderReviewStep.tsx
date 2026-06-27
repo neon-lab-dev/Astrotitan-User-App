@@ -63,7 +63,7 @@ const OrderReviewStep = ({
         }}
       >
         <ContentSection title="Estimated Delivery Date:">
-          <SatoshiText style={{ fontSize: 28, fontFamily: "Satoshi-Bold" }}
+          <SatoshiText style={{ fontSize: 21, fontFamily: "Satoshi-Bold" }}
           >
             5 March 2026
           </SatoshiText>
@@ -99,7 +99,7 @@ const OrderReviewStep = ({
       {/* ADDRESS */}
       <View
       >
-        <ContentSection titleFontSize={18} sectionStyle={{marginBottom:12}}
+        <ContentSection titleFontSize={16} sectionStyle={{marginBottom:12}}
           title="Deliver To"
         />
 
@@ -126,7 +126,7 @@ const OrderReviewStep = ({
 
       {/* PRICE SUMMARY */}
       <View style={{ backgroundColor: "#E6D18B", height: 1, marginVertical: 24 }}></View>
-      <ContentSection titleFontSize={18} sectionStyle={{marginBottom:12}}
+      <ContentSection titleFontSize={16} sectionStyle={{marginBottom:12}}
         title="Payment Summery"
       />
       <View
@@ -215,7 +215,7 @@ const Row = ({
       style={{
         fontFamily:
           "Satoshi-Bold",
-          fontSize:18
+          fontSize:16
       }}
     >
       {value}

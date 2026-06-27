@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
 
   ratingText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
   },
 
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
     color: "#fff",
   },
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
 
   price: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
     color: "#fff",
     marginTop: 8,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Satoshi-Bold",
     color: "#0D0D0D",
   },

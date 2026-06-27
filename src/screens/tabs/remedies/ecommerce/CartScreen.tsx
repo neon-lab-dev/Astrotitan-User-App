@@ -57,7 +57,7 @@ const CartScreen = () => {
 
       <AppHeader >
         <AuthTitle title="Cart">
-          <SansText style={{ fontSize: 18 }}>
+          <SansText style={{ fontSize: 16 }}>
             Total Items - {cartItems.length}
           </SansText>
         </AuthTitle>
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
     color: "#0D0D0D",
     flex: 1,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
 
   price: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
     color: "#0D0D0D",
   },
@@ -225,12 +225,12 @@ const styles = StyleSheet.create({
   },
 
   qtyBtn: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
   },
 
   qtyText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
   },
 
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   },
 
   bold: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
   },
 
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   },
 
   emptyText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
   },
 

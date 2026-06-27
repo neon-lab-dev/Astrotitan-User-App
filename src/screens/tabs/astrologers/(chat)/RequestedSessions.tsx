@@ -285,7 +285,7 @@ const SessionCard = ({
         style={{
           textAlign: "center",
           marginTop: 12,
-          fontSize: 16,
+          fontSize: 14,
           fontFamily: "Satoshi-Bold",
         }}
       >

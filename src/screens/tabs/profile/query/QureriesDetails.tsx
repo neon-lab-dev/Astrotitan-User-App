@@ -141,7 +141,7 @@ const [deleteQuery, { isLoading }] =
             >
               <SatoshiText
                 style={{
-                  fontSize: 24,
+                  fontSize: 21,
                   lineHeight: 28,
                   fontFamily: "Satoshi-Medium",
                   color: "#0D0D0D"
@@ -153,7 +153,7 @@ const [deleteQuery, { isLoading }] =
               <SansText
                 style={{
                   color: "#0D0D0D",
-                  fontSize: 18,
+                  fontSize: 16,
                   lineHeight: 26
                 }}
               >
@@ -275,7 +275,7 @@ const [deleteQuery, { isLoading }] =
                       {/* TITLE */}
                       <SansText
                         style={{
-                          fontSize: 18,
+                          fontSize: 16,
                           lineHeight: 24,
                           fontFamily: "GeneralSans-Bold",
                           color: item.active
@@ -367,7 +367,7 @@ const [deleteQuery, { isLoading }] =
                 <SansText
                   style={{
                     fontFamily: "GeneralSans-Bold",
-                    fontSize: 16,
+                    fontSize: 14,
                   }}
                 >
                   Attachments

@@ -46,7 +46,7 @@ export default function AnimatedScreen({ children, delay = 0 }: Props) {
   }));
 
   return (
-    <Animated.View style={[{ flex: 1 }, animatedStyle]}>
+    <Animated.View style={[{ flex: 1 },]}>
       {children}
     </Animated.View>
   );

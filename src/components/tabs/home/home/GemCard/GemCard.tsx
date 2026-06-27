@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heading: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
     color: "#0D0D0D",
     lineHeight: 26

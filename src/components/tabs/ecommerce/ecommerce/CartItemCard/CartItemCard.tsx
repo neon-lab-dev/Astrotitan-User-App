@@ -106,14 +106,14 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Satoshi-Bold",
     flex: 1,
     marginRight: 8,
   },
 
   price: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Satoshi-Bold",
   },
 
@@ -131,12 +131,12 @@ const styles = StyleSheet.create({
   },
 
   qtyBtn: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
   },
 
   qtyText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Satoshi-Bold",
   },
 

@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 
     },
     period: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#949494',
         marginVertical: 24,
         fontFamily: "Satoshi-Bold"

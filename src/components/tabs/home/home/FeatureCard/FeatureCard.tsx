@@ -171,7 +171,7 @@ const FeatureCard = ({
                                 systemFonts={systemFonts}
                                 tagsStyles={htmlStyles}
                                 baseStyle={{
-                                    fontFamily: "Satoshi",
+                                    fontFamily: "Satoshi-Regular",
                                     color: "#E0E0E0",
                                     fontSize: 14,
                                     lineHeight: 28,

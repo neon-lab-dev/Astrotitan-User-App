@@ -8,6 +8,7 @@ import globalModalReducer from "./features/ui/GlobalModal/globalModalSlice";
 import globalSheetReducer from "./features/ui/GlobalSheet/globalSheetSlice";
 import useDetailsFormReducer from "./features/userDetailsForm/userDetailsDormSlice";
 import RequestDetailsFormReducer from "./features/RequestConsultationForm/RequestConsultationFormSlice";
+import consultationChatReducer from "./features/consultation/consultationChatSlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -18,6 +19,7 @@ export const store = configureStore({
     cart: cartReducer,
     checkout: checkoutReducer,
     globalModal: globalModalReducer,
+      consultationChat: consultationChatReducer,
     [authApi.reducerPath]: authApi.reducer,
   },
 

@@ -65,12 +65,14 @@ export const authApi = baseApi.injectEndpoints({
       providesTags: ["users"],
     }),
 
-    deleteUser: builder.mutation({
-      query: (userId) => ({
-        url: `/users/delete-user/${userId}`,
-        method: "DELETE",
+    deleteAccount: builder.mutation({
+      query: (data) => ({
+        url: "/account/delete-account",
+        method: "PUT",
+        body: data,
+        credentials: "include",
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ["user"],
     }),
 
     updateProfile: builder.mutation({
@@ -174,7 +176,7 @@ export const {
   useVerifySignupOtpMutation,
   useCompleteProfileMutation,
   useGetMeQuery,
-  useDeleteUserMutation,
+  useDeleteAccountMutation,
   useSavePushNotificationTokenMutation,
   useGetAllPushNotificationForUserQuery,
   useLazyGetMeQuery,

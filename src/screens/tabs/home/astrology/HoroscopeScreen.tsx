@@ -155,13 +155,13 @@ const { sign } = route.params || {};
               <SatoshiText style={{ fontSize: 16, color: "#4A4A4A" }}>
                 Based on general planetary positions for {currentSign?.name}.
               </SatoshiText>
-              <SatoshiText style={{ fontSize: 21, fontFamily: "SatoshiBold", color: "#0D0D0D", marginBottom: 6, marginTop: 18 }}>`{
+              <SatoshiText style={{ fontSize: 21, fontFamily: "Satoshi-Bold", color: "#0D0D0D", marginBottom: 6, marginTop: 18 }}>`{
                 day === "today"
                   ? "Today's"
                   : day === "previous"
                     ? "Yesterday's"
                     : "Tomorrow's"
-              } overview`</SatoshiText>
+              } overview</SatoshiText>
               <SatoshiText style={{ fontSize: 16, color: "#4A4A4A" }}>
                 {dailyHoroscope}
               </SatoshiText>
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 21,
-    fontFamily: "SatoshiBold",
+    fontFamily: "Satoshi-Bold",
     color: "#0d0d0d",
   },
 });

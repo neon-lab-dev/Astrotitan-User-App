@@ -30,7 +30,7 @@ import { useConsultationSocket } from "../../../../socket/useConsultationSocket"
 const AstrologerChatScreen = () => {
   const route = useRoute<any>();
   const { id: consultationId, profilePicture, name, consultationFor } = route.params || {};
-  const [endConsultationSession] = useEndConsultationSessionMutation();
+  const [endConsultationSession,{isLoading:endSessionLading}] = useEndConsultationSessionMutation();
 
   const renderMessage = ({ item }: { item: any }) => {
     const senderId =
@@ -288,7 +288,7 @@ const AstrologerChatScreen = () => {
               </View>
             </View>
 
-            <ReusableButton width={84} height={56} title="End" onPress={() => { handleEndSession() }} />
+            <ReusableButton loading={endSessionLading} width={84} height={56} title="End" onPress={() => { handleEndSession() }} />
           </View>
 
 

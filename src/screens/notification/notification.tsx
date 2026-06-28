@@ -10,14 +10,14 @@ import ReusableButton from "../../components/reusable/ReusableButton/ReusableBut
 import { SatoshiText } from "../../components/reusable/Text/SatoshiText";
 
 const NotificationScreen = () =>{
-    const navigation=useNavigation<any>()
+    const navigation=useNavigation<any>();
     const notifications = [
         {
           title: "Today",
           data: [
             {
               id: "1",
-              title: "Session Completed",
+              title: "Session Completed Nicely",
               subtitle: "View session summary",
               time: "10 min ago",
               unread: true,

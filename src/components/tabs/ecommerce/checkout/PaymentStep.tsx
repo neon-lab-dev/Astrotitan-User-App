@@ -1,14 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { selectToken } from "../../../../redux/features/auth/authSlice";
-import { useCheckoutMutation } from "../../../../redux/features/checkout/productCheckoutApi";
 import SectionTitle from "../../../reusable/SectionTitle/SectionTitle";
-import ReusableButton from "../../../reusable/ReusableButton/ReusableButton";
 import { SansText } from "../../../reusable/Text/SansText";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../../navigation/types";
-import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   value: any;
@@ -17,200 +11,18 @@ interface Props {
 
 const PaymentStep = ({ value, setValue }: Props) => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const token = useSelector(selectToken);
-  type NavigationProp =
-    NativeStackNavigationProp<RootStackParamList>;
 
-  const navigation = useNavigation<NavigationProp>();
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
 
-  const [checkout] = useCheckoutMutation();
 
   const shipping = cartItems.length > 0 ? 100 : 0;
 
   const total = subtotal + shipping;
 
-  const handleCheckout = async () => {
-    try {
-      // 1. GET RAZORPAY KEY
-
-      const keyData = await axios.get(
-        "https://astrotitan-server.onrender.com/api/v1/get-key"
-      );
-
-      // 2. CREATE RAZORPAY ORDER
-
-      const payload = {
-        amount: total,
-      };
-
-      const response =
-        await checkout(payload).unwrap();
-
-      const order = response.data;
-
-      console.log(
-        "RAZORPAY ORDER",
-        order
-      );
-
-      // 3. RAZORPAY OPTIONS
-
-      const options: any = {
-        key: keyData.data.key,
-
-        amount: order.amount,
-
-        order_id: order.id,
-
-        currency: "INR",
-
-        name: "MITRA Consultancy",
-
-        description: "Product Purchase",
-
-        image:
-          "https://i.ibb.co.com/fzB3sKkh/mitr-consultancy.png",
-
-        prefill: {
-          email:
-            "prernabadwane@gmail.com",
-
-          name: "Prerna",
-
-          contact: "919999999999",
-        },
-
-        theme: {
-          color: "#0099FF",
-        },
-
-        method: {
-          upi: true,
-
-          card: true,
-
-          netbanking: true,
-
-          wallet: true,
-
-          emi: true,
-
-          paylater: true,
-        },
-      };
-
-      // 4. OPEN RAZORPAY
-
-      RazorpayCheckout.open(options)
-
-        .then(async (data: any) => {
-          try {
-            console.log(
-              "PAYMENT SUCCESS",
-              data
-            );
-
-            // 5. VERIFY PAYMENT
-
-            const verifyResponse =
-              await axios.post(
-                "https://astrotitan-server.onrender.com/api/v1/product-order/verify-payment",
-              );
-
-            console.log(
-              "VERIFY RESPONSE",
-              verifyResponse.data
-            );
-            console.log(
-              "VERIFY SUCCESS VALUE",
-              verifyResponse?.data?.success
-            );
-            // 6. CHECK VERIFY SUCCESS
-
-            if (
-              verifyResponse?.data
-                ?.success
-            ) {
-              // 7. CREATE FINAL ORDER
-
-              const orderPayload = {
-                orderedItems:
-                  cartItems.map(
-                    (item: any) => ({
-                      productId:
-                        item._id,
-
-                      name:
-                        item.name,
-
-                      quantity:
-                        item.quantity,
-
-                      price:
-                        item.price,
-                    })
-                  ),
-
-                totalAmount: total,
-              };
-
-              const createOrderResponse =
-                await axios.post(
-                  "https://astrotitan-server.onrender.com/api/v1/product-order/create",
-
-                  orderPayload,
-
-                  {
-                    headers: {
-                      Authorization:
-                        token,
-                    },
-                  }
-                );
-
-              console.log(
-                "FINAL ORDER CREATED",
-                createOrderResponse.data
-              );
-
-
-              navigation.replace(
-                "OrderSuccessful",
-                {
-                  slug: order.id,
-                },
-              );
-            } else {
-              console.log(
-                "PAYMENT VERIFICATION FAILED"
-              );
-            }
-          } catch (error) {
-            console.log(
-              "POST PAYMENT ERROR",
-              error
-            );
-          }
-        })
-
-        .catch((error: any) => {
-          console.log(
-            "PAYMENT FAILED",
-            error
-          );
-        });
-    } catch (error) {
-      console.log(
-        "CHECKOUT ERROR",
-        error
-      );
-    }
-  };
 
   return (
     <View
@@ -240,64 +52,14 @@ const PaymentStep = ({ value, setValue }: Props) => {
         </View>
       </View>
 
-      {/* PAYMENT OPTIONS */}
-      {/* <View
-          style={{
-            marginTop: 24,
-            gap: 14,
-          }}
-        >
-          <PaymentOption
-            title="Proceed to Payment"
-            selected={
-              selected === "online"
-            }
-            onPress={() =>
-              handleCheckout()
-            }
-          />
 
-        </View> */}
-
-      <ReusableButton
-        title={"Proceed to Pay"}
-        variant="solid"
-        onPress={handleCheckout}
-      />
     </View>
   );
 };
 
 export default PaymentStep;
 
-/* ------------------------- */
-/* PAYMENT OPTION */
-/* ------------------------- */
 
-// const PaymentOption = ({
-//   title,
-//   selected,
-//   onPress,
-// }: {
-//   title: string;
-//   selected: boolean;
-//   onPress: () => void;
-// }) => {
-//   return (
-//     <Pressable
-//       onPress={onPress}
-//       style={[styles.optionCard, selected && styles.activeOption]}
-//     >
-//       <SansText style={styles.optionText}>{title}</SansText>
-
-//       <View style={[styles.radio, selected && styles.radioActive]} />
-//     </Pressable>
-//   );
-// };
-
-/* ------------------------- */
-/* SUMMARY ROW */
-/* ------------------------- */
 
 const Row = ({
   label,

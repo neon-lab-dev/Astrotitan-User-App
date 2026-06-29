@@ -97,7 +97,8 @@ export default function GlobalBottomSheet() {
     <LinearGradient 
       colors={["#EDDEAD", "#F1E8C9", "#F5F5F5"]}
       locations={[0, 0.45, 1]}
-      style={{ flex: 1 }}
+      style={{ flex: 1 ,  borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,}}
     >
       {sheet.content}
     </LinearGradient>
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   sheet: {
     position: "relative",
     backgroundColor: "#F9F9F9",
-    overflow:"hidden",
+    // overflow:"hidden",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
 

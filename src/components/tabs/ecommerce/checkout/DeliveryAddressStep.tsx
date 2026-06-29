@@ -3,7 +3,7 @@ import React, {
   useState,
 } from "react";
 
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 import AddressCard from "../../profile/address/AddressCard";
 import CheckoutAddressForm from "../../profile/address/CheckoutAddressForm";
@@ -64,16 +64,13 @@ const DeliveryAddressStep = ({
       addresses.length > 0 &&
       !selectedAddress
     ) {
-      setSelectedAddress(
-        addresses[0]
-      );
+      setSelectedAddress(addresses[0]);
 
       setValue({
-        addressId:
-          addresses[0]._id,
+        addressId: addresses[0]._id,
       });
     }
-  }, [addresses ]);
+  }, [addresses, value?.addressId]);
 
   const openAddressBottomSheet =
     () => {
@@ -115,6 +112,7 @@ const DeliveryAddressStep = ({
     addresses.length === 0
   ) {
     return (
+
       <CheckoutAddressForm
         onSuccess={(
           address
@@ -131,6 +129,9 @@ const DeliveryAddressStep = ({
           refetch();
         }}
       />
+
+
+
     );
   }
 
@@ -139,7 +140,7 @@ const DeliveryAddressStep = ({
   }
 
   return (
-    <View style={{paddingTop:16}}>
+    <View style={{ paddingTop: 16 }}>
       <AddressCard
         data={selectedAddress}
         showChangeButton
@@ -152,24 +153,27 @@ const DeliveryAddressStep = ({
           }
 
           BottomSheetService.open(
-            <CheckoutAddressForm
-              onSuccess={(
-                address
-              ) => {
-                setSelectedAddress(
+            <View style={{ flex: 1,
+        paddingHorizontal: 16,  }}>
+              <CheckoutAddressForm
+                onSuccess={(
                   address
-                );
+                ) => {
+                  setSelectedAddress(
+                    address
+                  );
 
-                setValue({
-                  addressId:
-                    address._id,
-                });
+                  setValue({
+                    addressId:
+                      address._id,
+                  });
 
-                refetch();
+                  refetch();
 
-                BottomSheetService.close();
-              }}
-            />,
+                  BottomSheetService.close();
+                }}
+              />
+              <Text>okkdnvjfvn</Text></View>,
             {
               height: 700,
               hasGradient: true,

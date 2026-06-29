@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import SkeletonLoader from "../../../../components/reusable/SkeletonLoader/SkeletonLoade";
 import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
-import { useGetMyOrdersQuery } from "../../../../redux/features/orders/orderApi";
 import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
 import { SansText } from "../../../../components/reusable/Text/SansText";
 import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
@@ -21,6 +20,7 @@ import OrderCard from "../../../../components/tabs/ecommerce/orders/OrderCard/Or
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../navigation/types";
 import { useNavigation } from "@react-navigation/native";
+import { useGetMyProductOrdersQuery } from "../../../../redux/features/orders/orderApi";
 
 /* ---------------- ORDER CARD SKELETON ---------------- */
 
@@ -91,10 +91,7 @@ const OrdersScreen = () => {
     isFetching,
     isError,
     refetch,
-  } = useGetMyOrdersQuery({
-    limit: 20,
-
-    skip: 0,
+  } = useGetMyProductOrdersQuery({
   });
 
   /* ---------------- DATA ---------------- */

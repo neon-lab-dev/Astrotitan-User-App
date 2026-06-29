@@ -86,7 +86,7 @@ const CheckoutAddressForm = ({
       <KeyboardSafeSection
         contentContainerStyle={{
           gap: 16,
-          paddingHorizontal:16
+          paddingVertical:16
         }}
       >
         {/* FULL NAME */}

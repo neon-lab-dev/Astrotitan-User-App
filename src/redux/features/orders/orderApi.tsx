@@ -1,132 +1,77 @@
 import { baseApi } from "../../api/baseApi";
 
-export const orderApi =
-  baseApi.injectEndpoints({
-    endpoints: (
-      builder
-    ) => ({
-      /* ---------------- GET MY ORDERS ---------------- */
+const ordersApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getMyProductOrders: builder.query({
+      query: ({
+        keyword,
+        page,
+        status,
+      }: {
+        keyword?: string;
+        page?: number;
+        status?: string;
+      }) => {
+        const params = new URLSearchParams();
 
-      getMyOrders:
-        builder.query({
-          query: (
-            params = {}
-          ) => {
-            const cleanedParams =
-              Object.fromEntries(
-                Object.entries(
-                  {
-                    keyword: params?.keyword,
-                    status: params?.status,
-                    skip: params?.skip ?? 0,
-                    limit: params?.limit ?? 10,
-                  }
-                ).filter(
-                  ([
-                    _,
-                    value,
-                  ]) => value !== undefined && value !== null && value !== ""
-                )
-              );
+        if (keyword) params.append("keyword", keyword);
+        if (page) params.append("page", page.toString());
+        if (status && status !== "All") {
+          params.append("status", status);
+        }
 
-            return {
-              url: `/product-order/my-orders`,
-              method:
-                "GET",
-              params:
-                cleanedParams,
-            };
-          },
-
-
-          serializeQueryArgs:
-            ({
-              endpointName,
-              queryArgs,
-            }) => {
-              return JSON.stringify(
-                {
-                  endpointName,
-                  keyword: queryArgs?.keyword,
-                  status: queryArgs?.status,
-                }
-              );
-            },
-
-          merge: (
-            currentCache,
-            newItems,
-            { arg }
-          ) => {
-            const incomingOrders =
-              newItems?.data
-                ?.orders ||
-              [];
-            if (arg?.skip === 0) {
-              currentCache.data =
-                newItems.data;
-              return;
-            }
-
-            /* UNIQUE MERGE */
-
-            const existingIds =
-              new Set(
-                (
-                  currentCache?.data?.orders || []
-                ).map(
-                  (item: any) => item._id
-                )
-              );
-
-            const filtered =
-              incomingOrders.filter(
-                (item: any) => !existingIds.has(item._id)
-              );
-
-            currentCache.data =
-            {
-              ...newItems.data,
-              orders: [
-                ...(currentCache?.data?.orders || []),
-                ...filtered,
-              ],
-            };
-          },
-
-          forceRefetch({
-            currentArg,
-            previousArg,
-          }) {
-            return (
-              JSON.stringify(currentArg) !== JSON.stringify(previousArg)
-            );
-          },
-
-          providesTags: [
-            "orders",
-          ],
-        }),
-
-
-      getOrderById:
-        builder.query({
-          query: (id) => ({
-            url: `/product-order/my-orders/${id}`,
-            method:
-              "GET",
-          }),
-
-          providesTags: (result,error,id
-          ) => [
-              {type: "orders",id,},
-            ],
-        }),
+        return {
+          url: `/product-order/my-orders${params.toString() ? `?${params.toString()}` : ""}`,
+          method: "GET",
+          credentials: "include",
+        };
+      },
+      providesTags: ["orders"],
     }),
-  });
+
+    getOrderStatus: builder.query({
+      query: (id) => ({
+        url: `/product-order/status/${id}`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["orders"],
+    }),
+
+    verifyPayment: builder.mutation({
+      query: (data) => ({
+        url: `/product-order/verify-payment`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["orders"],
+    }),
+
+    createProductOrder: builder.mutation({
+      query: (data) => ({
+        url: `/product-order/create`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["orders"],
+    }),
+    getRazorpayKey: builder.query({
+      query: () => ({
+        url: "/get-key",
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["orders"],
+    }),
+  }),
+});
 
 export const {
-  useGetMyOrdersQuery,
-  useLazyGetMyOrdersQuery,
-  useGetOrderByIdQuery,
-} = orderApi;
+  useGetMyProductOrdersQuery,
+  useGetOrderStatusQuery,
+  useVerifyPaymentMutation,
+  useCreateProductOrderMutation,
+  useGetRazorpayKeyQuery
+} = ordersApi;

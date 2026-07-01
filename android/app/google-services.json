@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "291765875122",
+    "project_id": "astrotitan-8bd1e",
+    "storage_bucket": "astrotitan-8bd1e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:291765875122:android:e4193b830e0b401302f4ab",
+        "android_client_info": {
+          "package_name": "com.astrotitanuser"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAceSl2_7kMLwtsVkH_9xLTzhEtVIHWfa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

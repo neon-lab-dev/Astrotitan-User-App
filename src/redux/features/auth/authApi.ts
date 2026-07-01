@@ -72,7 +72,7 @@ export const authApi = baseApi.injectEndpoints({
         body: data,
         credentials: "include",
       }),
-      invalidatesTags: ["user"],
+      invalidatesTags: ["users"],
     }),
 
     updateProfile: builder.mutation({
@@ -146,23 +146,13 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ["users"],
     }),
 
-    savePushNotificationToken: builder.mutation({
+    updatePushToken: builder.mutation({
       query: (profileUpdatedData) => ({
-        method: "POST",
-        url: `/auth/save-push-notification-token`,
+        method: "PATCH",
+        url: `/account/update-push-token`,
         body: profileUpdatedData,
       }),
       invalidatesTags: ["users"],
-    }),
-
-    getAllPushNotificationForUser: builder.query({
-      query: (userId) => ({
-        method: "GET",
-        url: `/pushNotification/${userId}`,
-      }),
-      providesTags: ["users"],
-
-      // notifications/my
     }),
   }),
 });
@@ -177,8 +167,7 @@ export const {
   useCompleteProfileMutation,
   useGetMeQuery,
   useDeleteAccountMutation,
-  useSavePushNotificationTokenMutation,
-  useGetAllPushNotificationForUserQuery,
   useLazyGetMeQuery,
   useUpdateProfileMutation,
+  useUpdatePushTokenMutation
 } = authApi;

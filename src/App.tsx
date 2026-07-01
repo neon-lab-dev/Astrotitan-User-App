@@ -13,9 +13,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import GlobalModal from './components/reusable/GlobalModal/GlobalModal';
 import GlobalBottomSheet from './components/reusable/GlobalBottomSheet/GlobalBottomSheet';
 import { NavigationContainer } from '@react-navigation/native';
-import { DevResetPanel } from './components/dev/DevResetPanel';
 import { useEffect, useState } from 'react';
 import { loadAuth } from './utils/loadAuth';
+import { NotificationManager } from './components/NotificationManager';
+// import { DevResetPanel } from './components/dev/DevResetPanel';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -54,6 +55,7 @@ function AppContent() {
      <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <NavigationContainer>
+            <NotificationManager/>
             <ScreenWrapper>
               <RootNavigator />
             </ScreenWrapper>

@@ -220,46 +220,35 @@ const OrdersScreen = () => {
           ) : orders.length >
             0 ? (
             <>
-              {orders.map(
-                (
-                  item: any
-                ) => (
+              {orders.map((item: any) => {
+                const firstItem = item?.orderedItems?.[0];
+
+                console.log("FIRST ITEM =>", firstItem);
+
+                console.log(
+                  "IMAGE URL =>",
+                  firstItem?.productId?.imageUrls?.[0]
+                );
+
+                return (
                   <OrderCard
                     key={item._id}
-                    title={
-                      item?.orderedItems?.[0]
-                        ?.productId?.name ||
-                      "Order"
-                    }
-                    image={
-                      item?.orderedItems?.[0]
-                        ?.productId
-                        ?.imageUrls?.[0]
-                    }
-                    status={
-                      item.status || "pending"
-                    }
-                    date={new Date(
-                      item.createdAt
-                    ).toLocaleDateString(
-                      "en-IN",
-                      {
-                        day: "numeric",
-
-                        month:
-                          "long",
-
-                        year: "numeric",
-                      }
-                    )}
+                    title={firstItem?.name || "Order"}
+                    image={firstItem?.productId?.imageUrls?.[0]}
+                    status={item.status || "pending"}
+                    date={new Date(item.createdAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
                     onPress={() => {
-                      navigation.navigate(
-                        "OrdersDetails", { order: JSON.stringify(item), },
-                      );
+                      navigation.navigate("OrdersDetails", {
+                        order: JSON.stringify(item),
+                      });
                     }}
                   />
-                )
-              )}
+                );
+              })}
             </>
           ) : (
             /* EMPTY */

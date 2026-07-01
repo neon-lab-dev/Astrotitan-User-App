@@ -981,7 +981,7 @@ const PujaDetails = () => {
                     <ContentSection
                       title="Reviews & Ratings"
                       titleFontSize={
-                        24
+                        16
                       }
                     />
 
@@ -1068,7 +1068,7 @@ const PujaDetails = () => {
                 <ContentSection
                   title="Related Poojas"
                   titleFontSize={
-                    24
+                    16
                   }
                 >
                   <SansText>
@@ -1319,7 +1319,7 @@ const styles =
     },
 
     sectionTitle: {
-      fontSize: 21,
+      fontSize: 16,
       fontFamily:
         "Satoshi-Bold",
       color: "#0D0D0D",

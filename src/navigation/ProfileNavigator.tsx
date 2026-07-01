@@ -13,6 +13,7 @@ import Queries from "../screens/tabs/profile/query/Queries";
 import ChatHistory from "../screens/tabs/astrologers/(chat)/ChatHistory";
 import OrdersScreen from "../screens/tabs/remedies/orders/OrdersScreen";
 import AstrologerChatScreen from "../screens/tabs/astrologers/(chat)/AstrologerChatScreen";
+import OrdersDetails from "../screens/tabs/remedies/orders/OrdersDetails";
 
 const Stack = createNativeStackNavigator();
 
@@ -80,6 +81,11 @@ export default function ProfileNavigator() {
       <Stack.Screen
         name="OrdersScreen"
         component={OrdersScreen}
+      />
+      
+      <Stack.Screen
+        name="OrdersDetails"
+        component={OrdersDetails}
       />
       
 

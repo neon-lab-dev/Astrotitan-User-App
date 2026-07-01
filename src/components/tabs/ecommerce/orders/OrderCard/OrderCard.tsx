@@ -149,10 +149,15 @@ const OrderCard = ({
       {/* LEFT */}
 
       <View style={styles.leftSection}>
-        <Image
-          source={image}
-          style={styles.image}
-        />
+       <Image
+  source={
+    image
+      ? { uri: image }
+      : undefined
+  }
+  style={styles.image}
+  resizeMode="cover"
+/>
 
         <View style={styles.content}>
           {/* TITLE */}
@@ -227,10 +232,9 @@ const styles = StyleSheet.create({
 
   image: {
     width: 83,
-
     height: 83,
-
     borderRadius: 14,
+    backgroundColor:"#FBF7EB"
   },
 
   content: {
@@ -248,9 +252,9 @@ const styles = StyleSheet.create({
   },
 
   statusText: {
-    fontSize: 16,
+    fontSize: 14,
 
-    lineHeight: 28,
+    lineHeight: 18,
 
     fontFamily: "Satoshi-Bold",
   },

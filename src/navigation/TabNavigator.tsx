@@ -40,7 +40,8 @@ const hiddenRoutes = [
   "RequestedFormCompleted",
   "AstrologerChatScreen",
   "RequestedSessions",
-  "NotificationScreen"
+  "NotificationScreen",
+  "PersonalInformation"
 ];
 
 function shouldHideTabBar(route: any) {

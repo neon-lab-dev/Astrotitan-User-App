@@ -14,6 +14,8 @@ import AuthTitle from "../../../../components/auth/AuthTitle";
 import { SatoshiText } from "../../../../components/reusable/Text/SatoshiText";
 import ReusableButton from "../../../../components/reusable/ReusableButton/ReusableButton";
 import AddressCard from "../../../../components/tabs/profile/address/AddressCard";
+import { useGetMyAddressesQuery } from "../../../../redux/features/address/addressApi";
+import AddressCardSkeleton from "../../../../components/tabs/profile/address/AddressCardSkeleton/AddressCardSkeleton";
 
 /* ---------------- ACTIONS ---------------- */
 
@@ -201,20 +203,29 @@ export const ORDER_STATUS_CONFIG =
 const OrdersDetails = () => {
   const route = useRoute<any>();
 
-  const params = route.params || {};
-
   /* ---------------- GET ORDER ---------------- */
 
-  const rawOrder =
-    Array.isArray(
-      params.order
-    )
-      ? params.order[0]
-      : params.order;
+  const rawOrder = route.params?.order;
 
-  const order = rawOrder
-    ? JSON.parse(rawOrder)
-    : null;
+  const order =
+    typeof rawOrder === "string"
+      ? JSON.parse(rawOrder)
+      : rawOrder;
+
+  console.log("ORDER OBJECT =>", order);
+  console.log("ORDER ITEMS =>", order?.orderedItems);
+
+  const {
+    data,
+    isLoading,
+    refetch,
+  } = useGetMyAddressesQuery({});
+
+  const address = data?.data?.find(
+    (item: any) => item._id === order?.addressId
+  );
+
+  console.log("ADDRESS =>", address);
 
   /* ---------------- NOT FOUND ---------------- */
 
@@ -243,12 +254,7 @@ const OrdersDetails = () => {
   }
 
   /* ---------------- PRODUCT ---------------- */
-
-  const firstItem =
-    order?.orderedItems?.[0];
-
-  const product =
-    firstItem?.productId;
+  const orderedItems = order?.orderedItems || [];
 
   /* ---------------- STATUS ---------------- */
 
@@ -260,20 +266,6 @@ const OrdersDetails = () => {
 
   /* ---------------- DELIVERY ---------------- */
 
-
-
-  const deliveryData = {
-    _id: order?.shippingAddress?._id,
-    type: order?.shippingAddress?.type || "home",
-    fullName: order?.shippingAddress?.fullName || "Customer",
-    phoneNumber: order?.shippingAddress?.phoneNumber || "N/A",
-    addressLine1: order?.shippingAddress?.address || "",
-    addressLine2: order?.shippingAddress?.landmark || "",
-    city: order?.shippingAddress?.city || "",
-    state: order?.shippingAddress?.state || "",
-    pinCode: order?.shippingAddress?.pincode || "",
-    country: order?.shippingAddress?.country || "India",
-  };
   return (
     <AnimatedScreen>
       <ScreenWrapper>
@@ -300,63 +292,64 @@ const OrdersDetails = () => {
 
           {/* PRODUCT */}
           <ScrollView>
-            <View
-              style={
-                styles.productCard
-              }
-            >
+            {orderedItems.map((item: any) => (
               <View
-                style={
-                  styles.productRow
-                }
+                key={item._id}
+                style={styles.productCard}
               >
-                <Image
-                  source={
-                    product
-                      ?.imageUrls?.[0]
-                  }
-                  style={
-                    styles.image
-                  }
-                />
-
                 <View
-                  style={{
-                    flex: 1,
-                  }}
+                  style={styles.productRow}
                 >
-                  <SatoshiText
-                    style={
-                      styles.productTitle
-                    }
-                  >
-                    {product?.name ||
-                      "Order"}
-                  </SatoshiText>
+                  <Image
+                    source={{
+                      uri:
+                        item?.productId
+                          ?.imageUrls?.[0],
+                    }}
+                    style={styles.image}
+                  />
 
-                  <SansText
-                    style={
-                      styles.quantity
-                    }
+                  <View
+                    style={{
+                      flex: 1,
+                    }}
                   >
-                    Quantity:{" "}
-                    {
-                      firstItem?.quantity
-                    }
-                  </SansText>
+                    <SatoshiText
+                      style={
+                        styles.productTitle
+                      }
+                    >
+                      {item?.name}
+                    </SatoshiText>
 
-                  <SansText
-                    style={
-                      styles.orderId
-                    }
-                  >
-                    {
-                      order?.orderId
-                    }
-                  </SansText>
+                    <SansText
+                      style={
+                        styles.quantity
+                      }
+                    >
+                      Quantity:{" "}
+                      {item?.quantity}
+                    </SansText>
+
+                    <SansText
+                      style={
+                        styles.quantity
+                      }
+                    >
+                      ₹{item?.price}
+                    </SansText>
+
+                    {/* <SansText
+                      style={
+                        styles.orderId
+                      }
+                    >
+                      {order?.orderId}
+                    </SansText> */}
+                  </View>
                 </View>
               </View>
-            </View>
+            ))}
 
             {/* STATUS */}
 
@@ -419,11 +412,42 @@ const OrdersDetails = () => {
                   details
                 </SatoshiText>
 
-                <AddressCard
-                  data={
-                    deliveryData
-                  }
-                />
+                {isLoading ? (
+                  <>
+                    {[1].map((item) => (
+                      <AddressCardSkeleton key={item} />
+                    ))}
+                  </>
+                ) : address ? (
+                  <AddressCard
+                    data={{
+                      _id: address._id,
+                      type: address.type,
+                      fullName: address.fullName,
+                      phoneNumber: address.phoneNumber,
+                      alternativePhoneNumber:
+                        address.alternativePhoneNumber,
+                      addressLine1:
+                        address.addressLine1,
+                      addressLine2:
+                        address.addressLine2,
+                      city: address.city,
+                      state: address.state,
+                      pinCode: address.pinCode,
+                      country: address.country,
+                    }}
+                  />
+                ) : (
+                  <SansText
+                    style={{
+                      color: "#777",
+                      textAlign: "center",
+                      marginTop: 12,
+                    }}
+                  >
+                    Address not found
+                  </SansText>
+                )}
               </View>
 
               {/* TOTAL */}

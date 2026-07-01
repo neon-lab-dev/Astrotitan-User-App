@@ -19,7 +19,7 @@ import {
   useDispatch,
 } from "react-redux";
 import { launchImageLibrary } from "react-native-image-picker";
-import BookIcon from "@/assets/icons/visual/intent/book.svg"; 
+import BookIcon from "@/assets/icons/visual/intent/book.svg";
 import BriefcaseIcon from "@/assets/icons/visual/intent/briefcase.svg";
 import HeartIcon from "@/assets/icons/visual/intent/favourite.svg";
 import MarriageIcon from "@/assets/icons/visual/intent/marriage.svg";
@@ -410,14 +410,17 @@ const PersonalInformation =
                   <Image
                     source={
                       profileImage?.uri
-                        ? profileImage.uri
+                        ? {
+                          uri: profileImage.uri,
+                        }
                         : profile?.profilePicture
-                          ? profile.profilePicture
+                          ? {
+                            uri: profile.profilePicture,
+                          }
                           : require("@/assets/images/dummy/experts/expert1.png")
                     }
-                    style={
-                      styles.image
-                    }
+                    style={styles.image}
+                    resizeMode="cover"
                   />
 
                   <View

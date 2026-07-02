@@ -223,13 +223,6 @@ const OrdersScreen = () => {
               {orders.map((item: any) => {
                 const firstItem = item?.orderedItems?.[0];
 
-                console.log("FIRST ITEM =>", firstItem);
-
-                console.log(
-                  "IMAGE URL =>",
-                  firstItem?.productId?.imageUrls?.[0]
-                );
-
                 return (
                   <OrderCard
                     key={item._id}

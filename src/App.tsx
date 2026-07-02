@@ -27,8 +27,6 @@ function App() {
         /* LOAD AUTH */
 
         await loadAuth();
-
-        console.log("AUTH RESTORED");
       } catch (error) {
         console.log("APP INIT ERROR:", error);
       } finally {

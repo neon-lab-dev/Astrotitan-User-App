@@ -48,8 +48,6 @@ const AddressScreen = () => {
   const addresses =
     data?.data || [];
 
-    console.log("Address data",addresses)
-
   const onRefresh = async () => {
     try {
       setRefreshing(true);

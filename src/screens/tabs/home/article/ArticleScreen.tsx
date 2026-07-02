@@ -37,7 +37,6 @@ export default function ArticleScreen() {
   });
 
   const blog = data?.data;
-  console.log(blog);
 
 
 

@@ -57,8 +57,6 @@ const RequestedSessions = () => {
   const calls = bookings.filter(
     (item: any) => normalizeStatus(item.method) === "call"
   );
-
-  console.log(bookings, "booking")
   const hasSessions = chats.length > 0 || calls.length > 0;
 
   const dispatch = useDispatch();

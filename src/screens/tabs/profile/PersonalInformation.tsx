@@ -239,10 +239,6 @@ const PersonalInformation =
             selectionLimit: 1,
           });
 
-          console.log(
-            "IMAGE RESULT:",
-            result
-          );
 
           if (result.assets?.length) {
             setProfileImage(result.assets[0]);
@@ -263,25 +259,7 @@ const PersonalInformation =
         data: FormValues
       ) => {
         try {
-          console.log(
-            "PROFILE IMAGE:",
-            profileImage
-          );
-          console.log(
-            "IMAGE URI:",
-            profileImage?.uri
-          );
-
-          console.log(
-            "IMAGE TYPE:",
-            profileImage?.mimeType
-          );
-
-          console.log(
-            "IMAGE NAME:",
-            profileImage?.fileName
-          );
-
+          
           const response =
             await updateProfile(
               {
@@ -326,14 +304,6 @@ const PersonalInformation =
             )
           );
 
-          console.log(
-            "LATEST USER:",
-            latestUser
-          );
-
-          console.log(
-            "PROFILE UPDATED SUCCESSFULLY"
-          );
         } catch (
         error
         ) {

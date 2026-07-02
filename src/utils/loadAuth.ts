@@ -8,9 +8,6 @@ export const loadAuth = async () => {
   const userString = await Storage.getUser();
 
 
-  console.log("TOKEN from storage:", token);
-  console.log("USER from storage:", userString);
-
   if (token) {
     // ✅ Step 1: set token FIRST (even if user is stale/null)
     store.dispatch(
@@ -19,9 +16,6 @@ export const loadAuth = async () => {
         user: userString ? JSON.parse(userString) : null,
       }),
     );
-
-    console.log("Redux after initial load:", store.getState().auth);
-
     try {
       // ✅ Step 2: call getMe AFTER token is in Redux
       const result = await store.dispatch(
@@ -30,9 +24,6 @@ export const loadAuth = async () => {
 
       if ("data" in result) {
         const freshUser = result.data.data;
-
-        console.log("✅ Fresh user from API:", freshUser);
-
         // ✅ Step 3: update Redux with fresh user (KEEP token)
         store.dispatch(
           setAuth({

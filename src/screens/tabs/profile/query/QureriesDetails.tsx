@@ -59,7 +59,6 @@ const [deleteQuery, { isLoading }] =
     ? JSON.parse(query as string)
     : null;
 
-  console.log(queryData)
   const formatStatus = (status: string) => {
     switch (status) {
       case "pending":

@@ -75,7 +75,6 @@ export default function OtpScreen() {
       const accessToken = data?.accessToken;
       const refreshToken = data?.refreshToken;
       const user = data?.user;
-      console.log(accessToken)
       dispatch(setAuth({ token: accessToken, user: user }));
       const isProfileCompleted = user?.isProfileCompleted;
       await Storage.setAccessToken( accessToken);
@@ -88,7 +87,6 @@ export default function OtpScreen() {
         const meRes = await getMe({}).unwrap();
         finalUser = meRes.data;
         await Storage.setUser(finalUser);
-        console.log("user from login", finalUser)
       } catch {
         console.log("Using fallback user");
       }

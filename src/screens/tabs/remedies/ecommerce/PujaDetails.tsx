@@ -1037,7 +1037,6 @@ const PujaDetails = () => {
                           title="View All Reviews"
                           variant="outline"
                           onPress={() => {
-                            console.log(puja?._id)
                             navigation.navigate(
 
 

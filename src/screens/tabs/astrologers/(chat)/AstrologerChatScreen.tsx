@@ -231,8 +231,6 @@ const AstrologerChatScreen = () => {
       tempId,
     };
 
-    console.log("📤 Sending message:", messageData);
-
     // Optimistically add to UI
     dispatch(
       addConsultationMessage({
@@ -247,9 +245,6 @@ const AstrologerChatScreen = () => {
 
     // Send via socket
     const sent = sendConsultationMessage(messageData);
-
-    console.log("Message sent:", sent);
-
     if (sent) {
       setMessage("");
       inputRef.current?.focus();

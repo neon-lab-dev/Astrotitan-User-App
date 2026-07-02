@@ -151,8 +151,7 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
 
       RazorpayCheckout.open(options)
         .then((data: any) => {
-          // ✅ Payment success
-          console.log('Payment success:', data);
+         
           resolve(data);
         })
         .catch((error: any) => {
@@ -200,21 +199,13 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
         totalAmount: totalAmount,
         addressId: formData?.deliveryAddress?.addressId,
       }).unwrap();
-     console.log(orderResponse,"orderResponse")
       if (!orderResponse?.success) {
         throw new Error('Failed to create order');
       }
 
       const { order, razorpayOrder } = orderResponse.data;
-
-      // console.log('✅ Order created:', order);
-      // console.log('✅ Razorpay Order:', razorpayOrder);
-      // console.log('✅ NEW:', orderResponse.data);
-
-      // ✅ Step 2: Open Razorpay payment screen
       try {
         const paymentData = await openRazorpayPayment(order, razorpayOrder);
-        console.log(paymentData,"payment data")
         // ✅ Step 3: Verify payment
         await handleVerifyPayment(
           paymentData?.razorpay_order_id,

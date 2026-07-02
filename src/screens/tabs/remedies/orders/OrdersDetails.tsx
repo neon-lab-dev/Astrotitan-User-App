@@ -212,8 +212,6 @@ const OrdersDetails = () => {
       ? JSON.parse(rawOrder)
       : rawOrder;
 
-  console.log("ORDER OBJECT =>", order);
-  console.log("ORDER ITEMS =>", order?.orderedItems);
 
   const {
     data,
@@ -224,8 +222,6 @@ const OrdersDetails = () => {
   const address = data?.data?.find(
     (item: any) => item._id === order?.addressId
   );
-
-  console.log("ADDRESS =>", address);
 
   /* ---------------- NOT FOUND ---------------- */
 

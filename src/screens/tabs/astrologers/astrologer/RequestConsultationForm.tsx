@@ -78,11 +78,8 @@ const RequestConsultationForm = () => {
                 consultationFor: formData.guidance,
             };
 
-            console.log(payload,"payload");
+            await bookConsultation(payload).unwrap();
 
-            const response = await bookConsultation(payload).unwrap();
-
-            console.log("Success", response);
 
             navigation.reset({
                 index: 1,

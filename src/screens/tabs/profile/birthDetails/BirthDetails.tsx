@@ -51,7 +51,6 @@ const BirthDetails = () => {
   const time = watch("time");
   const place = watch("place");
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user)
   useEffect(() => {
     const profile =
       user?.profile;

@@ -29,11 +29,6 @@ export default function VerifiedPopup({ isProfileCompleted }: Props) {
       });
     }
   };
-
-  console.log("navigation =", navigation);
-  console.log("replace =", navigation.replace);
-  console.log("navigate =", navigation.navigate);
-  console.log("reset =", navigation.reset);
   return (
     <LinearGradient
       colors={["#EDDEAD", "#F1E8C9", "#F5F5F5"]}

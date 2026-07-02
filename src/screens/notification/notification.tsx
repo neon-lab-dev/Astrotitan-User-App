@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useRef, useState } from "react";
 import { Image, ScrollView, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,7 +11,7 @@ import ReusableButton from "../../components/reusable/ReusableButton/ReusableBut
 import { SatoshiText } from "../../components/reusable/Text/SatoshiText";
 import { selectUser } from './../../redux/features/auth/authSlice';
 import { useSelector } from "react-redux";
-import { useGetMyNotificationsQuery } from "../../redux/features/notification/notificationApi";
+import { useGetMyNotificationsQuery, useMarkAsReadMutation } from "../../redux/features/notification/notificationApi";
 import { connectSocket, disconnectSocket } from "../../socket/socket";
 import { formatMessageDate } from "../../utils/validators/dateValidators";
 
@@ -18,10 +19,10 @@ const NotificationScreen = () => {
     const navigation = useNavigation<any>();
     const user = useSelector(selectUser) as any;
     const notificationRef = useRef<HTMLDivElement | null>(null);
-
     const { data: myNotifications } = useGetMyNotificationsQuery({});
     const [notifications, setNotifications] = useState<any[]>([]);
     const hasNotifications = notifications.length > 0;
+
 
     useEffect(() => {
         if (myNotifications?.data) {
@@ -35,16 +36,16 @@ const NotificationScreen = () => {
 
     // --- Socket for live notifications ---
     useEffect(() => {
-        if (!user?.accountDetails?._id) {
+        if (!user?.account?._id) {
             console.log("⚠️ No user, skipping socket connection");
             return;
         }
 
-        console.log("🔌 Connecting socket for user:", user?.accountDetails?._id);
+        // console.log("🔌 Connecting socket for user:", user?.account?._id);
 
-        const socket = connectSocket(user?.accountDetails?._id);
-        console.log("📡 Socket instance:", socket);
-        console.log("📡 Socket connected:", socket?.connected);
+        const socket = connectSocket(user?.account?._id);
+        // console.log("📡 Socket instance:", socket);
+        // console.log("📡 Socket connected:", socket?.connected);
 
         if (!socket) {
             console.error("❌ Failed to create socket");
@@ -56,7 +57,7 @@ const NotificationScreen = () => {
         };
 
         const onNotification = (data: any) => {
-            console.log("🔔 New notification:", data);
+            // console.log("🔔 New notification:", data);
             setNotifications((prev) => [data, ...prev]);
         };
 
@@ -73,17 +74,18 @@ const NotificationScreen = () => {
         }
 
         return () => {
-            console.log("🧹 Cleaning up socket listeners");
+            // console.log("🧹 Cleaning up socket listeners");
             socket.off("connect", onConnect);
             socket.off("new-notification", onNotification);
             socket.off("onlineUsers", onOnlineUsers);
             disconnectSocket();
         };
-    }, [user?.accountDetails?._id]);
+    }, [user?.account?._id]);
 
     const unreadCount = notifications.filter(
         (notification) => !notification.isRead,
     ).length;
+
 
 
     return (
@@ -98,14 +100,14 @@ const NotificationScreen = () => {
                                 </SansText>
                             )}
                         </AuthTitle>
-                       
+
                     </View>
                 </AppHeader>
 
                 <View ref={notificationRef} style={{ flex: 1, }}>
                     {!hasNotifications ? (
                         // EMPTY STATE
-                        <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+                        <View style={{ flex: 1, }}>
                             <View
                                 style={{
                                     flex: 1,
@@ -139,7 +141,7 @@ const NotificationScreen = () => {
                         </View>
                     ) : (
                         // LIST STATE
-                        <ScrollView 
+                        <ScrollView
                             showsVerticalScrollIndicator={false}
                             contentContainerStyle={{ paddingVertical: 8 }}
                         >
@@ -162,9 +164,9 @@ const NotificationScreen = () => {
                                 )}
 
                                 {notifications.map((item, index) => (
-                                    <NotificationItem 
-                                        key={item?._id || index} 
-                                        item={item} 
+                                    <NotificationItem
+                                        key={item?._id || index}
+                                        item={item}
                                     />
                                 ))}
                             </View>
@@ -179,14 +181,22 @@ const NotificationScreen = () => {
 export default NotificationScreen;
 
 // Updated NotificationItem component
-const NotificationItem = ({ item,}: any) => {
-    const [isPressed, setIsPressed] = useState(false);
+const NotificationItem = ({ item, }: any) => {
     const isUnread = !item?.isRead;
+    const [markAsRead] = useMarkAsReadMutation()
+    const handleMarkAsRead = async (id: string) => {
+        try {
+            await markAsRead(id).unwrap()
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => setIsPressed(!isPressed)}
+            onPress={() => handleMarkAsRead(item?._id)}
             style={{
                 backgroundColor: isUnread ? '#FFF8F0' : '#FFFFFF',
                 borderRadius: 12,

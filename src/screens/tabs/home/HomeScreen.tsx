@@ -117,7 +117,6 @@ const HomeScreen = () => {
       }))
       : []),
   ];
-  console.log(combinedItems)
   const astrologers = astrologersResponse?.data?.astrologers || [];
   const blogs = blogsResponse?.data?.data || [];
   const onRefresh = useCallback(async () => {
@@ -154,7 +153,6 @@ const HomeScreen = () => {
     fetchLatestUser();
   }, [fetchLatestUser])
 );
-console.log("astrologer",astrologersResponse)
   return (
     <AnimatedScreen>
       <ScreenWrapper>

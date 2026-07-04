@@ -28,6 +28,7 @@ import FeatureCardSkeleton from "../../../components/tabs/home/home/FeatureCard/
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from "../../../navigation/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useGetMyNotificationsQuery } from "../../../redux/features/notification/notificationApi";
 const HomeScreen = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [refreshing, setRefreshing] = useState(false);
@@ -37,6 +38,11 @@ const HomeScreen = () => {
     NativeStackNavigationProp<RootStackParamList>;
 
   const navigation = useNavigation<NavigationProp>();
+  const { data: myNotifications } = useGetMyNotificationsQuery({});
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const unreadCount = notifications.filter(
+        (notification) => !notification.isRead,
+    ).length;
   const {
     data: astrologersResponse,
     isLoading: astrologersLoading,
@@ -221,6 +227,8 @@ const HomeScreen = () => {
                 onPress={() => {
                   navigation.navigate("NotificationScreen");
                 }}
+                update={unreadCount>0}
+                updateCount={unreadCount}
               />
 
               <IconButton

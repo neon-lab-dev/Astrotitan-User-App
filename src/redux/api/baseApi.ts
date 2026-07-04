@@ -88,7 +88,8 @@ export const baseApi = createApi({
     "productCheckout",
     "orders",
     "consultationChat",
-    "consultation"
+    "consultation",
+    "subscription"
   ],
 
   endpoints: () => ({}),

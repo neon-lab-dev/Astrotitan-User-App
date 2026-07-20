@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
@@ -41,10 +42,10 @@ const PujaDetails = () => {
     NativeStackNavigationProp<RootStackParamList>;
 
   const navigation = useNavigation<NavigationProp>();
-
+  const [refreshing, setRefreshing] = useState(false);
   const id = Array.isArray(route.params?.id)
-  ? route.params.id[0]
-  : route.params?.id;
+    ? route.params.id[0]
+    : route.params?.id;
 
   const [
     whoExpanded,
@@ -64,6 +65,7 @@ const PujaDetails = () => {
   const {
     data: pujaResponse,
     isLoading,
+    refetch,
     isError,
   } =
     useGetSinglePujaByIdQuery(
@@ -80,6 +82,18 @@ const PujaDetails = () => {
       puja?.category,
     limit: 4,
   });
+
+
+  const onRefresh =
+    async () => {
+      try {
+        setRefreshing(true);
+
+        await refetch();
+      } finally {
+        setRefreshing(false);
+      }
+    };
 
   const relatedPujas =
     relatedPujasResponse?.data
@@ -545,7 +559,22 @@ const PujaDetails = () => {
           <AuthTitle title="Puja details" />
         </AppHeader>
 
-        <View
+        <ScrollView
+          showsVerticalScrollIndicator={
+            false
+          }
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#816B22"
+              colors={["#816B22",]}
+              progressBackgroundColor="#FBF7EB"
+            />
+          }
+          contentContainerStyle={{
+            paddingBottom: 120,
+          }}
           style={{
             flex: 1,
             position: "relative",
@@ -605,7 +634,7 @@ const PujaDetails = () => {
                   item,
                 }) => (
                   <Image
-                    source={item}
+                    source={{ uri: item }}
                     style={
                       styles.productImage
                     }
@@ -1160,7 +1189,7 @@ const PujaDetails = () => {
               }}
             />
           </View>
-        </View>
+        </ScrollView>
       </ScreenWrapper>
     </AnimatedScreen>
   );

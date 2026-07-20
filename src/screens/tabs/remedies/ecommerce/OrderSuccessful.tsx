@@ -34,18 +34,18 @@ const OrderSuccessful = () => {
   }, [orderData, clearCart]);
 
   // ✅ Auto redirect countdown
-  useEffect(() => {
-    if (counter === null || counter === 0) {
-      navigation.replace("OrdersScreen");
-      return;
-    }
+  // useEffect(() => {
+  //   if (counter === null || counter === 0) {
+  //     navigation.replace("OrdersScreen");
+  //     return;
+  //   }
 
-    const timer = setTimeout(() => {
-      setCounter((prev) => (prev !== null ? prev - 1 : null));
-    }, 1000);
+  //   const timer = setTimeout(() => {
+  //     setCounter((prev) => (prev !== null ? prev - 1 : null));
+  //   }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [counter, navigation]);
+  //   return () => clearTimeout(timer);
+  // }, [counter, navigation]);
 
   // ✅ Handle back button press (disable back navigation)
   useEffect(() => {

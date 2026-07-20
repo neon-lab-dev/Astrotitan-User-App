@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
@@ -36,6 +37,7 @@ import ReviewCard from "../../../../components/tabs/ecommerce/ecommerce/ReviewCa
 import ReusableButton from "../../../../components/reusable/ReusableButton/ReusableButton";
 import RemedyCard from "../../../../components/tabs/ecommerce/ecommerce/RemedyCard/RemedyCard";
 import { addToCart, decreaseQty, increaseQty, removeFromCart } from "../../../../redux/features/cart/cartSlice";
+import { resetCheckout } from "../../../../redux/features/checkout/checkoutSlice";
 
 const ProductDetails = () => {
   type NavigationProp =
@@ -43,7 +45,7 @@ const ProductDetails = () => {
 
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<any>();
-
+const [refreshing, setRefreshing] = useState(false);
   const id = Array.isArray(route.params?.id)
     ? route.params.id[0]
     : route.params?.id;
@@ -62,6 +64,7 @@ const ProductDetails = () => {
   const {
     data: productResponse,
     isLoading,
+    refetch,
     isError,
   } =
     useGetSingleProductByIdQuery(
@@ -83,6 +86,16 @@ const ProductDetails = () => {
           product?._id
       )
   );
+  const onRefresh =
+      async () => {
+        try {
+          setRefreshing(true);
+
+          await refetch();
+        } finally {
+          setRefreshing(false);
+        }
+      };
 
   const quantity =
     cartItem?.quantity || 0;
@@ -562,7 +575,22 @@ const ProductDetails = () => {
           <AuthTitle title="Product details" />
         </AppHeader>
 
-        <View
+        <ScrollView
+        showsVerticalScrollIndicator={
+                      false
+                    }
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#816B22"
+                        colors={["#816B22",]}
+                        progressBackgroundColor="#FBF7EB"
+                      />
+                    }
+                    contentContainerStyle={{
+                      paddingBottom: 120,
+                    }}
           style={{
             flex: 1,
             position: "relative",
@@ -620,7 +648,7 @@ const ProductDetails = () => {
                   item,
                 }) => (
                   <Image
-                    source={item}
+                    source={{ uri: item }}
                     style={
                       styles.productImage
                     }
@@ -1192,21 +1220,22 @@ const ProductDetails = () => {
                   title="Buy Now"
                   variant="solid"
                   onPress={() => {
-                   
-                      dispatch(
-                        addToCart({
-                          id: product?._id,
-                          name: product?.name,
-                          price:
-                            product?.discountedPrice,
-                          image:
-                            product
-                              ?.imageUrls?.[0],
-                          quantity: 1,
-                        })
-                      )
-                    
 
+                    dispatch(
+                      addToCart({
+                        id: product?._id,
+                        name: product?.name,
+                        price:
+                          product?.discountedPrice,
+                        image:
+                          product
+                            ?.imageUrls?.[0],
+                        quantity: 1,
+                      })
+                    )
+
+
+                    dispatch(resetCheckout());
                     navigation.navigate(
                       "CartScreen"
                     );
@@ -1281,8 +1310,9 @@ const ProductDetails = () => {
                   title="Go to Cart"
                   variant="solid"
                   onPress={() => {
-                    
 
+
+                    dispatch(resetCheckout());
                     navigation.navigate(
                       "CartScreen"
                     );
@@ -1298,7 +1328,7 @@ const ProductDetails = () => {
               </>
             )}
           </View>
-        </View>
+        </ScrollView>
       </ScreenWrapper>
     </AnimatedScreen>
   );

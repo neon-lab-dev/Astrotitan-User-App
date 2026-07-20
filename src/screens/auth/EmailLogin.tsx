@@ -97,7 +97,7 @@ export default function EmailLogin() {
           </View>
           <View style={{ gap: 24 }}>
             <AuthSecondaryNavigation
-              question="Old User?"
+              question="New User?"
               option=" SignIn"
               action={() => navigation.replace("RegisterWithPhone")}
             />

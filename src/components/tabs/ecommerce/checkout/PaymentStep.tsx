@@ -44,7 +44,7 @@ const PaymentStep = ({ value, setValue }: Props) => {
 
           <Row label="Shipping Charges" value={`₹ ${shipping}/-`} />
 
-          <Row label="Discount Applied" value="NA" />
+          {/* <Row label="Discount Applied" value="NA" /> */}
 
           <View style={styles.divider} />
 

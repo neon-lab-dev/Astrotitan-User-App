@@ -107,14 +107,13 @@ const CartScreen = () => {
               <View style={{ marginTop: 12, gap: 12 }}>
                 <Row label="Subtotal" value={`₹ ${subtotal}/-`} />
                 <Row label="Shipping Charges" value={`₹ ${shipping}/-`} />
-                <Row label="Discount Applied" value="NA" />
               </View>
 
               <View style={styles.divider} />
 
               <Row label="Total" value={`₹ ${total}/-`} bold />
 
-              <View style={{ padding: 16 }}>
+              <View style={{ paddingTop: 16 }}>
                 <ReusableButton
                   title="Proceed To Checkout"
                   onPress={() => {

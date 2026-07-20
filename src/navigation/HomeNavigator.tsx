@@ -9,6 +9,12 @@ import NotificationScreen from "../screens/notification/notification";
 import AstrologerDetailsScreen from "../screens/tabs/astrologers/astrologer/AstrologerDetailsScreen";
 import PujaDetails from "../screens/tabs/remedies/ecommerce/PujaDetails";
 import ProductDetails from "../screens/tabs/remedies/ecommerce/ProductDetails";
+import CheckoutScreen from "../screens/tabs/remedies/ecommerce/CheckoutScreen";
+import ConsultationForm from "../screens/tabs/remedies/ecommerce/ConsultationForm";
+import PujaConsultationSuccess from "../screens/tabs/remedies/ecommerce/PujaConsultationSuccess";
+import RequestConsultationForm from "../screens/tabs/astrologers/astrologer/RequestConsultationForm";
+import AstrologerScreen from "../screens/tabs/astrologers/AstrologerScreen";
+import CartScreen from "../screens/tabs/remedies/ecommerce/CartScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +44,10 @@ export default function HomeNavigator() {
         name="HoroscopeScreen"
         component={HoroscopeScreen}
       />
+       <Stack.Screen
+              name="AstrologerScreen"
+              component={AstrologerScreen}
+            />
 
       <Stack.Screen
         name="SelectZodiacSign"
@@ -56,6 +66,10 @@ export default function HomeNavigator() {
         component={AstrologerDetailsScreen}
       />
       <Stack.Screen
+        name="RequestConsultationForm"
+        component={RequestConsultationForm}
+      />
+      <Stack.Screen
         name="PujaDetails"
         component={PujaDetails}
       />
@@ -63,7 +77,22 @@ export default function HomeNavigator() {
         name="ProductDetails"
         component={ProductDetails}
       />
+      <Stack.Screen
+        name="CheckoutScreen"
+        component={CheckoutScreen}
+      />
+      <Stack.Screen
+        name="CartScreen"
+        component={CartScreen}
+      />
+      <Stack.Screen
+        name="ConsultationForm"
+        component={ConsultationForm}
+      />
+      <Stack.Screen
+        name="PujaConsultationSuccess"
+        component={PujaConsultationSuccess}
+      />
     </Stack.Navigator>
   );
 }
-

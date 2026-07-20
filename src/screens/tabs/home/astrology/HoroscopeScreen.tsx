@@ -14,11 +14,12 @@ import InsightSection from '../../../../components/tabs/home/home/InsightSection
 import Tabs from './../../../../components/tabs/home/home/TabOption/TabOption';
 import { zodiacSigns } from '../../../../data/zodiacSigns';
 import { useRoute } from "@react-navigation/native";
+import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
 // import { ChevronDown } from "lucide-react-native";
 const HoroscopeScreen = () => {
   const route = useRoute<any>();
 
-const { sign } = route.params || {};
+  const { sign } = route.params || {};
 
   const [selectedZodiac, setSelectedZodiac] = useState("aries");
   const [day, setDay] = useState("today");
@@ -36,24 +37,24 @@ const { sign } = route.params || {};
   }, [sign]);
 
 
- const SelectZodiacSign = () => {
-  BottomSheetService.open(
-    <SelectZodiacScreen
-      handleContinue={(sign: string) => {
-        // 1. update state (this triggers API automatically)
-        setSelectedZodiac(sign);
+  const SelectZodiacSign = () => {
+    BottomSheetService.open(
+      <SelectZodiacScreen
+        handleContinue={(sign: string) => {
+          // 1. update state (this triggers API automatically)
+          setSelectedZodiac(sign);
 
-        // 2. close bottom sheet
-        BottomSheetService.close();
-      }}
-    />,
-    {
-      height: "80%",
-      hasGradient: true,
-    }
-  );
-};
-  
+          // 2. close bottom sheet
+          BottomSheetService.close();
+        }}
+      />,
+      {
+        height: "80%",
+        hasGradient: true,
+      }
+    );
+  };
+
 
   // ✅ API CALL
   const fetchDailyHoroscope = async () => {
@@ -162,9 +163,23 @@ const { sign } = route.params || {};
                     ? "Yesterday's"
                     : "Tomorrow's"
               } overview</SatoshiText>
-              <SatoshiText style={{ fontSize: 16, color: "#4A4A4A" }}>
+              {dailyHoroscope !== "" && dailyHoroscope !== null ? <SatoshiText style={{ fontSize: 16, color: "#4A4A4A" }}>
                 {dailyHoroscope}
-              </SatoshiText>
+              </SatoshiText> : <View style={styles.skeletonContentContainer}>
+                <View style={{ gap: 14 }}>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9,].map(
+                    (_, index) => (
+                      <SkeletonLoader
+                        key={index}
+                        width={index % 2 === 0 ? "100%" : "88%"}
+                        height={16}
+                        borderRadius={8}
+                        array={[1]}
+                      />
+                    ),
+                  )}
+                </View>
+              </View>}
             </View>
 
 
@@ -212,5 +227,8 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontFamily: "Satoshi-Bold",
     color: "#0d0d0d",
+  },
+  skeletonContentContainer: {
+    paddingTop: 28,
   },
 });

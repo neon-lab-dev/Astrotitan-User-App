@@ -11,17 +11,17 @@ const RaiseQuerySuccess = () => {
     NativeStackNavigationProp<RootStackParamList>;
 
   const navigation = useNavigation<NavigationProp>();
-   const route = useRoute<any>();
-      const {slug} = route.params || {};
+  const route = useRoute<any>();
+  const { slug } = route.params || {};
   return (
     <SuccessScreen
       title="Query submitted"
-
+      description="We Received your Query , We will fi it as soon as possible "
       buttons={[
 
         {
           title: "Back To Profile",
-
+          variant: "outline",
           onPress: () => {
 
             navigation.replace(
@@ -29,39 +29,49 @@ const RaiseQuerySuccess = () => {
             );
           },
         },
+        {
+          title: "View Queries",
+
+          onPress: () => {
+
+            navigation.replace(
+              "Queries"
+            );
+          },
+        },
       ]}
     >
       <View
-  style={{
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 8,
-    gap: 6,
-  }}
->
-  <SansText
-    style={{
-      fontSize: 14,
-      color: "#6B6B6B",
-      textAlign: "center",
-    }}
-  >
-    Ticket ID
-  </SansText>
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 8,
+          gap: 6,
+        }}
+      >
+        <SansText
+          style={{
+            fontSize: 14,
+            color: "#6B6B6B",
+            textAlign: "center",
+          }}
+        >
+          Ticket ID
+        </SansText>
 
-  
-    <SansText
-      style={{
-        fontFamily: "GeneralSans-Bold",
-        fontSize: 14,
-        color: "#0D0D0D",
-        letterSpacing: 0.4,
-        textAlign: "center",
-      }}
-    >
-      {slug}
-    </SansText>
-</View>
+
+        <SansText
+          style={{
+            fontFamily: "GeneralSans-Bold",
+            fontSize: 14,
+            color: "#0D0D0D",
+            letterSpacing: 0.4,
+            textAlign: "center",
+          }}
+        >
+          {slug}
+        </SansText>
+      </View>
     </SuccessScreen>
   );
 };

@@ -39,12 +39,12 @@ const ExpertCard = ({
         onConsult={() => {
           BottomSheetService.close();
 
-          navigation.navigate(
-            "AstrologerDetailsScreen",
-            {
+          navigation.getParent()?.navigate("AstrologersTab", {
+            screen: "AstrologerDetailsScreen",
+            params: {
               id: _id,
             },
-          );
+        });
         }}
       />,
       {

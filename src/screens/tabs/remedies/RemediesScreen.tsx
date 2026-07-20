@@ -2,7 +2,7 @@ import CartIcon from "@/assets/icons/navigation/cart.svg";
 import React, { useCallback, useRef, useState } from "react";
 import { Animated, Pressable, RefreshControl, ScrollView, StyleSheet, View, } from "react-native";
 import { FlatList, } from "react-native-gesture-handler";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { useGetAllProductsQuery } from "../../../redux/features/product/productsApi";
 import { SansText } from "../../../components/reusable/Text/SansText";
@@ -22,19 +22,19 @@ import { useGetAllPujasQuery } from "../../../redux/features/puja/pujaApi";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../navigation/types";
+import { resetCheckout } from "../../../redux/features/checkout/checkoutSlice";
 
 
 const RemediesScreen = () => {
   type NavigationProp =
     NativeStackNavigationProp<RootStackParamList>;
-
   const navigation = useNavigation<NavigationProp>();
   const [activeTab, setActiveTab] = useState("store");
   const [containerWidth, setContainerWidth] = useState(0);
   const opacity = useRef(
     new Animated.Value(1)
   ).current;
-
+  const dispatch=useDispatch()
   useFocusEffect(
     useCallback(() => {
       opacity.setValue(1); // Reset opacity when screen is focused
@@ -479,6 +479,8 @@ const RemediesScreen = () => {
               update={true}
               updateCount={cartCount}
               onPress={() => {
+                
+                    dispatch(resetCheckout());
                 navigation.navigate("CartScreen")
               }}
             />

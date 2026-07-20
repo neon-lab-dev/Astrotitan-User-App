@@ -55,7 +55,7 @@ const SplashScreen = () => {
           } else {
             navigation.replace("MultiStepForm");
           }
-        }, 100);
+        }, 10);
 
         return;
       }

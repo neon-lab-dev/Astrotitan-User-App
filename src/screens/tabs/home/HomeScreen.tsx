@@ -39,8 +39,7 @@ const HomeScreen = () => {
 
   const navigation = useNavigation<NavigationProp>();
   const { data: myNotifications } = useGetMyNotificationsQuery({});
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const unreadCount = notifications.filter(
+  const unreadCount = myNotifications?.data?.filter(
         (notification) => !notification.isRead,
     ).length;
   const {
@@ -153,6 +152,7 @@ const HomeScreen = () => {
     console.log("GET ME ERROR:", error);
   }
 }, [getMe, dispatch]);
+
 
   useFocusEffect(
   useCallback(() => {
@@ -306,16 +306,14 @@ const HomeScreen = () => {
                 title="Today’s Chart Insight"
                 description="Saturn influences discipline & patience."
                 image={require("@/assets/images/consmos2.png")}
-                onPress={() =>
-                  navigation.navigate("KundliScreen")
-                }
+                onPress={() => { navigation.getParent()?.navigate("KundaliTab") }}
                 height={214}
               />
             </View>
 
             {/* ASTROLOGERS */}
 
-            <View style={{ gap: 12 }}>
+           {!astrologersLoading && !astrologerFetching && astrologers.length!==0  &&  <View style={{ gap: 12 }}>
               <View
                 style={{
                   paddingHorizontal: 16,
@@ -329,7 +327,7 @@ const HomeScreen = () => {
                 </ContentSection>
               </View>
 
-              {astrologersLoading || astrologerFetching ? (
+              {astrologersLoading || astrologerFetching  ? (
                 <FlatList
                   data={[1, 2, 3]}
                   horizontal
@@ -382,11 +380,11 @@ const HomeScreen = () => {
                   )}
                 />
               )}
-            </View>
+            </View>}
 
             {/* GEMS */}
 
-            <View style={{ gap: 12 }}>
+           {!isProductsLoading && !isProductsFetching && !isPujasFetching && !isPujasLoading && combinedItems.length!==0 &&<View style={{ gap: 12 }}>
               <View
                 style={{
                   paddingHorizontal: 16,
@@ -447,7 +445,7 @@ const HomeScreen = () => {
                 )}
               />)}
 
-            </View>
+            </View>}
 
             {/* BLOGS */}
 

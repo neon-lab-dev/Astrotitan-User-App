@@ -15,7 +15,7 @@ interface UseTwilioProps {
 export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onError }: UseTwilioProps) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [isSpeakerOn, setIsSpeakerOn] = useState<boolean>(false);
+  const [isSpeakerOn, setIsSpeakerOn] = useState<boolean>(false);   
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [voiceInstance, setVoiceInstance] = useState<Voice | null>(null);

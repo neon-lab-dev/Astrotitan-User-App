@@ -1,8 +1,10 @@
+/* eslint-disable no-catch-shadow */
+/* eslint-disable @typescript-eslint/no-shadow */
 // hooks/useTwilio.ts
 import { useEffect, useRef, useState } from 'react';
-import { Platform, Alert } from 'react-native';
+import { Platform, Alert, AppState } from 'react-native';
 import { PermissionsAndroid } from 'react-native';
-import { Voice, Call, VoiceEvent } from '@twilio/voice-react-native-sdk';
+import { Voice, Call } from '@twilio/voice-react-native-sdk';
 
 interface UseTwilioProps {
   token: string;
@@ -15,40 +17,87 @@ interface UseTwilioProps {
 export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onError }: UseTwilioProps) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [isSpeakerOn, setIsSpeakerOn] = useState<boolean>(false);   
+  const [isSpeakerOn, setIsSpeakerOn] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [voiceInstance, setVoiceInstance] = useState<Voice | null>(null);
+  const [isVoiceReady, setIsVoiceReady] = useState<boolean>(false);
   const callRef = useRef<Call | null>(null);
+  const voiceRef = useRef<Voice | null>(null);
+  const isInitializedRef = useRef<boolean>(false);
 
-  // ✅ Initialize Voice instance
+  // ✅ Initialize Voice instance - only once
+  const initializeVoice = () => {
+    if (isInitializedRef.current) return;
+    isInitializedRef.current = true;
+
+    try {
+      console.log('🔊 Initializing Twilio Voice...');
+      const voice = new Voice();
+      voiceRef.current = voice;
+      setVoiceInstance(voice);
+
+      // ✅ Set up event listeners
+      const onDeviceReady = () => {
+        console.log('✅ Twilio Voice device ready');
+        setIsVoiceReady(true);
+      };
+
+      const onDeviceNotReady = () => {
+        console.log('❌ Twilio Voice device not ready');
+        setIsVoiceReady(false);
+      };
+
+      const onCallInvite = (callInvite: any) => {
+        console.log('📞 Incoming call invite:', callInvite);
+        // Handle incoming call here
+      };
+
+      const onError = (error: any) => {
+        console.error('❌ Voice error:', error);
+        setError(error.message);
+      };
+
+      voice.on('deviceReady', onDeviceReady);
+      voice.on('deviceNotReady', onDeviceNotReady);
+      voice.on('callInvite', onCallInvite);
+      voice.on('error', onError);
+
+      // Store cleanup
+      voiceRef.current = voice;
+      
+      console.log('✅ Twilio Voice initialized successfully');
+    } catch (error: any) {
+      console.error('❌ Failed to initialize Twilio Voice:', error);
+      setError(error.message);
+    }
+  };
+
+  // ✅ Initialize on mount
   useEffect(() => {
-    const voice = new Voice();
-    setVoiceInstance(voice);
-    
-    // ✅ Set up event listeners
-    const onDeviceReady = () => {
-      console.log('✅ Twilio Voice device ready');
-    };
-
-    const onDeviceNotReady = () => {
-      console.log('❌ Twilio Voice device not ready');
-    };
-
-    const onCallInvite = (callInvite: any) => {
-      console.log('📞 Incoming call invite:', callInvite);
-      // Handle incoming call here
-    };
-
-    voice.on('deviceReady', onDeviceReady);
-    voice.on('deviceNotReady', onDeviceNotReady);
-    voice.on('callInvite', onCallInvite);
+    // Delay initialization to ensure native modules are ready
+    const timer = setTimeout(() => {
+      initializeVoice();
+    }, 500);
 
     return () => {
-      voice.off('deviceReady', onDeviceReady);
-      voice.off('deviceNotReady', onDeviceNotReady);
-      voice.off('callInvite', onCallInvite);
-      voice.destroy();
+      clearTimeout(timer);
+      if (voiceRef.current) {
+        voiceRef.current.destroy();
+      }
+    };
+  }, []);
+
+  // ✅ Re-initialize when app comes to foreground
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active' && !voiceRef.current) {
+        initializeVoice();
+      }
+    });
+
+    return () => {
+      subscription.remove();
     };
   }, []);
 
@@ -72,7 +121,7 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
         return false;
       }
     }
-    return true; // iOS permission is handled in Info.plist
+    return true;
   };
 
   // Connect to room
@@ -86,6 +135,13 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
     if (isConnected || isConnecting) {
       console.log('⚠️ Already connected or connecting');
       return;
+    }
+
+    if (!isVoiceReady) {
+      console.log('⏳ Voice not ready yet, initializing...');
+      initializeVoice();
+      // Wait a bit for initialization
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     console.log('🔑 Token available:', !!token);
@@ -102,21 +158,28 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
         return;
       }
 
+      const voice = voiceRef.current;
+      if (!voice) {
+        throw new Error('Voice instance not available');
+      }
+
       // ✅ Register device with Twilio Voice
-      if (voiceInstance) {
-        try {
-          await voiceInstance.register(token);
-          console.log('✅ Device registered with Twilio');
-        } catch (registerError) {
-          console.error('❌ Registration error:', registerError);
-          // Continue anyway - the call might still work
+      try {
+        console.log('📱 Registering device with Twilio...');
+        await voice.register(token);
+        console.log('✅ Device registered with Twilio');
+      } catch (registerError: any) {
+        console.error('❌ Registration error:', registerError);
+        if (registerError.message?.includes('already registered')) {
+          console.log('⚠️ Already registered, continuing...');
+        } else {
+          throw registerError;
         }
       }
 
       // ✅ Connect to the call
       console.log('🔗 Connecting to room:', roomName);
       
-      // For React Native Voice SDK
       const connectOptions = {
         accessToken: token,
         params: {
@@ -124,7 +187,7 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
         },
       };
 
-      const call = await voiceInstance?.connect(connectOptions);
+      const call = await voice.connect(connectOptions);
 
       if (call) {
         callRef.current = call;
@@ -182,7 +245,6 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
           call.off('reject', onCallReject);
         };
 
-        // Attach cleanup to call object
         (call as any).cleanup = cleanup;
 
       } else {
@@ -203,7 +265,6 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
     console.log('📞 Disconnecting from call...');
     if (callRef.current) {
       try {
-        // Clean up event listeners
         if ((callRef.current as any).cleanup) {
           (callRef.current as any).cleanup();
         }
@@ -243,7 +304,6 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
   const toggleSpeaker = (): void => {
     if (callRef.current) {
       try {
-        // Toggle speakerphone if available
         const newSpeakerState = !isSpeakerOn;
         // @ts-ignore - setSpeakerphone might not be in types
         callRef.current.setSpeakerphone?.(newSpeakerState);
@@ -260,8 +320,10 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
     return () => {
       console.log('🧹 Cleaning up Twilio hook');
       disconnect();
-      if (voiceInstance) {
-        voiceInstance.destroy();
+      if (voiceRef.current) {
+        voiceRef.current.destroy();
+        voiceRef.current = null;
+        isInitializedRef.current = false;
       }
     };
   }, []);
@@ -275,8 +337,8 @@ export const useTwilio = ({ token, roomName, onConnected, onDisconnected, onErro
     isConnecting,
     isMuted,
     isSpeakerOn,
+    isVoiceReady,
     error,
     call: callRef.current,
-    voiceInstance,
   };
 };

@@ -3,7 +3,6 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -112,12 +111,35 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    
+    // Razorpay
     implementation project(':react-native-razorpay')
+    
+    // Firebase
     implementation platform('com.google.firebase:firebase-bom:33.1.0')
     implementation 'com.google.firebase:firebase-messaging'
+
+    
+    // Hermes or JSC
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
+    }
+}
+
+afterEvaluate {
+    def packageDebugResources = tasks.findByName(':twilio_voice-react-native-sdk:packageDebugResources')
+    def generateDebugResValues = tasks.findByName(':twilio_voice-react-native-sdk:generateDebugResValues')
+    
+    if (packageDebugResources && generateDebugResValues) {
+        packageDebugResources.dependsOn(generateDebugResValues)
+    }
+
+    def packageReleaseResources = tasks.findByName(':twilio_voice-react-native-sdk:packageReleaseResources')
+    def generateReleaseResValues = tasks.findByName(':twilio_voice-react-native-sdk:generateReleaseResValues')
+
+    if (packageReleaseResources && generateReleaseResValues) {
+        packageReleaseResources.dependsOn(generateReleaseResValues)
     }
 }

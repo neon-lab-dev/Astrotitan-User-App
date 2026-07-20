@@ -16,10 +16,27 @@ const PujaConsultationSuccess = () => {
       description="Your consultation form has been submitted and our experts will reach out to you."
 
       buttons={[
-       
+
 
         {
-          title: "Back To Pooja Section",
+          title: "Back To Pooja's",
+          variant: "outline",
+          onPress: () => {
+            navigation.getParent()?.reset({
+              index: 0,
+              routes: [
+                {
+                  name: "RemediesTab",
+                  state: {
+                    routes: [{ name: "RemediesScreen" }],
+                  },
+                },
+              ],
+            });
+          },
+        },
+        {
+          title: "View Requested Consultations",
 
           onPress: () => {
             navigation.replace(

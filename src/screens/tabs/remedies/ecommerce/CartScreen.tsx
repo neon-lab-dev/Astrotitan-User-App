@@ -12,7 +12,7 @@ import ReusableButton from "../../../../components/reusable/ReusableButton/Reusa
 import { useNavigation } from "@react-navigation/native";
 import CartItemCard from "../../../../components/tabs/ecommerce/ecommerce/CartItemCard/CartItemCard";
 import SectionTitle from "../../../../components/reusable/SectionTitle/SectionTitle";
-import { setCheckoutItems } from "../../../../redux/features/checkout/checkoutSlice";
+import { resetCheckout, setCheckoutItems } from "../../../../redux/features/checkout/checkoutSlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../navigation/types";
 
@@ -107,14 +107,13 @@ const CartScreen = () => {
               <View style={{ marginTop: 12, gap: 12 }}>
                 <Row label="Subtotal" value={`₹ ${subtotal}/-`} />
                 <Row label="Shipping Charges" value={`₹ ${shipping}/-`} />
-                <Row label="Discount Applied" value="NA" />
               </View>
 
               <View style={styles.divider} />
 
               <Row label="Total" value={`₹ ${total}/-`} bold />
 
-              <View style={{ padding: 16 }}>
+              <View style={{ paddingTop: 16 }}>
                 <ReusableButton
                   title="Proceed To Checkout"
                   onPress={() => {

@@ -29,8 +29,8 @@ type Props = {
 
 const systemFonts = [
     ...defaultSystemFonts,
-    "Satoshi",
-    "SatoshiSemiBold",
+    "Satoshi-Regular",
+    "Satoshi-Medium",
     "Satoshi-Bold",
 ];
 
@@ -40,7 +40,7 @@ const htmlStyles: Record<string, MixedStyleDeclaration> = {
         fontSize: 14,
         lineHeight: 20,
         letterSpacing: 0.28,
-        fontFamily: "Satoshi",
+        fontFamily: "Satoshi-Regular",
     },
 
     div: {
@@ -48,7 +48,7 @@ const htmlStyles: Record<string, MixedStyleDeclaration> = {
         fontSize: 14,
         lineHeight: 20,
         letterSpacing: 0.28,
-        fontFamily: "Satoshi",
+        fontFamily: "Satoshi-Regular",
     },
 
     p: {
@@ -56,7 +56,7 @@ const htmlStyles: Record<string, MixedStyleDeclaration> = {
         fontSize: 14,
         lineHeight: 20,
         letterSpacing: 0.28,
-        fontFamily: "Satoshi",
+        fontFamily: "Satoshi-Regular",
         marginBottom: 12,
     },
 
@@ -86,7 +86,7 @@ const htmlStyles: Record<string, MixedStyleDeclaration> = {
 
     ul: {
         marginVertical: 10,
-        fontFamily: "Satoshi",
+        fontFamily: "Satoshi-Regular",
         color: "#E0E0E0",
         fontSize: 14,
         lineHeight: 20,
@@ -95,14 +95,14 @@ const htmlStyles: Record<string, MixedStyleDeclaration> = {
 
     ol: {
         marginVertical: 10,
-        fontFamily: "Satoshi", color: "#E0E0E0",
+        fontFamily: "Satoshi-Regular", color: "#E0E0E0",
         fontSize: 14,
         lineHeight: 20,
         letterSpacing: 0.28,
     },
 
     li: {
-        fontFamily: "Satoshi",
+        fontFamily: "Satoshi-Regular",
         color: "#E0E0E0",
         fontSize: 14,
         lineHeight: 20,
@@ -143,17 +143,14 @@ const FeatureCard = ({
                 <View style={styles.content}>
                     {/* TOP (Date) */}
                     <View style={styles.topRow}>
-                        {date && <View style={styles.blurWrapper}>
-                            <BlurView
+                        {date && <View >
+                            <View
                                 style={styles.dateBadge}
-                                blurType="dark"
-                                blurAmount={15}
-                                reducedTransparencyFallbackColor="rgba(0,0,0,0.7)"
                             >
                                 <SansText style={styles.dateText}>
                                     {formatDate(date)}
                                 </SansText>
-                            </BlurView>
+                            </View>
                         </View>}
                     </View>
 
@@ -162,7 +159,6 @@ const FeatureCard = ({
                         <SatoshiText style={styles.title}>{title.slice(0, 30)}{title.length > 50 ? "..." : ""}</SatoshiText>
 
                         {description && (
-                            // <SansText style={styles.desc}>{description}</SansText>
                             <RenderHTML
                                 contentWidth={width - 40}
                                 source={{
@@ -224,16 +220,14 @@ const styles = StyleSheet.create({
         gap: 6,
     },
 
-    blurWrapper: {
-        borderRadius: 20,
-        overflow: "hidden",
-    },
+ 
 
     dateBadge: {
         paddingHorizontal: 12,
         paddingVertical: 4,
         borderRadius: 20,
-        backgroundColor: "rgba(255,255,255,0.05)",
+        backgroundColor: "rgba(28, 27, 27, 0.77)",
+        includeFontPadding: false,
     },
 
     dateText: {

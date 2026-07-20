@@ -16,6 +16,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { loadAuth } from './utils/loadAuth';
 import { NotificationManager } from './components/NotificationManager';
+import { DevResetPanel } from './components/dev/DevResetPanel';
 // import { DevResetPanel } from './components/dev/DevResetPanel';
 
 function App() {
@@ -60,7 +61,7 @@ function AppContent() {
 
             <GlobalBottomSheet />
             <GlobalModal />
-            {/* <DevResetPanel/>  */}
+            <DevResetPanel/> 
           </NavigationContainer>
         </SafeAreaProvider>
       </GestureHandlerRootView>

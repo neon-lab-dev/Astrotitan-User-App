@@ -58,6 +58,45 @@ const consultationApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["consultation"],
     }),
+    startCall: builder.mutation({
+      query: (data) => ({
+        url: `/consultation/call/start`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["consultation"],
+    }),
+
+    acceptCall: builder.mutation({
+      query: (data) => ({
+        url: `/consultation/call/accept`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["consultation"],
+    }),
+
+    rejectCall: builder.mutation({
+      query: (data) => ({
+        url: `/consultation/call/reject`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["consultation"],
+    }),
+
+    endCall: builder.mutation({
+      query: (data) => ({
+        url: `/consultation/call/end`,
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["consultation"],
+    }),
   }),
 });
 
@@ -66,4 +105,8 @@ export const {
   useGetSingleConsultationBookingsQuery,
   useBookConsultationMutation,
   useEndConsultationSessionMutation,
+  useStartCallMutation,
+  useAcceptCallMutation,
+  useRejectCallMutation,
+  useEndCallMutation,
 } = consultationApi;

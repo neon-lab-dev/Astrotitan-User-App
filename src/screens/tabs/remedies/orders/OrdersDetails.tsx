@@ -248,7 +248,7 @@ const OrdersDetails = () => {
       </AnimatedScreen>
     );
   }
-
+ console.log(rawOrder)
   /* ---------------- PRODUCT ---------------- */
   const orderedItems = order?.orderedItems || [];
 
@@ -286,6 +286,7 @@ const OrdersDetails = () => {
             </AuthTitle>
           </AppHeader>
 
+<SatoshiText style={{paddingTop:16,paddingHorizontal:16,fontFamily:"Satoshi-Bold"}}>Order Id: #{order.orderId}</SatoshiText>
           {/* PRODUCT */}
           <ScrollView>
             {orderedItems.map((item: any) => (
@@ -481,7 +482,7 @@ const OrdersDetails = () => {
 
               {/* BUTTON */}
 
-              <View
+              {/* <View
                 style={
                   styles.bottomContainer
                 }
@@ -511,7 +512,7 @@ const OrdersDetails = () => {
                     currentStatus.footer
                   }
                 </SansText>
-              </View>
+              </View> */}
             </View>
           </ScrollView>
         </View>

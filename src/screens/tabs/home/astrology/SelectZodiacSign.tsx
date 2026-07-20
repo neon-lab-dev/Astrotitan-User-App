@@ -21,6 +21,7 @@ const SelectZodiacSign = () => {
       sign,
     });
   };
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

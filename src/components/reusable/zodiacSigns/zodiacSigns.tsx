@@ -11,6 +11,9 @@ import {
 import ReusableButton from "../ReusableButton/ReusableButton";
 import { SatoshiText } from "../Text/SatoshiText";
 import { zodiacSigns } from "../../../data/zodiacSigns";
+import { useUpdateProfileMutation } from "../../../redux/features/auth/authApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 type Props = {
   handleContinue: (selected: string) => void;
@@ -18,7 +21,28 @@ type Props = {
 
 export default function SelectZodiacScreen({ handleContinue }: Props) {
     const [selected, setSelected] = useState< null>(null);
+    const user = useSelector((state: RootState) => state.auth.user);
+    console.log(user,"fomrselsct")
+const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation(
+    {},
+  );
 
+   const handleAddZodiacSign = async () => {
+    console.log("caed")
+    if (!selected) {
+      return;
+    }
+
+    try {
+      const payload = {
+       zodiacSign: selected.charAt(0).toUpperCase() + selected.slice(1),
+      };
+      await updateProfile(payload).unwrap();
+
+    } catch (err: any) {
+      console.error("Error updating zodiac sign:", err);
+    }
+  };
 
     const renderItem = ({ item }: any) => {
         const isSelected = selected === item.id;
@@ -53,7 +77,11 @@ export default function SelectZodiacScreen({ handleContinue }: Props) {
                 <ReusableButton
                     title="View Insights"
                     variant="solid"
-                   onPress={() => handleContinue(selected)}
+                   onPress={() => {handleContinue(selected)
+                    if(user?.zodiacSign==null){
+                        handleAddZodiacSign()
+                    }
+                   }}
                     disabled={!selected}
                 />
             </View>}

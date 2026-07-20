@@ -21,6 +21,15 @@ const RequestedFormCompleted = () => {
         buttons={[
 
           {
+            title: "View Sessions",
+            variant:"outline",
+            onPress: () => {
+              navigation.replace(
+                "ChatHistory"
+              );
+            },
+          },
+          {
             title: "Go To Dashboard",
 
             onPress: () => {

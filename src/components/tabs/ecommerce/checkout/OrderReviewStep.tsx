@@ -13,6 +13,8 @@ import ContentSection from "../../../reusable/ContentSectoin/ContentSection";
 import { SatoshiText } from "../../../reusable/Text/SatoshiText";
 import AddressCard from "../../profile/address/AddressCard";
 import { SansText } from "../../../reusable/Text/SansText";
+import { useGetMyAddressesQuery } from "../../../../redux/features/address/addressApi";
+import AddressCardSkeleton from "../../profile/address/AddressCardSkeleton/AddressCardSkeleton";
 
 
 interface Props {
@@ -29,11 +31,20 @@ const OrderReviewStep = ({
       state.cart.items
   );
 
-  const address = useSelector(
+  const {
+    data,
+    isLoading,
+    refetch,
+  } = useGetMyAddressesQuery({});
+
+  const deliveryAddress = useSelector(
     (state: RootState) =>
       state.checkout.answers.deliveryAddress
   );;
 
+  const address = data?.data?.find(
+    (item: any) => item._id === deliveryAddress?.addressId
+  );
   const subtotal =
     cartItems.reduce(
       (acc, item) =>
@@ -56,26 +67,12 @@ const OrderReviewStep = ({
 
     >
 
-      {/* DELIVERY DATE */}
-      <View
-        style={{
-          marginTop: 16,
-        }}
-      >
-        <ContentSection title="Estimated Delivery Date:">
-          <SatoshiText style={{ fontSize: 21, fontFamily: "Satoshi-Bold" }}
-          >
-            5 March 2026
-          </SatoshiText>
-        </ContentSection>
 
-
-      </View>
 
       {/* PRODUCTS */}
       <View
         style={{
-          marginTop: 20,
+          marginTop: 16,
           gap: 14,
         }}
       >
@@ -99,34 +96,51 @@ const OrderReviewStep = ({
       {/* ADDRESS */}
       <View
       >
-        <ContentSection titleFontSize={16} sectionStyle={{marginBottom:12}}
+        <ContentSection titleFontSize={16} sectionStyle={{ marginBottom: 12 }}
           title="Deliver To"
         />
 
-        <AddressCard
-  showChangeButton
-  onChangeAddress={() => {
-    console.log("CHANGE ADDRESS");
-  }}
-  data={{
-    user: {
-      name: "Prerna",
-      phone: "9876543210",
-    },
-
-    location: {
-      line1: address?.addressLine1,
-      line2: address?.addressLine2,
-      city: address?.state,
-      pincode: address?.pincode,
-    },
-  }}
-/>
+        {isLoading ? (
+          <>
+            {[1].map((item) => (
+              <AddressCardSkeleton key={item} />
+            ))}
+          </>
+        ) : address ? (
+          <AddressCard
+            data={{
+              _id: address._id,
+              type: address.type,
+              fullName: address.fullName,
+              phoneNumber: address.phoneNumber,
+              alternativePhoneNumber:
+                address.alternativePhoneNumber,
+              addressLine1:
+                address.addressLine1,
+              addressLine2:
+                address.addressLine2,
+              city: address.city,
+              state: address.state,
+              pinCode: address.pinCode,
+              country: address.country,
+            }}
+          />
+        ) : (
+          <SansText
+            style={{
+              color: "#777",
+              textAlign: "center",
+              marginTop: 12,
+            }}
+          >
+            Address not found
+          </SansText>
+        )}
       </View>
 
       {/* PRICE SUMMARY */}
       <View style={{ backgroundColor: "#E6D18B", height: 1, marginVertical: 24 }}></View>
-      <ContentSection titleFontSize={16} sectionStyle={{marginBottom:12}}
+      <ContentSection titleFontSize={16} sectionStyle={{ marginBottom: 12 }}
         title="Payment Summery"
       />
       <View
@@ -157,11 +171,7 @@ const OrderReviewStep = ({
             value={`₹ ${shipping}/-`}
           />
 
-          <Row
-            label="Discount Applied"
-            value="NA"
-          />
-        </View>
+        </View>k
 
         <View
           style={{
@@ -202,8 +212,8 @@ const Row = ({
           ? {
             fontFamily:
               "Satoshi-Bold",
-              fontSize:14,
-              color:"#0D0D0D"
+            fontSize: 14,
+            color: "#0D0D0D"
           }
           : {}
       }
@@ -215,7 +225,7 @@ const Row = ({
       style={{
         fontFamily:
           "Satoshi-Bold",
-          fontSize:16
+        fontSize: 16
       }}
     >
       {value}

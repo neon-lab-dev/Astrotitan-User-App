@@ -12,7 +12,6 @@ type Props = {
   description: string;
   variant?: "product" | "pooja";
   image: any;
-  onPress?: () => void;
 };
 
 const GemCard = ({
@@ -21,7 +20,6 @@ const GemCard = ({
   description,
   variant = "product",
   image,
-  onPress,
 }: Props) => {
   type NavigationProp =
     NativeStackNavigationProp<RootStackParamList>;
@@ -29,7 +27,25 @@ const GemCard = ({
   const navigation = useNavigation<NavigationProp>();
   return (
 
-    <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.9} onPress={() => {
+      if (variant === "product") {
+        navigation.getParent()?.navigate("RemediesTab", {
+          screen: "ProductDetails",
+          params: {
+            id,
+          },
+        });
+      }
+
+      if (variant === "pooja") {
+        navigation.getParent()?.navigate("RemediesTab", {
+          screen: "PujaDetails",
+          params: {
+            id,
+          },
+        });
+      }
+    }}>
       <View style={styles.card}>
         {/* Floating Image */}
         <Image
@@ -43,18 +59,10 @@ const GemCard = ({
 
         {/* Content */}
         <View style={styles.content}>
-          <SatoshiText style={styles.heading}>{title}</SatoshiText>
+          <SatoshiText style={styles.heading}>{title.slice(0, 24) + "..."}</SatoshiText>
 
           <SatoshiText style={styles.heading}>What it is?</SatoshiText>
-          <SansText style={styles.benefits}>{description.slice(0,60)+"..."}</SansText>
-
-          <SatoshiText style={styles.heading}>
-            Believed to help with
-          </SatoshiText>
-
-          {/* <SansText style={styles.benefits}>
-            {benefits.map((b) => `• ${b}`).join("  ")}
-          </SansText> */}
+          <SansText style={styles.benefits}>{description.slice(0, 60) + "..."}</SansText>
 
           {/* CTA */}
           <View style={styles.ctaRow}>

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type CheckoutItem = {
   id: string;
@@ -27,16 +27,16 @@ const initialState: CheckoutState = {
 };
 
 const checkoutSlice = createSlice({
-  name: "checkout",
+  name: 'checkout',
 
   initialState,
 
   reducers: {
-    nextStep: (state) => {
+    nextStep: state => {
       state.step += 1;
     },
 
-    prevStep: (state) => {
+    prevStep: state => {
       state.step -= 1;
     },
 
@@ -55,7 +55,20 @@ const checkoutSlice = createSlice({
       state.items = action.payload;
     },
 
-    resetCheckout: () => initialState,
+    resetCheckout: state => {
+      const deliveryAddress = state.answers.deliveryAddress;
+      const items = state.items;
+
+      state.step = 0;
+
+      state.answers = deliveryAddress
+        ? {
+            deliveryAddress,
+          }
+        : {};
+
+      state.items = items;
+    },
   },
 });
 

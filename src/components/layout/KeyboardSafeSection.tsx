@@ -23,9 +23,9 @@ const KeyboardSafeSection = ({
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={[
-        {
-          flexGrow: 1,
-        },
+        // {
+        //   flexGrow: 1,
+        // },
         contentContainerStyle,
       ]}
       showsVerticalScrollIndicator={false}

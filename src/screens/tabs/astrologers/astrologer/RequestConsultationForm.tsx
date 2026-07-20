@@ -4,7 +4,7 @@ import HeartIcon from '@/assets/icons/visual/intent/favourite.svg';
 import MarriageIcon from '@/assets/icons/visual/intent/marriage.svg';
 import TieIcon from '@/assets/icons/visual/intent/tie.svg';
 import WellnessIcon from '@/assets/icons/visual/intent/wellness.svg';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -16,7 +16,8 @@ import QuestionScreen from '../../../../components/RequestConsultationForm/Quest
 import ChatIcon from '@/assets/icons/actions/bubble-chat.svg';
 import CallIcon from '@/assets/icons/visual/call.svg';
 import { useRoute } from '@react-navigation/native';
-import { useBookConsultationMutation} from '../../../../redux/features/consultation/consultationApi';
+import { useBookConsultationMutation } from '../../../../redux/features/consultation/consultationApi';
+import { resetForm } from '../../../../redux/features/RequestConsultationForm/RequestConsultationFormSlice';
 const questions = [
     {
         key: 'mode',
@@ -67,8 +68,14 @@ const RequestConsultationForm = () => {
     const id = route.params?.id as string;
     const navigation = useNavigation<any>()
     const step = useSelector((state: RootState) => state.RequestDetailForm.step);
+    const dispatch = useDispatch()
     const [bookConsultation, { isLoading }] =
         useBookConsultationMutation();
+    useEffect(() => {
+        return () => {
+            dispatch(resetForm())
+        };
+    }, [dispatch]);
     const handleFinalSubmit = async (formData: any) => {
         try {
 
@@ -89,6 +96,8 @@ const RequestConsultationForm = () => {
                 ],
             });
 
+            dispatch(resetForm())
+
         } catch (error: any) {
             console.log("Booking Failed", error);
         }
@@ -108,7 +117,7 @@ const RequestConsultationForm = () => {
                     questionText={currentQuestion.text}
                     validate={currentQuestion.validate}
                     initialValue={currentQuestion.initialValue}
-                    onFinalSubmit={handleFinalSubmit} 
+                    onFinalSubmit={handleFinalSubmit}
                     loading={isLoading}
                 >
                     {currentQuestion.render}

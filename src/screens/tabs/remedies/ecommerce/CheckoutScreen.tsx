@@ -14,8 +14,9 @@ import { useNavigation } from "@react-navigation/native";
 import { useCreateProductOrderMutation, useGetRazorpayKeyQuery, useVerifyPaymentMutation } from "../../../../redux/features/orders/orderApi";
 import { selectUser } from "../../../../redux/features/auth/authSlice";
 import { clearCart } from "../../../../redux/features/cart/cartSlice";
-import { Alert } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
 import RazorpayCheckout from 'react-native-razorpay';
+import { SatoshiText } from "../../../../components/reusable/Text/SatoshiText";
 
 const checkoutSteps = [
   {
@@ -94,39 +95,40 @@ const checkoutSteps = [
 ];
 
 const CheckoutScreen = () => {
-    type NavigationProp =
+  type NavigationProp =
     NativeStackNavigationProp<RootStackParamList>;
-  
+
   const navigation = useNavigation<NavigationProp>();
   const step = useSelector(
     (state: RootState) =>
       state.checkout.step
   );
 
-   const user = useSelector(selectUser) as any;
-   const dispatch = useDispatch();
-  
+  const user = useSelector(selectUser) as any;
+  const dispatch = useDispatch();
+
   const currentStep =
     checkoutSteps[step];
 
-const [loading, setLoading] = useState<boolean>(false);
+
+  const [loading, setLoading] = useState<boolean>(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
-  const [isRazorpayLoaded, setIsRazorpayLoaded] = useState<boolean>(false);
-const { data: razorpayKeyData } = useGetRazorpayKeyQuery({});
-const razorpayKey = razorpayKeyData?.key;
+  const { data: razorpayKeyData } = useGetRazorpayKeyQuery({});
+  const razorpayKey = razorpayKeyData?.key;
   const [createProductOrder] = useCreateProductOrderMutation();
   const [verifyPayment] = useVerifyPaymentMutation();
 
-   const cartItems = useSelector(
+  const cartItems = useSelector(
     (state: RootState) =>
       state.cart.items
   );
-const openRazorpayPayment = (order: any, razorpayOrder: any) => {
+  const openRazorpayPayment = (order: any, razorpayOrder: any) => {
+
     return new Promise((resolve, reject) => {
       if (!RazorpayCheckout) {
-            reject(new Error('Razorpay SDK not loaded'));
-            return;
-        }
+        reject(new Error('Razorpay SDK not loaded'));
+        return;
+      }
       const options = {
         description: `Order #${order?.orderId}`,
         image: 'https://i.ibb.co.com/6JsDTXJh/logo.webp',
@@ -151,7 +153,7 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
 
       RazorpayCheckout.open(options)
         .then((data: any) => {
-         
+
           resolve(data);
         })
         .catch((error: any) => {
@@ -164,6 +166,8 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
 
   // ✅ Handle Place Order
   const handlePlaceProductOrder = async (formData: any) => {
+    setLoading(true);
+
     // Validate cart
     if (cartItems.length === 0) {
       Alert.alert('Error', 'Cart is empty');
@@ -205,6 +209,7 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
 
       const { order, razorpayOrder } = orderResponse.data;
       try {
+        setLoading(false);
         const paymentData = await openRazorpayPayment(order, razorpayOrder);
         // ✅ Step 3: Verify payment
         await handleVerifyPayment(
@@ -213,7 +218,7 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
           paymentData?.razorpay_signature,
           order?._id,
         );
-        
+        setLoading(false);
       } catch (paymentError: any) {
         console.log('Payment cancelled or failed:', paymentError);
         if (paymentError?.code === 'PAYMENT_CANCELLED') {
@@ -253,10 +258,10 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
       if (response.success) {
         // ✅ Clear cart
         dispatch(clearCart());
-        
+
         // ✅ Navigate to success screen
-        navigation.navigate('OrderSuccessful', {slug: orderId });
-        
+        navigation.replace('OrderSuccessful', { slug: orderId });
+
         Alert.alert('Success', 'Payment verified successfully!');
       } else {
         Alert.alert('Error', 'Payment verification failed');
@@ -272,8 +277,36 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
     }
   };
 
+  {
+    loading && (
+      <View
+        style={{
+          ...StyleSheet.absoluteFill,
+          backgroundColor: "rgba(0,0,0,0.45)",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999,
+        }}
+      >
+        <ActivityIndicator
+          size="large"
+          color="#D4AF37"
+        />
 
+        <SatoshiText
+          style={{
+            marginTop: 20,
+            color: "#fff",
+            fontSize: 16,
+          }}
+        >
+          Preparing secure payment...
+        </SatoshiText>
+      </View>
+    )
+  }
   if (!currentStep) return null;
+
 
   return (<AnimatedScreen>
     <ScreenWrapper>
@@ -299,8 +332,33 @@ const openRazorpayPayment = (order: any, razorpayOrder: any) => {
         }
       >
         {currentStep.render}
-      </CheckoutQuestionScreen></ScreenWrapper></AnimatedScreen>
+      </CheckoutQuestionScreen>
+         {loading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#D4AF37" />
+          <SatoshiText style={styles.loadingText}>
+            Preparing secure payment...
+          </SatoshiText>
+        </View>
+      )}</ScreenWrapper></AnimatedScreen>
   );
 };
 
 export default CheckoutScreen;
+
+const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999,
+    elevation: 9999, // Android
+  },
+
+  loadingText: {
+    marginTop: 20,
+    color: "#fff",
+    fontSize: 16,
+  },
+});

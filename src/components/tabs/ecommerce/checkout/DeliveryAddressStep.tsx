@@ -3,7 +3,7 @@ import React, {
   useState,
 } from "react";
 
-import { Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import AddressCard from "../../profile/address/AddressCard";
 import CheckoutAddressForm from "../../profile/address/CheckoutAddressForm";
@@ -12,6 +12,7 @@ import AddressSelectionSheet from "../../../reusable/BottomSheet/AddressSelectio
 import BottomSheetService from "../../../../redux/features/ui/GlobalSheet/BottomSheetService";
 
 import { useGetMyAddressesQuery } from "../../../../redux/features/address/addressApi";
+import AddressCardSkeleton from "../../profile/address/AddressCardSkeleton/AddressCardSkeleton";
 
 type FormType = {
   addressId: string;
@@ -42,35 +43,30 @@ const DeliveryAddressStep = ({
     setSelectedAddress,
   ] = useState<any>(null);
 
-  useEffect(() => {
-    if (
-      value?.addressId &&
-      addresses.length > 0
-    ) {
-      const found =
-        addresses.find(
-          (item: any) =>
-            item._id ===
-            value.addressId
-        );
+ useEffect(() => {
+  if (addresses.length === 0) return;
 
-      if (found) {
-        setSelectedAddress(found);
-        return;
-      }
+  // If parent already has an address, sync it
+  if (value?.addressId) {
+    const found = addresses.find(
+      (item: any) => item._id === value.addressId
+    );
+
+    if (found) {
+      setSelectedAddress(found);
+      return;
     }
+  }
 
-    if (
-      addresses.length > 0 &&
-      !selectedAddress
-    ) {
-      setSelectedAddress(addresses[0]);
+  // Otherwise select the first address by default
+  const firstAddress = addresses[0];
 
-      setValue({
-        addressId: addresses[0]._id,
-      });
-    }
-  }, [addresses, value?.addressId]);
+  setSelectedAddress(firstAddress);
+
+  setValue({
+    addressId: firstAddress._id,
+  });
+}, [addresses]);
 
   const openAddressBottomSheet =
     () => {
@@ -96,6 +92,36 @@ const DeliveryAddressStep = ({
 
             BottomSheetService.close();
           }}
+          onPress={() => {
+            BottomSheetService.close();
+
+            BottomSheetService.open(
+              <View
+                style={{
+                  flex: 1,
+                  paddingHorizontal: 16,
+                }}
+              >
+                <CheckoutAddressForm
+                  onSuccess={(address) => {
+                    setSelectedAddress(address);
+
+                    setValue({
+                      addressId: address._id,
+                    });
+
+                    refetch();
+
+                    BottomSheetService.close();
+                  }}
+                />
+              </View>,
+              {
+                height: 700,
+                hasGradient: true,
+              }
+            );
+          }}
         />,
         {
           height: 600,
@@ -105,7 +131,24 @@ const DeliveryAddressStep = ({
     };
 
   if (isLoading) {
-    return null;
+    return (<ScrollView
+      showsVerticalScrollIndicator={
+        false
+      }
+      contentContainerStyle={{
+        paddingVertical: 16,
+        gap: 18,
+        paddingBottom: 24,
+      }}
+    >
+      {[1].map(
+        (item) => (
+          <AddressCardSkeleton
+            key={item}
+          />
+        )
+      )}
+    </ScrollView>);
   }
 
   if (
@@ -153,8 +196,10 @@ const DeliveryAddressStep = ({
           }
 
           BottomSheetService.open(
-            <View style={{ flex: 1,
-        paddingHorizontal: 16,  }}>
+            <View style={{
+              flex: 1,
+              paddingHorizontal: 16,
+            }}>
               <CheckoutAddressForm
                 onSuccess={(
                   address
@@ -173,7 +218,7 @@ const DeliveryAddressStep = ({
                   BottomSheetService.close();
                 }}
               />
-              <Text>okkdnvjfvn</Text></View>,
+            </View>,
             {
               height: 700,
               hasGradient: true,

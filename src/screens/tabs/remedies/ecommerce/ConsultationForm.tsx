@@ -127,7 +127,7 @@ const ConsultationForm =
                         response
                     );
 
-                    navigation.navigate("PujaConsultationSuccess");
+                    navigation.replace("PujaConsultationSuccess");
                 } catch (error) {
                     console.log(
                         "BOOKING ERROR:",
@@ -229,6 +229,7 @@ const ConsultationForm =
                                 numberOfLines={
                                     4
                                 }
+                                
                             />
                         </ScrollView>
 
@@ -238,7 +239,7 @@ const ConsultationForm =
                             }
                         >
                             <ReusableButton
-                                title="Book Puja"
+                                title="Book Puja Consultation"
                                 width="100%"
                                 loading={
                                     isLoading

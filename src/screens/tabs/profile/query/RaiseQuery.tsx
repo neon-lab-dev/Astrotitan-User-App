@@ -325,6 +325,7 @@ const RaiseQuery = () => {
                                     }
                                     contentContainerStyle={{
                                         gap: 12,
+                                        marginTop:6
                                     }}
                                 >
                                     {/* ADD */}

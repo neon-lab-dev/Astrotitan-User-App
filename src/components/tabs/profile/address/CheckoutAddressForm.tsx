@@ -86,7 +86,7 @@ const CheckoutAddressForm = ({
       <KeyboardSafeSection
         contentContainerStyle={{
           gap: 16,
-          paddingVertical:16
+          paddingTop: 16
         }}
       >
         {/* FULL NAME */}
@@ -230,7 +230,6 @@ const CheckoutAddressForm = ({
         <View>
           <SansText
             style={{
-              marginBottom: 8,
             }}
           >
             Save Address Type As
@@ -322,19 +321,20 @@ const CheckoutAddressForm = ({
             })}
           </View>
         </View>
+
+        <ReusableButton
+          title="Save Address"
+          onPress={handleSubmit(
+            onSubmit
+          )}
+          loading={isLoading}
+          disabled={
+            !isValid ||
+            isLoading
+          }
+        />
       </KeyboardSafeSection>
 
-      <ReusableButton
-        title="Save Address"
-        onPress={handleSubmit(
-          onSubmit
-        )}
-        loading={isLoading}
-        disabled={
-          !isValid ||
-          isLoading
-        }
-      />
     </View>
   );
 };

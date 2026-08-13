@@ -14,7 +14,7 @@ import { RootStackParamList } from '../../../navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import { useGetMyNotificationsQuery } from '../../../redux/features/notification/notificationApi';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const AppHeader = () => {
   const user = useSelector(selectUser);
   const navigation = useNavigation<NavigationProp>();

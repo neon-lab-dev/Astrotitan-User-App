@@ -1,11 +1,12 @@
-import StarIcon from "@/assets/icons/visual/star.svg";
-import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import BottomSheetService from "../../../../../redux/features/ui/GlobalSheet/BottomSheetService";
-import ConsultAstrologerSection from "../../../../reusable/BottomSheet/ConsultAstrologerSection";
-import { useNavigation } from "@react-navigation/native";
-import { SansText } from "../../../../reusable/Text/SansText";
-import { SatoshiText } from "../../../../reusable/Text/SatoshiText";
+/* eslint-disable react-native/no-inline-styles */
+import StarIcon from '@/assets/icons/visual/star.svg';
+import React, { useState } from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import BottomSheetService from '../../../../../redux/features/ui/GlobalSheet/BottomSheetService';
+import ConsultAstrologerSection from '../../../../reusable/BottomSheet/ConsultAstrologerSection';
+import { useNavigation } from '@react-navigation/native';
+import { SansText } from '../../../../reusable/Text/SansText';
+import { SatoshiText } from '../../../../reusable/Text/SatoshiText';
 
 type AstrologerType = {
   name: string;
@@ -22,15 +23,13 @@ type Props = {
   image: any;
 };
 
-const ExpertCard = ({
-  _id,
-  name,
-  experience,
-  tags,
-  rating,
-  image,
-}: Props) => {
-  const navigation = useNavigation<any>()
+// ✅ Fallback image - use a reliable placeholder
+const FALLBACK_IMAGE = require('@/assets/images/user-profile-placeholder.png');
+
+const ExpertCard = ({ _id, name, experience, tags, rating, image }: Props) => {
+  const navigation = useNavigation<any>();
+  const [imageError, setImageError] = useState(false);
+
   const onPressAstrologer = (user: AstrologerType) => {
     BottomSheetService.open(
       <ConsultAstrologerSection
@@ -39,19 +38,45 @@ const ExpertCard = ({
         onConsult={() => {
           BottomSheetService.close();
 
-          navigation.getParent()?.navigate("AstrologersTab", {
-            screen: "AstrologerDetailsScreen",
+          navigation.getParent()?.navigate('AstrologersTab', {
+            screen: 'AstrologerDetailsScreen',
             params: {
               id: _id,
             },
-        });
+          });
         }}
       />,
       {
         height: 400,
         hasGradient: true,
-      }
+      },
     );
+  };
+
+  const getImageSource = () => {
+    // ✅ If image error occurred, use fallback
+    if (imageError) {
+      return FALLBACK_IMAGE;
+    }
+
+    // ✅ If no image, use fallback
+    if (!image) {
+      return FALLBACK_IMAGE;
+    }
+
+    // ✅ If image is a string (URL), use { uri: image }
+    if (typeof image === 'string') {
+      return { uri: image };
+    }
+
+    // ✅ If image is already a valid source object
+    return image;
+  };
+
+  // ✅ Handle image load error
+  const handleImageError = () => {
+    console.log('⚠️ Image failed to load:', image);
+    setImageError(true);
   };
 
   return (
@@ -66,32 +91,23 @@ const ExpertCard = ({
       activeOpacity={0.9}
     >
       <View style={styles.avatarWrapper}>
-        <Image source={image} style={styles.avatar} />
+        <Image
+          source={getImageSource()}
+          style={styles.avatar}
+          onError={handleImageError}
+        />
 
         <View style={styles.ratingBadge}>
           <StarIcon height={10} width={10} />
-
-          <SansText style={styles.ratingText}>
-            {rating}
-          </SansText>
+          <SansText style={styles.ratingText}>{rating}</SansText>
         </View>
       </View>
 
-      <View style={{ alignItems: "center", gap: 4 }}>
-        <SatoshiText style={styles.name}>
-          {name}
-        </SatoshiText>
-
-        <SansText style={styles.exp}>
-          {experience} Years
-        </SansText>
-
-        {/* <SansText style={styles.desc}>
-          {description}
-        </SansText> */}
-
+      <View style={{ alignItems: 'center', gap: 4 }}>
+        <SatoshiText style={styles.name}>{name}</SatoshiText>
+        <SansText style={styles.exp}>{experience} Years</SansText>
         <SansText style={styles.tags}>
-          {tags.map((t) => `• ${t}`).join("  ")}
+          {tags.map(t => `• ${t}`).join('  ')}
         </SansText>
       </View>
     </TouchableOpacity>
@@ -105,14 +121,14 @@ const styles = StyleSheet.create({
     width: 160,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#D4AF37",
-    backgroundColor: "#FBF7EB",
+    borderColor: '#D4AF37',
+    backgroundColor: '#FBF7EB',
     paddingVertical: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
 
   avatarWrapper: {
-    position: "relative",
+    position: 'relative',
     marginBottom: 8,
   },
 
@@ -120,52 +136,45 @@ const styles = StyleSheet.create({
     width: 94,
     height: 94,
     borderRadius: 100,
-    backgroundColor: "#F0E8CD"
+    backgroundColor: '#F0E8CD',
   },
 
   ratingBadge: {
-    position: "absolute",
+    position: 'absolute',
     bottom: -8,
-    alignSelf: "center",
-    backgroundColor: "#0D0D0D",
+    alignSelf: 'center',
+    backgroundColor: '#0D0D0D',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 28,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     gap: 4,
   },
 
   ratingText: {
-    color: "#F5F5F5",
+    color: '#F5F5F5',
     fontSize: 12,
   },
 
   name: {
     fontSize: 16,
-    fontFamily: "Satoshi-Bold",
-    color: "#4A4A4A",
-    textAlign: "center"
+    fontFamily: 'Satoshi-Bold',
+    color: '#4A4A4A',
+    textAlign: 'center',
   },
 
   exp: {
     fontSize: 14,
-    color: "#4A4A4A",
+    color: '#4A4A4A',
     letterSpacing: 0.28,
-  },
-
-  desc: {
-    fontSize: 12,
-    color: "#4A4A4A",
-    textAlign: "center",
-    letterSpacing: 0.38,
   },
 
   tags: {
     fontSize: 12,
-    color: "#4A4A4A",
-    textAlign: "center",
+    color: '#4A4A4A',
+    textAlign: 'center',
     letterSpacing: 0.38,
   },
 });

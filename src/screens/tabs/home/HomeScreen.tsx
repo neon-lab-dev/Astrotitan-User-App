@@ -1,38 +1,31 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useState } from 'react';
-import { FlatList, RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useLazyGetMeQuery } from '../../../redux/features/auth/authApi';
-import { useGetAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
 import { useGetBlogsQuery } from '../../../redux/features/blog/blogApi';
 import { useGetAllProductsQuery } from '../../../redux/features/product/productsApi';
 import { useGetAllPujasQuery } from '../../../redux/features/puja/pujaApi';
 import AnimatedScreen from '../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../components/layout/ScreenWrapper';
-import { SansText } from '../../../components/reusable/Text/SansText';
 import SectionTitle from '../../../components/reusable/SectionTitle/SectionTitle';
-import ContentSection from '../../../components/reusable/ContentSectoin/ContentSection';
 import { updateUser } from '../../../redux/features/auth/authSlice';
 import { Storage } from '../../../services/storage/storage';
-import FeatureCard from '../../../components/tabs/home/home/FeatureCard/FeatureCard';
-import ExpertCardSkeleton from '../../../components/tabs/home/home/ExpertCard/ExpertCardSkeleton';
-import ExpertCard from '../../../components/tabs/home/home/ExpertCard/ExpertCard';
-import GemCardSkeleton from '../../../components/tabs/home/home/GemCard/GemCardSkeleton';
-import GemCard from '../../../components/tabs/home/home/GemCard/GemCard';
-import FeatureCardSkeleton from '../../../components/tabs/home/home/FeatureCard/FeatureCardSkeleton';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../../navigation/types';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
 import AppHeader from './../../../components/shared/AppHeader/AppHeader';
-const HomeScreen = () => {
+import DailyHoroscope from '../../../components/HomePage/DailyHoroscope/DailyHoroscope';
+import Kundli from '../../../components/HomePage/Kundli/Kundli';
+import FeaturedAstrologers from '../../../components/HomePage/FeaturedAstrologers/FeaturedAstrologers';
+import RecommendedRemedies from '../../../components/HomePage/RecommendedRemedies/RecommendedRemedies';
+import BlogInsights from '../../../components/HomePage/BlogInsights/BlogInsights';
+import { useGetAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
 
+const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [getMe] = useLazyGetMeQuery();
   const dispatch = useDispatch();
-  type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-  const navigation = useNavigation<NavigationProp>();
- 
+  // Astrologer api call
   const {
     data: astrologersResponse,
     isLoading: astrologersLoading,
@@ -40,19 +33,16 @@ const HomeScreen = () => {
     isFetching: astrologerFetching,
   } = useGetAstrologersQuery(
     {
-      isIdentityVerified: true,
-      country: '',
-      gender: '',
       skip: 0,
       limit: 10,
-      areaOfPractice: '',
-      consultLanguages: '',
     },
     {
       refetchOnFocus: true,
       refetchOnReconnect: true,
     },
   );
+
+  // Blog api call
   const {
     data: blogsResponse,
     isLoading: blogsLoading,
@@ -68,25 +58,42 @@ const HomeScreen = () => {
       refetchOnReconnect: true,
     },
   );
-  const {
-    data: productsResponse,
-    isLoading: isProductsLoading,
-    isFetching: isProductsFetching,
-  } = useGetAllProductsQuery({
-    limit: 20,
-    skip: 0,
-  });
 
+  // Puja api call
   const {
     data: pujasResponse,
     isLoading: isPujasLoading,
     isFetching: isPujasFetching,
-  } = useGetAllPujasQuery({
-    limit: 20,
-    skip: 0,
-  });
-  const pujas = pujasResponse?.data?.pujas || [];
+    refetch: refetchPujas,
+  } = useGetAllPujasQuery(
+    {
+      limit: 20,
+      skip: 0,
+    },
+    {
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
+    },
+  );
 
+  // Product api call
+  const {
+    data: productsResponse,
+    isLoading: isProductsLoading,
+    isFetching: isProductsFetching,
+    refetch: refetchProducts,
+  } = useGetAllProductsQuery(
+    {
+      limit: 20,
+      skip: 0,
+    },
+    {
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
+    },
+  );
+
+  const pujas = pujasResponse?.data?.pujas || [];
   const products = productsResponse?.data?.data || [];
 
   const combinedItems = [
@@ -110,8 +117,8 @@ const HomeScreen = () => {
         }))
       : []),
   ];
-  const astrologers = astrologersResponse?.data?.astrologers || [];
-  const blogs = blogsResponse?.data?.data || [];
+
+  // Refresh data
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
 
@@ -120,15 +127,22 @@ const HomeScreen = () => {
 
       await Promise.all([
         refetchAstrologers().unwrap(),
-
         refetchBlogs().unwrap(),
+        refetchPujas().unwrap(),
+        refetchProducts().unwrap(),
       ]);
     } catch (error) {
       console.log('REFRESH ERROR:', error);
     } finally {
       setRefreshing(false);
     }
-  }, [refreshing, refetchAstrologers, refetchBlogs]);
+  }, [
+    refreshing,
+    refetchAstrologers,
+    refetchBlogs,
+    refetchPujas,
+    refetchProducts,
+  ]);
 
   const fetchLatestUser = useCallback(async () => {
     try {
@@ -146,6 +160,7 @@ const HomeScreen = () => {
       fetchLatestUser();
     }, [fetchLatestUser]),
   );
+
   return (
     <AnimatedScreen>
       <ScreenWrapper>
@@ -163,7 +178,7 @@ const HomeScreen = () => {
           }
         >
           {/* HEADER */}
-          <AppHeader/>
+          <AppHeader />
 
           {/* CONTENT */}
           <View
@@ -174,7 +189,6 @@ const HomeScreen = () => {
             }}
           >
             {/* TODAY */}
-
             <View
               style={{
                 paddingHorizontal: 16,
@@ -183,255 +197,25 @@ const HomeScreen = () => {
               <SectionTitle title="Today at a glance" />
             </View>
 
-            {/* HOROSCOPE */}
-
-            <View
-              style={{
-                gap: 12,
-                paddingHorizontal: 16,
-              }}
-            >
-              <ContentSection title="Daily Horoscope">
-                <SansText>
-                  A quick overview of how today’s planetary positions may
-                  influence your day.
-                </SansText>
-              </ContentSection>
-
-              <FeatureCard
-                title="Today's Cosmic Pulse"
-                description="Tap to select your zodiac sign and reveal today’s guidance."
-                ctaText="Reveal Today’s Insight"
-                image={require('@/assets/images/consmos1.png')}
-                onPress={() => navigation.navigate('SelectZodiacSign')}
-                date={new Date()}
-              />
-            </View>
-
-            {/* KUNDLI */}
-
-            <View
-              style={{
-                gap: 12,
-                paddingHorizontal: 16,
-              }}
-            >
-              <ContentSection title="Kundli">
-                <SansText>
-                  A short insight from your birth chart based on today’s
-                  planetary movement.
-                </SansText>
-              </ContentSection>
-
-              <FeatureCard
-                title="Today’s Chart Insight"
-                description="Saturn influences discipline & patience."
-                image={require('@/assets/images/consmos2.png')}
-                onPress={() => {
-                  navigation.getParent()?.navigate('KundaliTab');
-                }}
-                height={214}
-              />
-            </View>
-
-            {/* ASTROLOGERS */}
-
-            {!astrologersLoading &&
-              !astrologerFetching &&
-              astrologers.length !== 0 && (
-                <View style={{ gap: 12 }}>
-                  <View
-                    style={{
-                      paddingHorizontal: 16,
-                    }}
-                  >
-                    <ContentSection title="Featured Astrologers">
-                      <SansText>
-                        Verified experts who help interpret charts and planetary
-                        periods.
-                      </SansText>
-                    </ContentSection>
-                  </View>
-
-                  {astrologersLoading || astrologerFetching ? (
-                    <FlatList
-                      data={[1, 2, 3]}
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{
-                        paddingHorizontal: 16,
-                      }}
-                      ItemSeparatorComponent={() => (
-                        <View
-                          style={{
-                            width: 12,
-                          }}
-                        />
-                      )}
-                      renderItem={() => <ExpertCardSkeleton />}
-                    />
-                  ) : (
-                    <FlatList
-                      data={astrologers}
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      keyExtractor={item => item._id}
-                      contentContainerStyle={{
-                        paddingHorizontal: 16,
-                      }}
-                      ItemSeparatorComponent={() => (
-                        <View
-                          style={{
-                            width: 12,
-                          }}
-                        />
-                      )}
-                      renderItem={({ item }) => (
-                        <ExpertCard
-                          _id={item._id}
-                          name={
-                            item?.displayName ||
-                            `${item?.firstName || ''} ${item?.lastName || ''}`
-                          }
-                          experience={item?.experience || '0'}
-                          description={item?.bio || 'Experienced astrologer'}
-                          tags={item?.areaOfPractice || []}
-                          rating={item?.rating || 4.5}
-                          image={{
-                            uri: item?.profilePicture,
-                          }}
-                        />
-                      )}
-                    />
-                  )}
-                </View>
-              )}
-
-            {/* GEMS */}
-
-            {!isProductsLoading &&
-              !isProductsFetching &&
-              !isPujasFetching &&
-              !isPujasLoading &&
-              combinedItems.length !== 0 && (
-                <View style={{ gap: 12 }}>
-                  <View
-                    style={{
-                      paddingHorizontal: 16,
-                    }}
-                  >
-                    <ContentSection title="Recommended Remedies">
-                      <SansText>
-                        Spiritual tools recommended based on planetary alignment
-                        and energies.
-                      </SansText>
-                    </ContentSection>
-                  </View>
-                  {isProductsLoading ||
-                  isProductsFetching ||
-                  isPujasFetching ||
-                  isPujasLoading ? (
-                    <FlatList
-                      data={[1, 2, 3]}
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{
-                        paddingHorizontal: 16,
-                        marginTop: 34,
-                      }}
-                      ItemSeparatorComponent={() => (
-                        <View
-                          style={{
-                            width: 12,
-                          }}
-                        />
-                      )}
-                      renderItem={() => <GemCardSkeleton />}
-                    />
-                  ) : (
-                    <FlatList
-                      data={combinedItems}
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      keyExtractor={item => item.id}
-                      contentContainerStyle={{
-                        paddingHorizontal: 16,
-                        marginTop: 30,
-                      }}
-                      ItemSeparatorComponent={() => (
-                        <View
-                          style={{
-                            width: 12,
-                          }}
-                        />
-                      )}
-                      renderItem={({ item }) => (
-                        <GemCard
-                          title={item.title}
-                          description={item.description}
-                          variant={
-                            item.type === 'product' ? 'product' : 'pooja'
-                          }
-                          id={item.id}
-                          image={item.image}
-                        />
-                      )}
-                    />
-                  )}
-                </View>
-              )}
-
-            {/* BLOGS */}
-
-            <View
-              style={{
-                gap: 12,
-                paddingHorizontal: 16,
-              }}
-            >
-              <ContentSection title="Blog Insights">
-                <SansText>
-                  Short reads to help you understand ongoing planetary themes.
-                </SansText>
-              </ContentSection>
-
-              {blogsLoading || blogFetching ? (
-                <FlatList
-                  data={[1, 2]}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{
-                    gap: 16,
-                  }}
-                  ItemSeparatorComponent={() => (
-                    <View
-                      style={{
-                        width: 12,
-                      }}
-                    />
-                  )}
-                  renderItem={() => <FeatureCardSkeleton />}
-                />
-              ) : blogs?.length > 0 ? (
-                blogs?.map((blog: any) => (
-                  <FeatureCard
-                    key={blog._id}
-                    title={blog?.title || 'Untitled Blog'}
-                    description={blog?.content?.slice(0, 30) + '...'}
-                    image={{
-                      uri: blog?.thumbnail,
-                    }}
-                    date={new Date(blog?.createdAt)}
-                    ctaText="Read Article"
-                    height={194}
-                    onPress={() =>
-                      navigation.navigate('ArticleScreen', { id: blog?._id })
-                    }
-                  />
-                ))
-              ) : (
-                <SansText>No blogs available</SansText>
-              )}
-            </View>
+            <DailyHoroscope />
+            <Kundli />
+            <FeaturedAstrologers
+              data={astrologersResponse?.data?.astrologers || []}
+              isLoading={astrologersLoading || astrologerFetching}
+            />
+            <RecommendedRemedies
+              isLoading={
+                isPujasLoading ||
+                isPujasFetching ||
+                isProductsLoading ||
+                isProductsFetching
+              }
+              data={combinedItems}
+            />
+            <BlogInsights
+              isLoading={blogsLoading || blogFetching}
+              data={blogsResponse?.data?.data || []}
+            />
           </View>
         </ScrollView>
       </ScreenWrapper>

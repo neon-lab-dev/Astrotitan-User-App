@@ -1,0 +1,572 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0C80B921A6F3F58F76C31292 /* libPods-AstroTitanUser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-AstroTitanUser.a */; };
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		AEEF53100355443CB5BCBD72 /* GeneralSans-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3AF980286D9A4C6C8F461D5E /* GeneralSans-Bold.otf */; };
+		EFD6186AAFEA434C81B9A90D /* GeneralSans-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 28E08E7FF36F4E07B88B47B8 /* GeneralSans-BoldItalic.otf */; };
+		B822F10B21024CC3B478F2E6 /* GeneralSans-Extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 23D910A8214C499292356A5E /* GeneralSans-Extralight.otf */; };
+		57A9AC102ABC44E68D2D8F65 /* GeneralSans-ExtralightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6F681627E5324FDBAE4187DE /* GeneralSans-ExtralightItalic.otf */; };
+		73EA5BA4F3F344FC97CAC347 /* GeneralSans-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = FB275B2C763C4C34A450130A /* GeneralSans-Italic.otf */; };
+		B63CD7B5B6C14E0584969CD7 /* GeneralSans-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2340A70B06741CE89B54B25 /* GeneralSans-Light.otf */; };
+		0729183BE04849D0B6F96137 /* GeneralSans-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 05D74621C7C14F52BDFC4982 /* GeneralSans-LightItalic.otf */; };
+		CA27DD7201BF440B9278B675 /* GeneralSans-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BB83D70F3BED408CBAFF5ADA /* GeneralSans-Medium.otf */; };
+		A061713D43E745EFB81F6213 /* GeneralSans-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 08A76E123C11449F941F0E39 /* GeneralSans-MediumItalic.otf */; };
+		DBCE295C0E47405295715BF3 /* GeneralSans-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5A8A200F805949EAB31F5921 /* GeneralSans-Regular.otf */; };
+		AF3374C52D3C46AA9A389DE4 /* GeneralSans-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BAB1A67A0A7D4112B005939E /* GeneralSans-Semibold.otf */; };
+		EA5048389B0746E9995A064C /* GeneralSans-SemiboldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 96EFE040FDBE4F5D969A4089 /* GeneralSans-SemiboldItalic.otf */; };
+		AB80D379EA00479183015956 /* Satoshi-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = CB845B97BA304D08A6C19E0A /* Satoshi-Black.otf */; };
+		05377A82699B4A19A1922EDC /* Satoshi-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3A3F904932B14705B3AC4E6A /* Satoshi-BlackItalic.otf */; };
+		E09E7B374BA7424E9B70D9E2 /* Satoshi-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6561274D16184F8D98CD10FE /* Satoshi-Bold.otf */; };
+		698C0C315BAE4ADE923C4804 /* Satoshi-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DE14D7F7E5784068B31A2C48 /* Satoshi-BoldItalic.otf */; };
+		C07FF2E4263E4A84AC51DD0A /* Satoshi-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = E051CA5B06FA40148491AEE8 /* Satoshi-Italic.otf */; };
+		34039CBA745844A6A056983D /* Satoshi-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = A89C3054F1C041F09687C01A /* Satoshi-Light.otf */; };
+		DDFA2C92856F4F4DACE294FA /* Satoshi-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = D6BDC2B8639C42F7BC598801 /* Satoshi-LightItalic.otf */; };
+		20D010AFE4F94D5984938BB4 /* Satoshi-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BEE625082C77404A9A4CB00A /* Satoshi-Medium.otf */; };
+		A9D23BBA80AF493EA51F1B8A /* Satoshi-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DB16AE9837A04050A26C7046 /* Satoshi-MediumItalic.otf */; };
+		CCB70CB28C7C43F08F05319E /* Satoshi-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 25A2E4DF60EF423EAC62E6B5 /* Satoshi-Regular.otf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		13B07F961A680F5B00A75B9A /* AstroTitanUser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AstroTitanUser.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AstroTitanUser/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = AstroTitanUser/Info.plist; sourceTree = "<group>"; };
+		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = AstroTitanUser/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		3B4392A12AC88292D35C810B /* Pods-AstroTitanUser.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AstroTitanUser.debug.xcconfig"; path = "Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser.debug.xcconfig"; sourceTree = "<group>"; };
+		5709B34CF0A7D63546082F79 /* Pods-AstroTitanUser.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AstroTitanUser.release.xcconfig"; path = "Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser.release.xcconfig"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-AstroTitanUser.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AstroTitanUser.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AstroTitanUser/AppDelegate.swift; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = AstroTitanUser/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		3AF980286D9A4C6C8F461D5E /* GeneralSans-Bold.otf */ = {isa = PBXFileReference; name = "GeneralSans-Bold.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		28E08E7FF36F4E07B88B47B8 /* GeneralSans-BoldItalic.otf */ = {isa = PBXFileReference; name = "GeneralSans-BoldItalic.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-BoldItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		23D910A8214C499292356A5E /* GeneralSans-Extralight.otf */ = {isa = PBXFileReference; name = "GeneralSans-Extralight.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-Extralight.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6F681627E5324FDBAE4187DE /* GeneralSans-ExtralightItalic.otf */ = {isa = PBXFileReference; name = "GeneralSans-ExtralightItalic.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-ExtralightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FB275B2C763C4C34A450130A /* GeneralSans-Italic.otf */ = {isa = PBXFileReference; name = "GeneralSans-Italic.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-Italic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C2340A70B06741CE89B54B25 /* GeneralSans-Light.otf */ = {isa = PBXFileReference; name = "GeneralSans-Light.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		05D74621C7C14F52BDFC4982 /* GeneralSans-LightItalic.otf */ = {isa = PBXFileReference; name = "GeneralSans-LightItalic.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-LightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BB83D70F3BED408CBAFF5ADA /* GeneralSans-Medium.otf */ = {isa = PBXFileReference; name = "GeneralSans-Medium.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		08A76E123C11449F941F0E39 /* GeneralSans-MediumItalic.otf */ = {isa = PBXFileReference; name = "GeneralSans-MediumItalic.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-MediumItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5A8A200F805949EAB31F5921 /* GeneralSans-Regular.otf */ = {isa = PBXFileReference; name = "GeneralSans-Regular.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BAB1A67A0A7D4112B005939E /* GeneralSans-Semibold.otf */ = {isa = PBXFileReference; name = "GeneralSans-Semibold.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-Semibold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		96EFE040FDBE4F5D969A4089 /* GeneralSans-SemiboldItalic.otf */ = {isa = PBXFileReference; name = "GeneralSans-SemiboldItalic.otf"; path = "../src/assets/fonts/google_sans/GeneralSans-SemiboldItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CB845B97BA304D08A6C19E0A /* Satoshi-Black.otf */ = {isa = PBXFileReference; name = "Satoshi-Black.otf"; path = "../src/assets/fonts/satoshi/Satoshi-Black.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3A3F904932B14705B3AC4E6A /* Satoshi-BlackItalic.otf */ = {isa = PBXFileReference; name = "Satoshi-BlackItalic.otf"; path = "../src/assets/fonts/satoshi/Satoshi-BlackItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6561274D16184F8D98CD10FE /* Satoshi-Bold.otf */ = {isa = PBXFileReference; name = "Satoshi-Bold.otf"; path = "../src/assets/fonts/satoshi/Satoshi-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DE14D7F7E5784068B31A2C48 /* Satoshi-BoldItalic.otf */ = {isa = PBXFileReference; name = "Satoshi-BoldItalic.otf"; path = "../src/assets/fonts/satoshi/Satoshi-BoldItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E051CA5B06FA40148491AEE8 /* Satoshi-Italic.otf */ = {isa = PBXFileReference; name = "Satoshi-Italic.otf"; path = "../src/assets/fonts/satoshi/Satoshi-Italic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A89C3054F1C041F09687C01A /* Satoshi-Light.otf */ = {isa = PBXFileReference; name = "Satoshi-Light.otf"; path = "../src/assets/fonts/satoshi/Satoshi-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D6BDC2B8639C42F7BC598801 /* Satoshi-LightItalic.otf */ = {isa = PBXFileReference; name = "Satoshi-LightItalic.otf"; path = "../src/assets/fonts/satoshi/Satoshi-LightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BEE625082C77404A9A4CB00A /* Satoshi-Medium.otf */ = {isa = PBXFileReference; name = "Satoshi-Medium.otf"; path = "../src/assets/fonts/satoshi/Satoshi-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DB16AE9837A04050A26C7046 /* Satoshi-MediumItalic.otf */ = {isa = PBXFileReference; name = "Satoshi-MediumItalic.otf"; path = "../src/assets/fonts/satoshi/Satoshi-MediumItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		25A2E4DF60EF423EAC62E6B5 /* Satoshi-Regular.otf */ = {isa = PBXFileReference; name = "Satoshi-Regular.otf"; path = "../src/assets/fonts/satoshi/Satoshi-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C80B921A6F3F58F76C31292 /* libPods-AstroTitanUser.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		13B07FAE1A68108700A75B9A /* AstroTitanUser */ = {
+			isa = PBXGroup;
+			children = (
+				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				761780EC2CA45674006654EE /* AppDelegate.swift */,
+				13B07FB61A68108700A75B9A /* Info.plist */,
+				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
+				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+			);
+			name = AstroTitanUser;
+			sourceTree = "<group>";
+		};
+		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				5DCACB8F33CDC322A6C60F78 /* libPods-AstroTitanUser.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		83CBB9F61A601CBA00E9B192 = {
+			isa = PBXGroup;
+			children = (
+				13B07FAE1A68108700A75B9A /* AstroTitanUser */,
+				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				83CBBA001A601CBA00E9B192 /* Products */,
+				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				C9726A10C2214BA6A9473513 /* Resources */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
+		};
+		83CBBA001A601CBA00E9B192 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07F961A680F5B00A75B9A /* AstroTitanUser.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3B4392A12AC88292D35C810B /* Pods-AstroTitanUser.debug.xcconfig */,
+				5709B34CF0A7D63546082F79 /* Pods-AstroTitanUser.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		C9726A10C2214BA6A9473513 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				3AF980286D9A4C6C8F461D5E /* GeneralSans-Bold.otf */,
+				28E08E7FF36F4E07B88B47B8 /* GeneralSans-BoldItalic.otf */,
+				23D910A8214C499292356A5E /* GeneralSans-Extralight.otf */,
+				6F681627E5324FDBAE4187DE /* GeneralSans-ExtralightItalic.otf */,
+				FB275B2C763C4C34A450130A /* GeneralSans-Italic.otf */,
+				C2340A70B06741CE89B54B25 /* GeneralSans-Light.otf */,
+				05D74621C7C14F52BDFC4982 /* GeneralSans-LightItalic.otf */,
+				BB83D70F3BED408CBAFF5ADA /* GeneralSans-Medium.otf */,
+				08A76E123C11449F941F0E39 /* GeneralSans-MediumItalic.otf */,
+				5A8A200F805949EAB31F5921 /* GeneralSans-Regular.otf */,
+				BAB1A67A0A7D4112B005939E /* GeneralSans-Semibold.otf */,
+				96EFE040FDBE4F5D969A4089 /* GeneralSans-SemiboldItalic.otf */,
+				CB845B97BA304D08A6C19E0A /* Satoshi-Black.otf */,
+				3A3F904932B14705B3AC4E6A /* Satoshi-BlackItalic.otf */,
+				6561274D16184F8D98CD10FE /* Satoshi-Bold.otf */,
+				DE14D7F7E5784068B31A2C48 /* Satoshi-BoldItalic.otf */,
+				E051CA5B06FA40148491AEE8 /* Satoshi-Italic.otf */,
+				A89C3054F1C041F09687C01A /* Satoshi-Light.otf */,
+				D6BDC2B8639C42F7BC598801 /* Satoshi-LightItalic.otf */,
+				BEE625082C77404A9A4CB00A /* Satoshi-Medium.otf */,
+				DB16AE9837A04050A26C7046 /* Satoshi-MediumItalic.otf */,
+				25A2E4DF60EF423EAC62E6B5 /* Satoshi-Regular.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		13B07F861A680F5B00A75B9A /* AstroTitanUser */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AstroTitanUser" */;
+			buildPhases = (
+				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				13B07F871A680F5B00A75B9A /* Sources */,
+				13B07F8C1A680F5B00A75B9A /* Frameworks */,
+				13B07F8E1A680F5B00A75B9A /* Resources */,
+				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
+				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AstroTitanUser;
+			productName = AstroTitanUser;
+			productReference = 13B07F961A680F5B00A75B9A /* AstroTitanUser.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83CBB9F71A601CBA00E9B192 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1210;
+				TargetAttributes = {
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1120;
+					};
+				};
+			};
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "AstroTitanUser" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83CBB9F61A601CBA00E9B192;
+			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				13B07F861A680F5B00A75B9A /* AstroTitanUser */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		13B07F8E1A680F5B00A75B9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				AEEF53100355443CB5BCBD72 /* GeneralSans-Bold.otf in Resources */,
+				EFD6186AAFEA434C81B9A90D /* GeneralSans-BoldItalic.otf in Resources */,
+				B822F10B21024CC3B478F2E6 /* GeneralSans-Extralight.otf in Resources */,
+				57A9AC102ABC44E68D2D8F65 /* GeneralSans-ExtralightItalic.otf in Resources */,
+				73EA5BA4F3F344FC97CAC347 /* GeneralSans-Italic.otf in Resources */,
+				B63CD7B5B6C14E0584969CD7 /* GeneralSans-Light.otf in Resources */,
+				0729183BE04849D0B6F96137 /* GeneralSans-LightItalic.otf in Resources */,
+				CA27DD7201BF440B9278B675 /* GeneralSans-Medium.otf in Resources */,
+				A061713D43E745EFB81F6213 /* GeneralSans-MediumItalic.otf in Resources */,
+				DBCE295C0E47405295715BF3 /* GeneralSans-Regular.otf in Resources */,
+				AF3374C52D3C46AA9A389DE4 /* GeneralSans-Semibold.otf in Resources */,
+				EA5048389B0746E9995A064C /* GeneralSans-SemiboldItalic.otf in Resources */,
+				AB80D379EA00479183015956 /* Satoshi-Black.otf in Resources */,
+				05377A82699B4A19A1922EDC /* Satoshi-BlackItalic.otf in Resources */,
+				E09E7B374BA7424E9B70D9E2 /* Satoshi-Bold.otf in Resources */,
+				698C0C315BAE4ADE923C4804 /* Satoshi-BoldItalic.otf in Resources */,
+				C07FF2E4263E4A84AC51DD0A /* Satoshi-Italic.otf in Resources */,
+				34039CBA745844A6A056983D /* Satoshi-Light.otf in Resources */,
+				DDFA2C92856F4F4DACE294FA /* Satoshi-LightItalic.otf in Resources */,
+				20D010AFE4F94D5984938BB4 /* Satoshi-Medium.otf in Resources */,
+				A9D23BBA80AF493EA51F1B8A /* Satoshi-MediumItalic.otf in Resources */,
+				CCB70CB28C7C43F08F05319E /* Satoshi-Regular.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"\\\"$WITH_ENVIRONMENT\\\" \\\"$REACT_NATIVE_XCODE\\\"\"\n";
+		};
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AstroTitanUser-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AstroTitanUser/Pods-AstroTitanUser-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		13B07F871A680F5B00A75B9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-AstroTitanUser.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = AstroTitanUser/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = AstroTitanUser;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-AstroTitanUser.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = AstroTitanUser/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = AstroTitanUser;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		83CBBA201A601CBA00E9B192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		83CBBA211A601CBA00E9B192 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AstroTitanUser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13B07F941A680F5B00A75B9A /* Debug */,
+				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "AstroTitanUser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83CBBA201A601CBA00E9B192 /* Debug */,
+				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+}

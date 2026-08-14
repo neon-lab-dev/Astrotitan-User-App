@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 
 import React, { useEffect, useState } from "react";
 import {
@@ -289,9 +290,9 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#0D0D0D",
-    marginBottom: 8,
+    // marginBottom: 4,
     lineHeight: 26,
   },
 
@@ -322,12 +323,12 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    height: 72,
-    borderRadius: 12,
+    height: 50,
+    borderRadius: 6,
     borderWidth: 1.2,
-    borderColor: "#D4AF37",
     fontSize: 15,
-    backgroundColor: "#E9D8A6",
+    borderColor: '#E5E5E5',
+    backgroundColor: '#F8F8F8',
     flex: 1,
     paddingHorizontal: 16,
     fontFamily: "GeneralSans-Regular",

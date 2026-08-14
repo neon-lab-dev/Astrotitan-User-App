@@ -16,14 +16,12 @@ const Step1_RequestType = ({ requestType, setRequestType }: Props) => {
       title: 'Generate Kundli',
       description: 'Create a new kundli from your birth details',
       icon: ICONS.GenerateKundli,
-      iconBg: '#eaebe5',
     },
     {
       id: 'analyzeKundli',
       title: 'Analyze Kundli',
       description: 'Upload existing kundli for expert analysis',
       icon: ICONS.AnalyzeKundli,
-      iconBg: '#eaebe5',
     },
   ];
 
@@ -32,50 +30,48 @@ const Step1_RequestType = ({ requestType, setRequestType }: Props) => {
       <View style={styles.header}>
         <SatoshiText style={styles.title}>Choose Request Type</SatoshiText>
         <SansText style={styles.subtitle}>
-          Select how you'd like to proceed with your kundli
+          Select how you'd like to proceed
         </SansText>
       </View>
 
       <View style={styles.optionsContainer}>
-        {options.map(option => {
+        {options.map((option) => {
           const isActive = requestType === option.id;
           const IconComponent = option.icon;
 
           return (
             <TouchableOpacity
               key={option.id}
-              style={[styles.optionCard, isActive && styles.optionCardActive]}
+              style={[
+                styles.optionCard,
+                isActive && styles.optionCardActive,
+              ]}
               onPress={() => setRequestType(option.id as any)}
               activeOpacity={0.7}
             >
-              <View
-                style={[
-                  styles.iconContainer,
-                  isActive && styles.iconContainerActive,
-                ]}
-              >
-                <View
-                  style={[styles.iconBg, { backgroundColor: option.iconBg }]}
-                >
-                  <IconComponent width={28} height={28} />
+              <View style={styles.cardContent}>
+                <View style={[
+                  styles.iconWrapper,
+                ]}>
+                  <IconComponent width={24} height={24} />
                 </View>
+                <View style={styles.textContent}>
+                  <SatoshiText style={[
+                    styles.optionTitle,
+                    isActive && styles.optionTitleActive,
+                  ]}>
+                    {option.title}
+                  </SatoshiText>
+                  <SansText style={styles.optionDescription}>
+                    {option.description}
+                  </SansText>
+                </View>
+                {isActive && (
+                  <View style={styles.checkmark}>
+                    <SansText style={styles.checkmarkText}>✓</SansText>
+                  </View>
+                )}
               </View>
-              <SatoshiText
-                style={[
-                  styles.optionTitle,
-                  isActive && styles.optionTitleActive,
-                ]}
-              >
-                {option.title}
-              </SatoshiText>
-              <SansText style={styles.optionDescription}>
-                {option.description}
-              </SansText>
-              {isActive && (
-                <View style={styles.checkmark}>
-                  <SansText style={styles.checkmarkText}>✓</SansText>
-                </View>
-              )}
             </TouchableOpacity>
           );
         })}
@@ -92,79 +88,71 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontFamily: 'Satoshi-Bold',
     color: '#1a1a2e',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#8E8E93',
-    lineHeight: 20,
+    lineHeight: 18,
   },
   optionsContainer: {
-    gap: 16,
+    gap: 12,
   },
   optionCard: {
-    padding: 20,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: '#E5E5E5',
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: '#EEEEEE',
     backgroundColor: '#FFFFFF',
-    position: 'relative',
-    overflow: 'hidden',
   },
   optionCardActive: {
     borderColor: '#D4AF37',
     backgroundColor: 'rgba(212, 175, 55, 0.04)',
   },
-  iconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  iconWrapper: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
-    overflow: 'hidden',
   },
-  iconContainerActive: {
-    backgroundColor: '#D4AF37',
-  },
-  iconBg: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
+  textContent: {
+    flex: 1,
   },
   optionTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Satoshi-Bold',
-    color: '#1a1a2e',
-    marginBottom: 4,
+    color: '#363641',
+    marginBottom: 2,
   },
   optionTitleActive: {
     color: '#D4AF37',
   },
   optionDescription: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#8E8E93',
-    lineHeight: 18,
+    lineHeight: 16,
   },
   checkmark: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     backgroundColor: '#D4AF37',
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkmarkText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '700',
   },
 });

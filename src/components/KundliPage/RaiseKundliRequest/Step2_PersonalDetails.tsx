@@ -89,18 +89,18 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontFamily: 'Satoshi-Bold',
     color: '#1a1a2e',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#8E8E93',
-    lineHeight: 20,
+    lineHeight: 18,
   },
   form: {
-    gap: 16,
+    gap: 12,
   },
   textArea: {
     height: 100,

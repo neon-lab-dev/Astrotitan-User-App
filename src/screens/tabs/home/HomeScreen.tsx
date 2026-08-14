@@ -21,7 +21,7 @@ import BlogInsights from '../../../components/HomePage/BlogInsights/BlogInsights
 import { useGetAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
 
 const HomeScreen = () => {
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [getMe] = useLazyGetMeQuery();
   const dispatch = useDispatch();
 

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useForm } from 'react-hook-form';
-import { useNavigation } from '@react-navigation/native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Step1_RequestType from './Step1_RequestType';
 import Step2_PersonalDetails from './Step2_PersonalDetails';
@@ -24,8 +23,11 @@ import { SansText } from '../../reusable/Text/SansText';
 import { SatoshiText } from '../../reusable/Text/SatoshiText';
 import { ICONS } from '../../../assets/svg';
 
-const RaiseKundliRequest = () => {
-  const navigation = useNavigation<any>();
+const RaiseKundliRequest = ({
+  setActiveTab,
+}: {
+  setActiveTab: (tab: 'requests' | 'new') => void;
+}) => {
   const [sendKundliRequest, { isLoading }] = useSendKundliRequestMutation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
@@ -161,7 +163,7 @@ const RaiseKundliRequest = () => {
         Alert.alert(
           'Request Submitted',
           "Your kundli request has been submitted successfully. You will be notified once it's processed.",
-          [{ text: 'OK', onPress: () => navigation.goBack() }],
+          [{ text: 'OK', onPress: () => setActiveTab('requests') }],
         );
       }
     } catch (error: any) {
@@ -382,12 +384,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Satoshi-Bold',
     color: '#1a1a2e',
+    marginBottom: 4,
   },
   fileUploadSubtext: {
     fontSize: 13,
     color: '#8E8E93',
-    marginBottom: 16,
     lineHeight: 18,
+    marginBottom: 12,
   },
   fileUploadContainer: {
     padding: 20,

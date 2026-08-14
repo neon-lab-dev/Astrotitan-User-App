@@ -15,9 +15,9 @@ const getStatusColor = (status: string) => {
     case 'pending':
       return '#D4AF37';
     case 'accepted':
-      return '#4CAF50';
-    case 'completed':
       return '#2196F3';
+    case 'completed':
+      return '#4CAF50';
     case 'cancelled':
       return '#FF3B30';
     default:
@@ -40,7 +40,7 @@ const getStatusLabel = (status: string) => {
   }
 };
 
-const getKundliTypeLabel = (type: string): string => {
+export const getKundliTypeLabel = (type: string): string => {
   const types: Record<string, string> = {
     birthChart: 'Birth Chart',
     compatibility: 'Compatibility',

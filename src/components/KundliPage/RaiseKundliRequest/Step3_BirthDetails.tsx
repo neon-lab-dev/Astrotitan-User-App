@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Control, Controller } from 'react-hook-form';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SatoshiText } from '../../reusable/Text/SatoshiText';
@@ -23,7 +18,6 @@ const genders = [
   { label: 'Female', value: 'female' },
   { label: 'Other', value: 'other' },
 ];
-
 
 const Step3_BirthDetails = ({ control, watch, setValue }: Props) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -64,21 +58,27 @@ const Step3_BirthDetails = ({ control, watch, setValue }: Props) => {
           name="dateOfBirth"
           rules={{ required: 'Date of birth is required' }}
           render={({ field: { value }, fieldState: { error } }) => (
-            <TouchableOpacity
-              style={[styles.datePickerButton, error && styles.datePickerError]}
-              onPress={() => setShowDatePicker(true)}
-            >
-              <View style={styles.datePickerContent}>
-                <SansText
-                  style={[
-                    styles.datePickerText,
-                    !value && styles.datePickerPlaceholder,
-                  ]}
-                >
-                  {value ? formatDate(value) : 'Select Date of Birth'}
-                </SansText>
-              </View>
-            </TouchableOpacity>
+            <View>
+              <SansText style={styles.label}>Date of Birth</SansText>
+              <TouchableOpacity
+                style={[
+                  styles.datePickerButton,
+                  error && styles.datePickerError,
+                ]}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <View style={styles.datePickerContent}>
+                  <SansText
+                    style={[
+                      styles.datePickerText,
+                      !value && styles.datePickerPlaceholder,
+                    ]}
+                  >
+                    {value ? formatDate(value) : 'Select Date of Birth'}
+                  </SansText>
+                </View>
+              </TouchableOpacity>
+            </View>
           )}
         />
 
@@ -102,7 +102,7 @@ const Step3_BirthDetails = ({ control, watch, setValue }: Props) => {
         <View style={styles.genderContainer}>
           <SansText style={styles.genderLabel}>Gender</SansText>
           <View style={styles.genderOptions}>
-            {genders.map((gender) => (
+            {genders.map(gender => (
               <TouchableOpacity
                 key={gender.value}
                 style={[
@@ -146,23 +146,28 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontFamily: 'Satoshi-Bold',
     color: '#1a1a2e',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#8E8E93',
-    lineHeight: 20,
+    lineHeight: 18,
   },
   form: {
-    gap: 16,
+    gap: 12,
+  },
+  label: {
+    fontSize: 14,
+    color: '#0D0D0D',
+    lineHeight: 26,
   },
   datePickerButton: {
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: '#E5E5E5',
     backgroundColor: '#F8F8F8',

@@ -149,8 +149,8 @@ export default function ReusableButton({
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 56,
-    borderRadius: 999, // 👈 makes it pill shape
+    minHeight: 47,
+    borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
   },

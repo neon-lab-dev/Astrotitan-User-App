@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
-import { ScrollView, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import AnimatedScreen from '../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../components/layout/ScreenWrapper';
 import AppHeader from '../../../components/reusable/AppHeader/AppHeader';
@@ -9,12 +15,30 @@ import AllKundliRequests from '../../../components/KundliPage/AllKundliRequests/
 import RaiseKundliRequest from '../../../components/KundliPage/RaiseKundliRequest/RaiseKundliRequest';
 import { SansText } from '../../../components/reusable/Text/SansText';
 import { SatoshiText } from '../../../components/reusable/Text/SatoshiText';
+import { ICONS } from '../../../assets/svg';
 
 const KundliScreen = () => {
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'requests' | 'new'>('requests');
-  const { data, isLoading } = useGetMyKundliRequestsQuery({});
+  const { data, isLoading, refetch } = useGetMyKundliRequestsQuery({});
 
   const requests = data?.data?.data || [];
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+
+    try {
+      setRefreshing(true);
+
+      await Promise.all([refetch().unwrap()]);
+    } catch (error) {
+      console.log('REFRESH ERROR:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
+
+  const IconComponent = ICONS.EmptyFile;
 
   if (isLoading) {
     return (
@@ -34,82 +58,98 @@ const KundliScreen = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <AppHeader showBack={false}>
-          <AuthTitle title="Kundli" />
-        </AppHeader>
-
-        {/* ✅ Full Width Tabs */}
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'requests' && styles.tabActive]}
-            onPress={() => setActiveTab('requests')}
-            activeOpacity={0.8}
-          >
-            <View style={styles.tabContent}>
-              <SatoshiText
-                style={[
-                  styles.tabText,
-                  activeTab === 'requests' && styles.tabTextActive,
-                ]}
-              >
-                My Requests
-              </SatoshiText>
-              {requests.length > 0 && (
-                <View style={styles.badge}>
-                  <SansText style={styles.badgeText}>
-                    {requests.length}
-                  </SansText>
-                </View>
-              )}
-            </View>
-            {activeTab === 'requests' && <View style={styles.underline} />}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'new' && styles.tabActive]}
-            onPress={() => setActiveTab('new')}
-            activeOpacity={0.8}
-          >
-            <View style={styles.tabContent}>
-              <SatoshiText
-                style={[
-                  styles.tabText,
-                  activeTab === 'new' && styles.tabTextActive,
-                ]}
-              >
-                + New Request
-              </SatoshiText>
-            </View>
-            {activeTab === 'new' && <View style={styles.underline} />}
-          </TouchableOpacity>
-        </View>
-
-        {/* ✅ Content */}
         <ScrollView
           style={styles.container}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#816B22"
+              colors={['#816B22']}
+              progressBackgroundColor="#FBF7EB"
+            />
+          }
+          contentContainerStyle={styles.scrollContent}
         >
-          {activeTab === 'requests' ? (
-            requests.length === 0 ? (
-              <View style={styles.emptyContainer}>
-                <View style={styles.emptyIcon}>
-                  <SansText style={styles.emptyIconText}>🔮</SansText>
-                </View>
-                <SatoshiText style={styles.emptyTitle}>
-                  No Kundli Requests Yet
+          <AppHeader showBack={false}>
+            <AuthTitle title="Kundli" />
+          </AppHeader>
+
+          {/* Tabs */}
+          <View style={styles.tabContainer}>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === 'requests' && styles.tabActive]}
+              onPress={() => setActiveTab('requests')}
+              activeOpacity={0.8}
+            >
+              <View style={styles.tabContent}>
+                <SatoshiText
+                  style={[
+                    styles.tabText,
+                    activeTab === 'requests' && styles.tabTextActive,
+                  ]}
+                >
+                  My Requests
                 </SatoshiText>
-                <SansText style={styles.emptySubtext}>
-                  You haven't raised any kundli requests yet. Tap "New Request"
-                  to get started.
-                </SansText>
+
+                {requests.length > 0 && (
+                  <View style={styles.badge}>
+                    <SansText style={styles.badgeText}>
+                      {requests.length}
+                    </SansText>
+                  </View>
+                )}
               </View>
+
+              {activeTab === 'requests' && <View style={styles.underline} />}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.tab, activeTab === 'new' && styles.tabActive]}
+              onPress={() => setActiveTab('new')}
+              activeOpacity={0.8}
+            >
+              <View style={styles.tabContent}>
+                <SatoshiText
+                  style={[
+                    styles.tabText,
+                    activeTab === 'new' && styles.tabTextActive,
+                  ]}
+                >
+                  + New Request
+                </SatoshiText>
+              </View>
+
+              {activeTab === 'new' && <View style={styles.underline} />}
+            </TouchableOpacity>
+          </View>
+
+          {/* Content */}
+          <View style={styles.contentContainer}>
+            {activeTab === 'requests' ? (
+              requests.length === 0 ? (
+                <View style={styles.emptyContainer}>
+                  <View style={styles.emptyIcon}>
+                    <IconComponent width={50} height={50} />
+                  </View>
+
+                  <SatoshiText style={styles.emptyTitle}>
+                    No Kundli Requests Yet
+                  </SatoshiText>
+
+                  <SansText style={styles.emptySubtext}>
+                    You haven't raised any kundli requests yet. Tap "New
+                    Request" to get started.
+                  </SansText>
+                </View>
+              ) : (
+                <AllKundliRequests />
+              )
             ) : (
-              <AllKundliRequests />
-            )
-          ) : (
-            <RaiseKundliRequest />
-          )}
+              <RaiseKundliRequest setActiveTab={setActiveTab} />
+            )}
+          </View>
         </ScrollView>
       </ScreenWrapper>
     </AnimatedScreen>
@@ -119,6 +159,12 @@ const KundliScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
+    height: '100%',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
   },
   contentContainer: {
     flexGrow: 1,
@@ -137,7 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: '#d4d2d2',
   },
   tab: {
     flex: 1,

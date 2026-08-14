@@ -38,6 +38,9 @@ export type RootStackParamList = {
   RemediesScreen: undefined;
   CartScreen: undefined;
   CheckoutScreen: undefined;
+  KundliRequestDetails: {
+    id: string;
+  };
   PujaDetails: {
     id: string;
   };

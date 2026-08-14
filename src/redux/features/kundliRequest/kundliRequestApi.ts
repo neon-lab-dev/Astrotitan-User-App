@@ -24,6 +24,15 @@ const kundliRequestApi = baseApi.injectEndpoints({
             providesTags: ["kundliRequest"],
         }),
 
+        getSingleKundliRequest: builder.query({
+            query: (id) => ({
+                url: `/kundli-request/${id}`,
+                method: "GET",
+                credentials: "include",
+            }),
+            providesTags: ["kundliRequest"],
+        }),
+
         sendKundliRequest: builder.mutation({
             query: (data) => ({
                 url: `/kundli-request`,
@@ -38,5 +47,6 @@ const kundliRequestApi = baseApi.injectEndpoints({
 
 export const {
     useGetMyKundliRequestsQuery,
+    useGetSingleKundliRequestQuery,
     useSendKundliRequestMutation,
 } = kundliRequestApi;

@@ -20,7 +20,7 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const SessionHistoryCard = ({ item }) => {
+const SessionHistoryCard = ({ item } : any) => {
     const navigation = useNavigation<any>();
   const IconComponent = ICONS.RightArrow;
   return (

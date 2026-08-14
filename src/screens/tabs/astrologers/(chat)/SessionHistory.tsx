@@ -28,7 +28,6 @@ const SessionHistory = () => {
     refetch: bookingRefetch,
   } = useGetMyConsultationBookingsQuery({});
   const bookings = consultationBookings?.data?.data || [];
-  console.log(consultationBookings);
   return (
     <AnimatedScreen>
       <ScreenWrapper>

@@ -39,7 +39,6 @@ export default function ArticleScreen() {
   const blog = data?.data;
 
 
-
   const systemFonts = [
     ...defaultSystemFonts,
     "Satoshi-Regular",

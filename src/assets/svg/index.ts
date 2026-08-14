@@ -52,6 +52,13 @@ import TickIcon from "@/assets/icons/visual/tick.svg";
 import UserIcon from "@/assets/icons/visual/user-circle.svg";
 import ValidationIcon from "@/assets/icons/visual/validation.svg";
 import SentIcon from "@/assets/icons/actions/sent.svg";
+import AnalyzeKundli from "@/assets/icons/visual/analyze-kundli.svg";
+import GenerateKundli from "@/assets/icons/visual/generate-kundli.svg";
+import CalendarIcon from "@/assets/icons/visual/calendar.svg";
+import UploadFile from "@/assets/icons/visual/upload-file.svg";
+import CalendarLightGray from "@/assets/icons/visual/calendar-light-gray.svg";
+import LocationLightGray from "@/assets/icons/visual/location-light-gray.svg";
+import RightArrow from "@/assets/icons/visual/right-arrow.svg";
 
 export const ICONS = {
   homeActive: HomeActive,
@@ -99,7 +106,14 @@ export const ICONS = {
   HelpIcon:HelpIcon,
   DocumentSearchIcon:DocumentSearchIcon,
   UserIcon:UserIcon,
-  SentIcon:SentIcon
+  SentIcon:SentIcon,
+  AnalyzeKundli:AnalyzeKundli,
+  GenerateKundli:GenerateKundli,
+  CalendarIcon:CalendarIcon,
+  UploadFile:UploadFile,
+  CalendarLightGray:CalendarLightGray,
+  LocationLightGray:LocationLightGray,
+  RightArrow:RightArrow
 };
 
 export type IconName = keyof typeof ICONS;

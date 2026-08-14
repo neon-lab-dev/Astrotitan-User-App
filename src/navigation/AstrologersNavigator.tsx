@@ -2,11 +2,12 @@ import React from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AstrologerScreen from "../screens/tabs/astrologers/AstrologerScreen";
 import AstrologerDetailsScreen from "../screens/tabs/astrologers/astrologer/AstrologerDetailsScreen";
-import ChatHistory from "../screens/tabs/astrologers/(chat)/ChatHistory";
 import RequestConsultationForm from "../screens/tabs/astrologers/astrologer/RequestConsultationForm";
 import RequestedFormCompleted from "../screens/tabs/astrologers/astrologer/RequestedFormCompleted";
 import AstrologerChatScreen from "../screens/tabs/astrologers/(chat)/AstrologerChatScreen";
 import RequestedSessions from "../screens/tabs/astrologers/(chat)/RequestedSessions";
+import SessionHistory from "../screens/tabs/astrologers/(chat)/SessionHistory";
+import SessionDetails from "../screens/tabs/astrologers/(chat)/SessionDetails";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,8 +31,12 @@ export default function AstrologersNavigator() {
         component={AstrologerDetailsScreen}
       />
       <Stack.Screen
-        name="ChatHistory"
-        component={ChatHistory}
+        name="SessionHistory"
+        component={SessionHistory}
+      />
+      <Stack.Screen
+        name="SessionDetails"
+        component={SessionDetails}
       />
       <Stack.Screen
         name="AstrologerChatScreen"

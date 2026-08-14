@@ -1,7 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, { useCallback, useEffect } from "react";
-import { BackHandler, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect } from 'react';
+import {
+  BackHandler,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 type Props = {
@@ -20,91 +27,95 @@ const AppHeader = ({
   showBack = true,
   onPressBack,
   backText,
-  backgroundColor = "#EDDEAD",
+  backgroundColor = '#EDDEAD',
   showBorder = true,
-  borderColor = "#E6D18B",
+  borderColor = '#E6D18B',
   children,
 }: Props) => {
- const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const handleBack = useCallback(() => {
-  if (onPressBack) {
-    onPressBack();
-  } else {
-    navigation.goBack();
-  }
+    if (onPressBack) {
+      onPressBack();
+    } else {
+      navigation.goBack();
+    }
 
-  return true;
-}, [onPressBack, navigation]);
+    return true;
+  }, [onPressBack, navigation]);
 
   // 🔥 SYSTEM BACK CONTROL
   useEffect(() => {
     if (!showBack) return;
 
     const subscription = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handleBack
+      'hardwareBackPress',
+      handleBack,
     );
 
     return () => subscription.remove();
   }, [showBack, handleBack]);
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor,
-          borderBottomWidth: showBorder ? 1 : 0,
-          borderBottomColor: borderColor,
-        },
-      ]}
-    >
-      {/* 🔥 TOP ROW */}
-      {showBack && (
-        <View style={styles.backRow}>
-          <TouchableOpacity
-            onPress={() => {
-              if (onPressBack) {
-                onPressBack();
-              } else {
-               navigation.goBack();
-              }
-            }}
-            style={{ padding: 8 }}
-          >
-            <Ionicons name="arrow-back" size={24} color="#0D0D0D" />
-          </TouchableOpacity>
+    <SafeAreaView style={styles.mainContainer}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor,
+            borderBottomWidth: showBorder ? 1 : 0,
+            borderBottomColor: borderColor,
+          },
+        ]}
+      >
+        {/* 🔥 TOP ROW */}
+        {showBack && (
+          <View style={styles.backRow}>
+            <TouchableOpacity
+              onPress={() => {
+                if (onPressBack) {
+                  onPressBack();
+                } else {
+                  navigation.goBack();
+                }
+              }}
+              style={{ padding: 8 }}
+            >
+              <Ionicons name="arrow-back" size={24} color="#0D0D0D" />
+            </TouchableOpacity>
 
-          {/* TEXT */}
-          <View style={{ flex: 1 }}>{backText}</View>
-        </View>
-      )}
+            {/* TEXT */}
+            <View style={{ flex: 1 }}>{backText}</View>
+          </View>
+        )}
 
-      {/* 🔥 CONTENT BELOW */}
-      <View style={styles.childrenContainer}>
-        {children}
+        {/* 🔥 CONTENT BELOW */}
+        <View style={styles.childrenContainer}>{children}</View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default AppHeader;
 
 const styles = StyleSheet.create({
+  mainContainer: { backgroundColor: '#FFFFFF' },
   container: {
-    paddingTop: 12,
-    paddingHorizontal: 16,
-    gap: 12, 
+    backgroundColor: '#EDDEAD',
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F2F2F2',
+    paddingVertical: 13,
   },
 
   backRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
 
   childrenContainer: {
-    justifyContent: "space-between", // optional
+    justifyContent: 'space-between', // optional
   },
 });

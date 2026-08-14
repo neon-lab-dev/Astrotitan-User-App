@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import NoteIcon from "@/assets/icons/navigation/note.svg";
 
 import React from "react";

@@ -185,7 +185,7 @@ const ProfileScreen = () => {
               <View style={styles.card}>
                 <ProfileItem title="Birth Details" icon="CalenderIcon" onPress={() => { navigation.navigate("BirthDetails") }} />
                 <ProfileItem title="Orders" icon="PackageIcon" onPress={() => { navigation.navigate("OrdersScreen") }} />
-                <ProfileItem title="Session History" icon="NoteIcon" onPress={() => { navigation.navigate("ChatHistory") }} />
+                <ProfileItem title="Session History" icon="NoteIcon" onPress={() => { navigation.navigate("SessionHistory") }} />
                 <ProfileItem title="Saved Addresses" icon="LocationIcon" onPress={() => { navigation.navigate("AddressScreen") }} />
               </View></View>
 

@@ -82,7 +82,10 @@ export type RootStackParamList = {
   AddressScreen: undefined;
   Queries: undefined;
   RaiseQuery: undefined;
-  ChatHistory: undefined;
+  SessionHistory: undefined;
+  SessionDetails: {
+    id: string;
+  };
   OrdersScreen: undefined;
   PujaConsultationSuccess: undefined;
   RequestedSessions: undefined;

@@ -13,7 +13,7 @@ const AuthTitle = ({
   children?: React.ReactNode;
 }) => {
   return (
-    <View style={{ marginBottom: 24 }}>
+    <View>
       <SatoshiText style={[styles.title,{  fontSize: titleFontSize||21,}]}>{title}</SatoshiText>
 
       {children && <SansText style={styles.subtitle}>{children}</SansText>}
@@ -25,8 +25,7 @@ export default AuthTitle;
 
 const styles = StyleSheet.create({
   title: {
-  
-    fontFamily: "Satoshi-Bold",
+    fontFamily: "Satoshi-Medium",
     letterSpacing: -0.32,
     color: "#0D0D0D",
   },

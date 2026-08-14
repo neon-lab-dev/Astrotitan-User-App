@@ -73,7 +73,7 @@ const KundliScreen = () => {
           contentContainerStyle={styles.scrollContent}
         >
           <AppHeader showBack={false}>
-            <AuthTitle title="Kundli" />
+            <AuthTitle titleFontSize={17} title="Kundli" />
           </AppHeader>
 
           {/* Tabs */}

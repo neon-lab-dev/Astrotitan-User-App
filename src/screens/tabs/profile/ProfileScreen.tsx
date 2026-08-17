@@ -20,7 +20,6 @@ import AppHeader from '../../../components/reusable/AppHeader/AppHeader';
 import AuthTitle from '../../../components/auth/AuthTitle';
 import { SatoshiText } from '../../../components/reusable/Text/SatoshiText';
 import SectionTitle from '../../../components/reusable/SectionTitle/SectionTitle';
-import ReusableButton from '../../../components/reusable/ReusableButton/ReusableButton';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch()

@@ -16,6 +16,7 @@ import RaiseKundliRequest from '../../../components/KundliPage/RaiseKundliReques
 import { SansText } from '../../../components/reusable/Text/SansText';
 import { SatoshiText } from '../../../components/reusable/Text/SatoshiText';
 import { ICONS } from '../../../assets/svg';
+import AppBar from '../../../components/reusable/AppBar/AppBar';
 
 const KundliScreen = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -72,9 +73,9 @@ const KundliScreen = () => {
           }
           contentContainerStyle={styles.scrollContent}
         >
-          <AppHeader showBack={false}>
-            <AuthTitle titleFontSize={17} title="Kundli" />
-          </AppHeader>
+          <AppBar
+            title="Kundali"
+          />
 
           {/* Tabs */}
           <View style={styles.tabContainer}>

@@ -1,47 +1,33 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React from "react";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../../../../navigation/types";
-import SuccessScreen from "../../../../components/reusable/successScreen/successScreen";
-
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../../../navigation/types';
+import SuccessScreen from '../../../../components/reusable/successScreen/successScreen';
 
 const PujaConsultationSuccess = () => {
-  type NavigationProp =
-    NativeStackNavigationProp<RootStackParamList>;
+  type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
   const navigation = useNavigation<NavigationProp>();
   return (
     <SuccessScreen
-      title="Consultation Form submitted"
-      description="Your consultation form has been submitted and our experts will reach out to you."
-
+      title="Request Received."
+      description="We have received your request and our expert will reach out to you soon."
       buttons={[
-
-
         {
           title: "Back To Pooja's",
-          variant: "outline",
+          variant: 'solid',
           onPress: () => {
             navigation.getParent()?.reset({
               index: 0,
               routes: [
                 {
-                  name: "RemediesTab",
+                  name: 'RemediesTab',
                   state: {
-                    routes: [{ name: "RemediesScreen" }],
+                    routes: [{ name: 'RemediesScreen' }],
                   },
                 },
               ],
             });
-          },
-        },
-        {
-          title: "View Requested Consultations",
-
-          onPress: () => {
-            navigation.replace(
-              "RemediesScreen"
-            );
           },
         },
       ]}

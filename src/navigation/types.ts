@@ -33,6 +33,7 @@ export type RootStackParamList = {
     sign?: string;
   };
   KundliScreen: undefined;
+  BlogScreen: undefined;
   NotificationScreen: undefined;
   RequestedFormCompleted: undefined;
   RemediesScreen: undefined;

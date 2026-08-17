@@ -140,7 +140,7 @@ const ConsultationForm =
                 <ScreenWrapper>
                     <AppHeader
                     >
-                        <AuthTitle title="Consultation form">
+                        <AuthTitle title="Book Puja">
                             <SansText>
                                 Fill out this form and our expert will reach out to you.
                             </SansText>

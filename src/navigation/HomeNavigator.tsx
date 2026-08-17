@@ -15,6 +15,7 @@ import PujaConsultationSuccess from "../screens/tabs/remedies/ecommerce/PujaCons
 import RequestConsultationForm from "../screens/tabs/astrologers/astrologer/RequestConsultationForm";
 import AstrologerScreen from "../screens/tabs/astrologers/AstrologerScreen";
 import CartScreen from "../screens/tabs/remedies/ecommerce/CartScreen";
+import BlogScreen from "../screens/tabs/blogs/BlogScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -92,6 +93,10 @@ export default function HomeNavigator() {
       <Stack.Screen
         name="PujaConsultationSuccess"
         component={PujaConsultationSuccess}
+      />
+      <Stack.Screen
+        name="BlogScreen"
+        component={BlogScreen}
       />
     </Stack.Navigator>
   );

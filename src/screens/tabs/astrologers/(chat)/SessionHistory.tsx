@@ -1,9 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
 import NoteIcon from '@/assets/icons/navigation/note.svg';
 
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import AppHeader from '../../../../components/reusable/AppHeader/AppHeader';
@@ -22,70 +22,96 @@ const SessionHistory = () => {
 
   const navigation = useNavigation<NavigationProp>();
 
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
   const {
     data: consultationBookings,
     isLoading: isBookingLoading,
-    refetch: bookingRefetch,
+    refetch,
   } = useGetMyConsultationBookingsQuery({});
   const bookings = consultationBookings?.data?.data || [];
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+
+    try {
+      setRefreshing(true);
+
+      await Promise.all([refetch().unwrap()]);
+    } catch (error) {
+      console.log('REFRESH ERROR:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <AppHeader showBack={false}>
-          <AuthTitle titleFontSize={17} title="Session Logs" />
-        </AppHeader>
-
-        <View
-          style={{
-            flex: 1,
-          }}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#816B22"
+              colors={['#816B22']}
+              progressBackgroundColor="#FBF7EB"
+            />
+          }
         >
-          {isBookingLoading ? (
-            <SessionSkeleton />
-          ) : bookings.length <= 0 ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <NoteIcon height={124} width={124} />
+          <AppHeader showBack={false}>
+            <AuthTitle titleFontSize={17} title="Session Logs" />
+          </AppHeader>
 
-              <SansText
-                style={{
-                  marginTop: 16,
-                  textAlign: 'center',
-                }}
-              >
-                No sessions yet
-              </SansText>
-            </View>
-          ) : (
-            <ScrollView showsVerticalScrollIndicator={false}>
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
+            {isBookingLoading ? (
+              <SessionSkeleton />
+            ) : bookings.length <= 0 ? (
               <View
                 style={{
-                  paddingVertical: 16,
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
-                {bookings.map((item: any) => (
-                  <SessionHistoryCard
-                    key={item._id}
-                    item={item}
-                  />
-                ))}
+                <NoteIcon height={124} width={124} />
+
+                <SansText
+                  style={{
+                    marginTop: 16,
+                    textAlign: 'center',
+                  }}
+                >
+                  No sessions yet
+                </SansText>
               </View>
-            </ScrollView>
-          )}
+            ) : (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View
+                  style={{
+                    paddingVertical: 16,
+                  }}
+                >
+                  {bookings.map((item: any) => (
+                    <SessionHistoryCard key={item._id} item={item} />
+                  ))}
+                </View>
+              </ScrollView>
+            )}
 
-          {/* BUTTON */}
+            {/* BUTTON */}
 
-          <ReusableButton
-            onPress={() => navigation.navigate('RequestedSessions')}
-            style={{ marginVertical: 16 }}
-            title="View Requested Sessions"
-          />
-        </View>
+            <ReusableButton
+              onPress={() => navigation.navigate('RequestedSessions')}
+              style={{ marginVertical: 16 }}
+              title="View Requested Sessions"
+            />
+          </View>
+        </ScrollView>
       </ScreenWrapper>
     </AnimatedScreen>
   );

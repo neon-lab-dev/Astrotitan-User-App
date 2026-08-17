@@ -5,7 +5,6 @@ import ReusableButton from "../ReusableButton/ReusableButton";
 import ModalService from "../../../redux/features/ui/GlobalModal/globalModalService";
 import LinearGradient from "react-native-linear-gradient";
 import { SatoshiText } from "../Text/SatoshiText";
-import { useNavigation } from "@react-navigation/native";
 type Props = {
   isProfileCompleted: boolean;
 };
@@ -13,21 +12,11 @@ type Props = {
 
 
 export default function VerifiedPopup({ isProfileCompleted }: Props) {
-  const navigation = useNavigation<any>();
+
   const handleClose = () => {
     ModalService.close();
 
-    if (isProfileCompleted) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "HomeTabs" }],
-      });
-    } else {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "MultiStepForm" }],
-      });
-    }
+    
   };
   return (
     <LinearGradient

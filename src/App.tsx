@@ -52,7 +52,7 @@ function AppContent() {
   return (
     <Provider store={store}>
      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
+        {/* <SafeAreaProvider> */}
           <NavigationContainer>
             <NotificationManager/>
             <ScreenWrapper>
@@ -62,7 +62,7 @@ function AppContent() {
             <GlobalModal />
             {/* <DevResetPanel/>  */}
           </NavigationContainer>
-        </SafeAreaProvider>
+        {/* </SafeAreaProvider> */}
       </GestureHandlerRootView>
     </Provider>
   );

@@ -106,6 +106,13 @@ export default function ArticleScreen() {
       marginBottom: 6,
     },
   };
+  const handleGoBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate("Home");
+    }
+  };
 
   /* ---------------- LOADING ---------------- */
   if (isLoading || isFetching) {
@@ -219,7 +226,7 @@ export default function ArticleScreen() {
               <TouchableOpacity
                 style={styles.backBtn}
                 activeOpacity={0.8}
-                onPress={() => navigation.back()}
+                onPress={handleGoBack}
               >
                 <Ionicons name="arrow-back" size={22} color="#4A4A4A" />
               </TouchableOpacity>

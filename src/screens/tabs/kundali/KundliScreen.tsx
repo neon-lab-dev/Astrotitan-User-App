@@ -159,7 +159,7 @@ const KundliScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    // backgroundColor: '#ffffff',
     height: '100%',
   },
   scrollContent: {
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    // backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#d4d2d2',
   },

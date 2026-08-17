@@ -68,7 +68,6 @@ export default function EmailLogin() {
                 control={control}
                 name="email"
                 label="Email Address"
-                variant="text" // 🔥 IMPORTANT
                 placeholder="Enter email"
                 rules={{
                   required: "Email is required",

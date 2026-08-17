@@ -169,8 +169,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
-    backgroundColor: '#F8F8F8',
+   borderColor: "#e7c555",
+    backgroundColor: "#fdf5da",
   },
   datePickerError: {
     borderColor: '#FF3B30',
@@ -206,7 +206,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: '#E5E5E5',
-    backgroundColor: '#F8F8F8',
     alignItems: 'center',
   },
   genderOptionActive: {
@@ -215,7 +214,7 @@ const styles = StyleSheet.create({
   },
   genderText: {
     fontSize: 14,
-    color: '#888',
+    color: '#5a5a5a',
     fontFamily: 'Satoshi-Medium',
   },
   genderTextActive: {

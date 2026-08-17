@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 4,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: '#dddbc0',
   },
   reviewItemLeft: {
     flexDirection: 'row',
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   reviewLabel: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: '#606061',
   },
   reviewValue: {
     fontSize: 14,

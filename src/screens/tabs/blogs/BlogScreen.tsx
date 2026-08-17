@@ -22,14 +22,14 @@ import { useNavigation } from '@react-navigation/native';
 
 // Sample categories - Replace with your actual categories from API
 const BLOG_CATEGORIES = [
-  { id: 'all', label: 'All' },
-  { id: 'astrology', label: 'Astrology' },
-  { id: 'horoscope', label: 'Horoscope' },
-  { id: 'kundli', label: 'Kundli' },
-  { id: 'remedies', label: 'Remedies' },
-  { id: 'planets', label: 'Planets' },
-  { id: 'zodiac', label: 'Zodiac' },
-  { id: 'mantras', label: 'Mantras' },
+  { id: 'All', label: 'All' },
+  { id: 'Astrology', label: 'Astrology' },
+  { id: 'Horoscope', label: 'Horoscope' },
+  { id: 'Kundli', label: 'Kundli' },
+  { id: 'Remedies', label: 'Remedies' },
+  { id: 'Planets', label: 'Planets' },
+  { id: 'Zodiac', label: 'Zodiac' },
+  { id: 'Mantras', label: 'Mantras' },
 ];
 
 const BlogScreen = () => {
@@ -41,7 +41,7 @@ const BlogScreen = () => {
     {
       skip: 0,
       limit: 50,
-      category: selectedCategory !== 'all' ? selectedCategory : undefined,
+      category: selectedCategory !== 'All' ? selectedCategory : undefined,
     },
     {
       refetchOnFocus: true,

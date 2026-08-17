@@ -195,7 +195,7 @@ const ProfileScreen = () => {
                 <ProfileItem title="Raise a query" icon="HelpIcon" onPress={() => { navigation.navigate("Queries") }} />
                 <ProfileItem title="Privacy" icon="SecurityIcon" onPress={() => { navigation.navigate("PrivacyPolicy") }} />
                 <ProfileItem title="Logout" icon="LogoutIcon" onPress={onPressLogout} />
-                <ProfileItem title="Delete" icon="DeleteIcon" onPress={onPressDelete} />
+                <ProfileItem title="Delete Account" icon="DeleteIcon" onPress={onPressDelete} />
               </View></View>
             {/* GENERAL */}
            

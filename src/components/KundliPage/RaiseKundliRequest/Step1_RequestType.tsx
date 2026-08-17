@@ -105,11 +105,9 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#EEEEEE',
-    backgroundColor: '#FFFFFF',
+    borderColor: '#D4AF37',
   },
   optionCardActive: {
-    borderColor: '#D4AF37',
     backgroundColor: 'rgba(212, 175, 55, 0.04)',
   },
   cardContent: {
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fffbe2',
     alignItems: 'center',
     justifyContent: 'center',
   },

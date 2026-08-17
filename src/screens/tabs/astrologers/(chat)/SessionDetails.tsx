@@ -19,6 +19,8 @@ import { useDispatch } from 'react-redux';
 import { setSelectedConsultation } from '../../../../redux/features/consultation/consultationChatSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigation/types';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -84,7 +86,6 @@ const SessionDetails = () => {
       Linking.openURL(meeting.link);
     }
   };
-  
 
   const handleChatNow = (booking: any) => {
     const participant = booking.astrologer;
@@ -115,165 +116,181 @@ const SessionDetails = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <AppHeader showBack={false}>
-        <AuthTitle titleFontSize={17} title="Session Details" />
-      </AppHeader>
+    <AnimatedScreen>
+      <ScreenWrapper>
+        <View style={styles.container}>
+          {/* Header */}
+          <AppHeader showBack={false}>
+            <AuthTitle titleFontSize={17} title="Session Details" />
+          </AppHeader>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
-      >
-        {/* Astrologer Profile Card */}
-        <View style={styles.profileCard}>
-          <Image
-            source={{ uri: astrologer?.profilePicture }}
-            style={styles.profileImage}
-          />
-          <View style={styles.profileInfo}>
-            <SatoshiText style={styles.astrologerName}>
-              {astrologer?.displayName || 'Astrologer'}
-            </SatoshiText>
-            <SansText style={styles.astrologerSpecialty}>
-              {astrologer?.experience} Years Experience
-            </SansText>
-          </View>
-        </View>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.contentContainer}
+          >
+            {/* Astrologer Profile Card */}
+            <View style={styles.profileCard}>
+              <Image
+                source={{ uri: astrologer?.profilePicture }}
+                style={styles.profileImage}
+              />
+              <View style={styles.profileInfo}>
+                <SatoshiText style={styles.astrologerName}>
+                  {astrologer?.displayName || 'Astrologer'}
+                </SatoshiText>
+                <SansText style={styles.astrologerSpecialty}>
+                  {astrologer?.experience} Years Experience
+                </SansText>
+              </View>
+            </View>
 
-        {/* Status Badge */}
-        <View style={styles.statusContainer}>
-          <View style={[styles.statusBadge, { backgroundColor: '#ffffff' }]}>
-            <View
-              style={[
-                styles.statusDot,
-                { backgroundColor: getStatusColor(item?.status) },
-              ]}
-            />
-            <SansText
-              style={[
-                styles.statusText,
-                { color: getStatusColor(item?.status) },
-              ]}
-            >
-              {getStatusLabel(item?.status)}
-            </SansText>
-          </View>
-        </View>
+            {/* Status Badge */}
+            <View style={styles.statusContainer}>
+              <View
+                style={[styles.statusBadge, { backgroundColor: '#ffffff' }]}
+              >
+                <View
+                  style={[
+                    styles.statusDot,
+                    { backgroundColor: getStatusColor(item?.status) },
+                  ]}
+                />
+                <SansText
+                  style={[
+                    styles.statusText,
+                    { color: getStatusColor(item?.status) },
+                  ]}
+                >
+                  {getStatusLabel(item?.status)}
+                </SansText>
+              </View>
+            </View>
 
-        {/* Session Details */}
-        <View style={styles.section}>
-          <SatoshiText style={styles.sectionTitle}>Session Details</SatoshiText>
+            {/* Session Details */}
+            <View style={styles.section}>
+              <SatoshiText style={styles.sectionTitle}>
+                Session Details
+              </SatoshiText>
 
-          <View style={styles.detailItem}>
-            <SansText style={styles.detailLabel}>Purpose</SansText>
-            <SansText style={styles.detailValue}>
-              {item?.consultationFor || 'N/A'}
-            </SansText>
-          </View>
-
-          <View style={styles.detailItem}>
-            <SansText style={styles.detailLabel}>Type</SansText>
-            <SansText style={styles.detailValue}>
-              {item?.method === 'call' ? 'Call' : 'Chat'}
-            </SansText>
-          </View>
-
-          {isCall && (
-            <>
               <View style={styles.detailItem}>
-                <SansText style={styles.detailLabel}>Date</SansText>
+                <SansText style={styles.detailLabel}>Purpose</SansText>
                 <SansText style={styles.detailValue}>
-                  {formattedMeetingDate}
+                  {item?.consultationFor || 'N/A'}
                 </SansText>
               </View>
 
-              {startTime && endTime && (
-                <View style={styles.detailItem}>
-                  <SansText style={styles.detailLabel}>Time</SansText>
-                  <SansText style={styles.detailValue}>
-                    {startTime} - {endTime}
+              <View style={styles.detailItem}>
+                <SansText style={styles.detailLabel}>Type</SansText>
+                <SansText style={styles.detailValue}>
+                  {item?.method === 'call' ? 'Call' : 'Chat'}
+                </SansText>
+              </View>
+
+              {isCall && (
+                <>
+                  <View style={styles.detailItem}>
+                    <SansText style={styles.detailLabel}>Date</SansText>
+                    <SansText style={styles.detailValue}>
+                      {formattedMeetingDate}
+                    </SansText>
+                  </View>
+
+                  {startTime && endTime && (
+                    <View style={styles.detailItem}>
+                      <SansText style={styles.detailLabel}>Time</SansText>
+                      <SansText style={styles.detailValue}>
+                        {startTime} - {endTime}
+                      </SansText>
+                    </View>
+                  )}
+
+                  {meeting?.link && (
+                    <View style={styles.detailItem}>
+                      <SansText style={styles.detailLabel}>
+                        Meeting Link
+                      </SansText>
+                      <TouchableOpacity
+                        onPress={() => Linking.openURL(meeting.link)}
+                      >
+                        <SansText style={styles.linkText}>
+                          {meeting.link}
+                        </SansText>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </>
+              )}
+
+              {item?.requestMessage && (
+                <View style={styles.requestMessageContainer}>
+                  <SansText style={styles.requestMessageLabel}>
+                    Request Message
+                  </SansText>
+                  <SansText style={styles.requestMessage}>
+                    {item.requestMessage}
                   </SansText>
                 </View>
               )}
+            </View>
 
-              {meeting?.link && (
-                <View style={styles.detailItem}>
-                  <SansText style={styles.detailLabel}>Meeting Link</SansText>
-                  <TouchableOpacity
-                    onPress={() => Linking.openURL(meeting.link)}
-                  >
-                    <SansText style={styles.linkText}>{meeting.link}</SansText>
-                  </TouchableOpacity>
+            {/* Recommendations */}
+            {item?.recommendations && (
+              <View style={styles.section}>
+                <SatoshiText style={styles.sectionTitle}>
+                  Recommendations
+                </SatoshiText>
+                <View style={styles.recommendationsContainer}>
+                  <SansText style={styles.recommendationsText}>
+                    {item.recommendations}
+                  </SansText>
+                </View>
+              </View>
+            )}
+
+            {/* Action Buttons */}
+            <View style={styles.actionContainer}>
+              {isCall && isScheduled && meeting?.link && (
+                <TouchableOpacity
+                  style={styles.joinButton}
+                  onPress={handleJoinSession}
+                >
+                  <Icon name="videocam-outline" size={20} color="#FFFFFF" />
+                  <SatoshiText style={styles.joinButtonText}>
+                    Join Session
+                  </SatoshiText>
+                </TouchableOpacity>
+              )}
+
+              {isChat && (
+                <TouchableOpacity
+                  style={styles.chatButton}
+                  onPress={handleChatNow}
+                >
+                  <Icon name="chatbubble-outline" size={20} color="#FFFFFF" />
+                  <SatoshiText style={styles.chatButtonText}>
+                    Chat Now
+                  </SatoshiText>
+                </TouchableOpacity>
+              )}
+
+              {isCall && !isScheduled && (
+                <View style={styles.notScheduledContainer}>
+                  <SansText style={styles.notScheduledText}>
+                    This session is not scheduled yet
+                  </SansText>
                 </View>
               )}
-            </>
-          )}
-
-          {item?.requestMessage && (
-            <View style={styles.requestMessageContainer}>
-              <SansText style={styles.requestMessageLabel}>
-                Request Message
-              </SansText>
-              <SansText style={styles.requestMessage}>
-                {item.requestMessage}
-              </SansText>
             </View>
-          )}
+          </ScrollView>
         </View>
-
-        {/* Recommendations */}
-        {item?.recommendations && (
-          <View style={styles.section}>
-            <SatoshiText style={styles.sectionTitle}>
-              Recommendations
-            </SatoshiText>
-            <View style={styles.recommendationsContainer}>
-              <SansText style={styles.recommendationsText}>
-                {item.recommendations}
-              </SansText>
-            </View>
-          </View>
-        )}
-
-        {/* Action Buttons */}
-        <View style={styles.actionContainer}>
-          {isCall && isScheduled && meeting?.link && (
-            <TouchableOpacity
-              style={styles.joinButton}
-              onPress={handleJoinSession}
-            >
-              <Icon name="videocam-outline" size={20} color="#FFFFFF" />
-              <SatoshiText style={styles.joinButtonText}>
-                Join Session
-              </SatoshiText>
-            </TouchableOpacity>
-          )}
-
-          {isChat && (
-            <TouchableOpacity style={styles.chatButton} onPress={handleChatNow}>
-              <Icon name="chatbubble-outline" size={20} color="#FFFFFF" />
-              <SatoshiText style={styles.chatButtonText}>Chat Now</SatoshiText>
-            </TouchableOpacity>
-          )}
-
-          {isCall && !isScheduled && (
-            <View style={styles.notScheduledContainer}>
-              <SansText style={styles.notScheduledText}>
-                This session is not scheduled yet
-              </SansText>
-            </View>
-          )}
-        </View>
-      </ScrollView>
-    </View>
+      </ScreenWrapper>
+    </AnimatedScreen>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E8DFC9',
   },
   contentContainer: {
     padding: 16,

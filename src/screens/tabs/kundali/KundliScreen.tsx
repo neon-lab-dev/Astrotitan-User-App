@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#d4d2d2',
+    borderBottomColor: '#c4c092',
   },
   tab: {
     flex: 1,
@@ -202,11 +202,11 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 15,
-    color: '#8E8E93',
+    color: '#414142',
     fontFamily: 'Satoshi-Medium',
   },
   tabTextActive: {
-    color: '#D4AF37',
+    color: '#a5820e',
   },
   underline: {
     position: 'absolute',
@@ -219,12 +219,12 @@ const styles = StyleSheet.create({
   },
   badge: {
     marginTop: 4,
-    backgroundColor: '#D4AF37',
-    borderRadius: 10,
+    borderRadius: 999,
     paddingHorizontal: 6,
     paddingVertical: 1,
     minWidth: 18,
     alignItems: 'center',
+    backgroundColor: '#D4AF37',
   },
   badgeText: {
     fontSize: 10,

@@ -32,7 +32,7 @@ const SessionHistory = () => {
     <AnimatedScreen>
       <ScreenWrapper>
         <AppHeader showBack={false}>
-          <AuthTitle titleFontSize={17} title="Session History" />
+          <AuthTitle titleFontSize={17} title="Session Logs" />
         </AppHeader>
 
         <View

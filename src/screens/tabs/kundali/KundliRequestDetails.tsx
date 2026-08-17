@@ -9,6 +9,7 @@ import {
   Linking,
   StatusBar,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { SansText } from '../../../components/reusable/Text/SansText';
@@ -174,28 +175,41 @@ const KundliRequestDetails = () => {
         )}
 
         {/* --- SECTION: ASSIGNED EXPERT --- */}
-        <TouchableOpacity
-          style={styles.expertSection}
-          onPress={() =>
-            navigation.navigate('AstrologerProfile', {
-              id: request.astrologerId,
-            })
-          }
-          activeOpacity={0.6}
-        >
-          <View style={styles.expertAvatar}>
-            <SansText style={styles.avatarLetter}>A</SansText>
-          </View>
-          <View style={{ flex: 1 }}>
-            <SansText style={styles.expertLabel}>
-              Consulting Specialist
-            </SansText>
-            <SatoshiText style={styles.expertName}>
-              Expert Astrologer
-            </SatoshiText>
-          </View>
-          <SansText style={styles.arrow}>❯</SansText>
-        </TouchableOpacity>
+        {request?.astrologerId && (
+          <TouchableOpacity
+            style={styles.expertSection}
+            onPress={() =>
+              navigation.navigate('AstrologerProfile', {
+                id: request?.astrologerId?._id,
+              })
+            }
+            activeOpacity={0.6}
+          >
+            <View style={styles.expertAvatar}>
+              {request?.astrologerId?.profilePicture ? (
+                <Image
+                  source={{ uri: request?.astrologerId?.profilePicture }}
+                  style={styles.expertAvatarImage}
+                />
+              ) : (
+                <SansText style={styles.avatarLetter}>
+                  {request?.astrologerId?.displayName
+                    ?.charAt(0)
+                    ?.toUpperCase() || 'A'}
+                </SansText>
+              )}
+            </View>
+            <View style={{ flex: 1 }}>
+              <SansText style={styles.expertLabel}>
+                Consulting Specialist
+              </SansText>
+              <SatoshiText style={styles.expertName}>
+                {request?.astrologerId?.displayName}
+              </SatoshiText>
+            </View>
+            <SansText style={styles.arrow}>❯</SansText>
+          </TouchableOpacity>
+        )}
 
         {/* --- ACTION BUTTON --- */}
         {request.status === 'completed' && request.reportUrl && (
@@ -361,15 +375,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   expertAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#EFEFEF',
-    justifyContent: 'center',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(212, 175, 55, 0.12)',
     alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 12,
+    overflow: 'hidden',
   },
-  avatarLetter: { fontSize: 16, color: '#D4AF37', fontWeight: 'bold' },
+  expertAvatarImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 24,
+  },
+  avatarLetter: {
+    fontSize: 20,
+    fontFamily: 'Satoshi-Bold',
+    color: '#D4AF37',
+  },
   expertLabel: { fontSize: 11, color: '#8E8E93' },
   expertName: { fontSize: 15, fontWeight: 'bold', color: '#1A1A1A' },
   arrow: { color: '#CCC', fontSize: 12 },

@@ -136,8 +136,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 18,
     borderBottomWidth: 1,
-    borderBottomColor: '#e6e6e6',
-    backgroundColor: '#fff',
+    borderBottomColor: '#c4c092',
   },
   iconContainer: {
     width: 36,

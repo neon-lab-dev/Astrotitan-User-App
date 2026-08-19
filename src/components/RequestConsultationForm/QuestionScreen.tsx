@@ -1,147 +1,448 @@
-// components/QuestionScreen.tsx
+/* eslint-disable react-native/no-inline-styles */
 
-import React, { useEffect, useState } from 'react';
-import { BackHandler, ScrollView, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  BackHandler,
+  ScrollView,
+  View,
+} from 'react-native';
+
+import {
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+
+import {
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+
 import AuthTitle from '../auth/AuthTitle';
 import AppHeader from '../reusable/AppHeader/AppHeader';
 import ReusableButton from '../reusable/ReusableButton/ReusableButton';
-import { SansText } from '../reusable/Text/SansText';;
-import { RootState, store } from '../../redux/store';
-import { useFocusEffect } from '@react-navigation/native';
+import { SansText } from '../reusable/Text/SansText';
+
+import {
+  RootState,
+  store,
+} from '../../redux/store';
+
 import StepHeader from '../userDetailsForm/StepHeader';
-import { nextStep, prevStep, setAnswer } from '../../redux/features/RequestConsultationForm/RequestConsultationFormSlice';
-import { useNavigation } from '@react-navigation/native';
+
+import {
+  nextStep,
+  prevStep,
+  setAnswer,
+} from '../../redux/features/RequestConsultationForm/RequestConsultationFormSlice';
+
 
 interface Props {
-    questionKey: string;
-    questionText: string;
-    questionDescription: string;
-    validate?: (value: any) => boolean;
-    initialValue?: string | object | null;
-    onFinalSubmit?: (data: any) => void; // ✅ ADD THIS
-    children: (props: {
-        value: string;
-        setValue: (val: string) => void;
-    }) => React.ReactNode;
-    loading:boolean
+  questionKey: string;
+
+  questionText: string;
+
+  questionDescription: string;
+
+  validate?: (
+    value: any,
+  ) => boolean;
+
+  initialValue?: any;
+
+  onFinalSubmit?: (
+    data: any,
+  ) => void;
+
+  children: (props: {
+    value: any;
+
+    setValue: (
+      val: any,
+    ) => void;
+  }) => React.ReactNode;
+
+  loading: boolean;
 }
 
-const QuestionScreen: React.FC<Props> = ({ questionKey, questionText, questionDescription, children, validate, initialValue,onFinalSubmit ,loading=false}) => {
-const navigation = useNavigation<any>();
-    const dispatch = useDispatch();
-    const savedValue = useSelector(
-        (state: RootState) => state.userDetailForm.answers[questionKey]
+
+const QuestionScreen: React.FC<Props> = ({
+  questionKey,
+
+  questionText,
+
+  questionDescription,
+
+  children,
+
+  validate,
+
+  initialValue,
+
+  onFinalSubmit,
+
+  loading = false,
+}) => {
+
+  const navigation =
+    useNavigation<any>();
+
+  const dispatch =
+    useDispatch();
+
+  // ==================================================
+  // SAME REDUX SLICE AS REQUEST CONSULTATION SCREEN
+  // ==================================================
+
+  const savedValue =
+    useSelector(
+      (
+        state: RootState,
+      ) =>
+        state.userDetailForm
+          .answers[
+            questionKey
+          ],
     );
-    const step = useSelector((state: RootState) => state.userDetailForm.step);
-    const totalSteps = 2;
 
-    const [value, setValue] = useState(savedValue ?? initialValue);
-    const isValid = validate ? validate(value) : true;
-    useEffect(() => {
-        if (savedValue !== undefined) {
-            setValue(savedValue);
-        } else {
-            setValue(initialValue);
-        }
-    }, [savedValue, initialValue]);
+  const step =
+    useSelector(
+      (
+        state: RootState,
+      ) =>
+        state.userDetailForm
+          .step,
+    );
 
+  /*
+   * There are ALWAYS 3 steps:
+   *
+   * 0 = method
+   * 1 = guidance
+   * 2 = reason + date + slot
+   */
+  const totalSteps = 3;
 
-  const handleNext = () => {
-  dispatch(setAnswer({ key: questionKey, value }));
+  // ==================================================
+  // LOCAL VALUE
+  // ==================================================
 
-  if (step === totalSteps - 1) {
-    const finalData = {
-      ...store.getState().userDetailForm.answers,
-      [questionKey]: value,
+  const [
+    value,
+    setValue,
+  ] = useState<any>(
+    savedValue ??
+      initialValue,
+  );
+
+  // ==================================================
+  // SYNC REDUX VALUE
+  // ==================================================
+
+  useEffect(() => {
+
+    if (
+      savedValue !==
+      undefined
+    ) {
+      setValue(
+        savedValue,
+      );
+    } else {
+      setValue(
+        initialValue,
+      );
+    }
+
+  }, [
+    savedValue,
+    initialValue,
+  ]);
+
+  // ==================================================
+  // VALIDATION
+  // ==================================================
+
+  const isValid =
+    validate
+      ? validate(value)
+      : true;
+
+  // ==================================================
+  // NEXT
+  // ==================================================
+
+  const handleNext =
+    () => {
+
+      /*
+       * First save current answer.
+       */
+      dispatch(
+        setAnswer({
+          key:
+            questionKey,
+
+          value,
+        }),
+      );
+
+      /*
+       * STEP 3
+       *
+       * step = 2
+       *
+       * This is the LAST step.
+       */
+      if (
+        step ===
+        totalSteps - 1
+      ) {
+
+        /*
+         * Read the latest Redux
+         * state AFTER including
+         * current answer.
+         */
+        const currentAnswers =
+          store.getState()
+            .userDetailForm
+            .answers;
+
+        const finalData = {
+          ...currentAnswers,
+
+          [questionKey]:
+            value,
+        };
+
+        console.log(
+          'FINAL FORM DATA:',
+          finalData,
+        );
+
+        /*
+         * ONLY HERE do we submit.
+         */
+        onFinalSubmit?.(
+          finalData,
+        );
+
+        return;
+      }
+
+      /*
+       * Step 1 -> Step 2
+       *
+       * Step 2 -> Step 3
+       */
+      dispatch(
+        nextStep(),
+      );
     };
 
-    onFinalSubmit?.(finalData); // ✅ CLEAN
+  // ==================================================
+  // HARDWARE BACK
+  // ==================================================
 
-    return;
-  }
+  useFocusEffect(
+    React.useCallback(
+      () => {
 
-  dispatch(nextStep());
-};
-    useFocusEffect(
-        React.useCallback(() => {
-            const onBackPress = () => {
-                if (step > 0) {
-                    dispatch(setAnswer({ key: questionKey, value }));
-                    dispatch(prevStep());
-                    return true; // 🔥 prevent default back
-                }
-                return false; // allow default (exit screen)
-            };
+        const onBackPress =
+          () => {
 
-            const subscription = BackHandler.addEventListener(
-                'hardwareBackPress',
-                onBackPress
-            );
+            if (
+              step > 0
+            ) {
 
-            return () => subscription.remove();
-        }, [step, value ,dispatch,questionKey])
-    );
+              dispatch(
+                setAnswer({
+                  key:
+                    questionKey,
 
+                  value,
+                }),
+              );
 
+              dispatch(
+                prevStep(),
+              );
 
-const handleBack = () => {
-  dispatch(setAnswer({ key: questionKey, value }));
+              return true;
+            }
 
-  if (step === 0) {
-    navigation.goBack();
-    return;
-  }
+            return false;
+          };
 
-  dispatch(prevStep());
-};
-    return (
-        <View style={{ flex: 1 }}>
+        const subscription =
+          BackHandler.addEventListener(
+            'hardwareBackPress',
+            onBackPress,
+          );
 
-            {/* HEADER */}
-            <AppHeader onPressBack={handleBack} showBack={true}>
-                <StepHeader step={step} total={totalSteps} />
-                <AuthTitle title={questionText}>
-                    <SansText style={{ fontSize: 16 }}>
-                        {questionDescription}
-                    </SansText>
-                </AuthTitle>
-            </AppHeader>
+        return () =>
+          subscription.remove();
 
-            {/* SCROLL AREA */}
-            <View style={{ flex: 1 }}>
-                <ScrollView
-                    contentContainerStyle={{
-                        paddingHorizontal: 16,
-                        paddingBottom: 30,
-                    }}
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                >
-                    {children({ value, setValue })}
-                </ScrollView>
-            </View>
+      },
+      [
+        step,
+        value,
+        dispatch,
+        questionKey,
+      ],
+    ),
+  );
 
-            {/* BUTTON */}
-            {isValid && (
-                <View
-                    style={{
-                        padding: 16,
-                        backgroundColor: "#FBF7EB",
-                        borderTopRightRadius: 12,
-                        borderTopLeftRadius: 12,
-                    }}
-                >
-                    <ReusableButton
-                        title="Continue"
-                        variant="solid"
-                        onPress={handleNext}
-                        loading={loading}
-                    />
-                </View>
-            )}
+  // ==================================================
+  // HEADER BACK
+  // ==================================================
+
+  const handleBack =
+    () => {
+
+      dispatch(
+        setAnswer({
+          key:
+            questionKey,
+
+          value,
+        }),
+      );
+
+      if (
+        step === 0
+      ) {
+
+        navigation.goBack();
+
+        return;
+      }
+
+      dispatch(
+        prevStep(),
+      );
+    };
+
+  // ==================================================
+  // UI
+  // ==================================================
+
+  return (
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+
+      {/* ==================================================
+          HEADER
+      ================================================== */}
+
+      <AppHeader
+        onPressBack={
+          handleBack
+        }
+        showBack
+      >
+
+        <StepHeader
+          step={step}
+          total={totalSteps}
+        />
+
+        <AuthTitle
+          title={
+            questionText
+          }
+        >
+          <SansText
+            style={{
+              fontSize: 16,
+            }}
+          >
+            {
+              questionDescription
+            }
+          </SansText>
+        </AuthTitle>
+
+      </AppHeader>
+
+      {/* ==================================================
+          CONTENT
+      ================================================== */}
+
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
+
+        <ScrollView
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            paddingBottom: 30,
+          }}
+          showsVerticalScrollIndicator={
+            false
+          }
+          keyboardShouldPersistTaps="handled"
+        >
+
+          {children({
+            value,
+            setValue,
+          })}
+
+        </ScrollView>
+
+      </View>
+
+      {/* ==================================================
+          CONTINUE BUTTON
+      ================================================== */}
+
+      {isValid && (
+        <View
+          style={{
+            padding: 16,
+
+            backgroundColor:
+              '#FBF7EB',
+
+            borderTopRightRadius:
+              12,
+
+            borderTopLeftRadius:
+              12,
+          }}
+        >
+
+          <ReusableButton
+            title={
+              step ===
+              totalSteps - 1
+                ? 'Book Appointment'
+                : 'Continue'
+            }
+            variant="solid"
+            onPress={
+              handleNext
+            }
+            loading={
+              loading
+            }
+          />
+
         </View>
-    );
+      )}
+
+    </View>
+  );
 };
 
 export default QuestionScreen;

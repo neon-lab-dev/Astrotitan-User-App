@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {
   useCallback,
   useMemo,
@@ -14,13 +15,12 @@ import SkeletonLoader from "../../../../components/reusable/SkeletonLoader/Skele
 import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
 import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
 import { SansText } from "../../../../components/reusable/Text/SansText";
-import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../../components/auth/AuthTitle";
 import OrderCard from "../../../../components/tabs/ecommerce/orders/OrderCard/OrderCard";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../navigation/types";
 import { useNavigation } from "@react-navigation/native";
 import { useGetMyProductOrdersQuery } from "../../../../redux/features/orders/orderApi";
+import AppBar from "../../../../components/reusable/AppBar/AppBar";
 
 /* ---------------- ORDER CARD SKELETON ---------------- */
 
@@ -160,24 +160,7 @@ const OrdersScreen = () => {
     <AnimatedScreen>
       <ScreenWrapper>
         {/* HEADER */}
-
-        <AppHeader
-          onPressBack={() => {
-            navigation.goBack();
-          }}
-        >
-          <AuthTitle title="Orders Tracking">
-            <SansText
-              style={{
-                fontSize: 14,
-              }}
-            >
-              Stay updated on your
-              pooja or product
-              order.
-            </SansText>
-          </AuthTitle>
-        </AppHeader>
+        <AppBar title="Orders" />
 
         {/* LIST */}
 

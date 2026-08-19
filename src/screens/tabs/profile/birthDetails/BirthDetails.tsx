@@ -1,24 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
+import { StyleSheet, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { useUpdateProfileMutation } from '../../../../redux/features/auth/authApi';
+import { RootState } from '../../../../redux/store';
 import {
-  StyleSheet,
-  View,
-} from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import {
-  useForm,
-} from "react-hook-form";
-import { useSelector } from "react-redux";
-import { useUpdateProfileMutation } from "../../../../redux/features/auth/authApi";
-import { RootState } from "../../../../redux/store";
-import { formatDate, formatTime, isValidDate, isValidTime } from "../../../../utils/validators/dateValidators";
-import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
-import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
-import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../../components/auth/AuthTitle";
-import FormInput from "../../../../components/reusable/InputField/FormInput";
-import ReusableButton from "../../../../components/reusable/ReusableButton/ReusableButton";
-import { SansText } from "../../../../components/reusable/Text/SansText";
+  formatDate,
+  formatTime,
+  isValidDate,
+  isValidTime,
+} from '../../../../utils/validators/dateValidators';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import FormInput from '../../../../components/reusable/InputField/FormInput';
+import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
+import { SansText } from '../../../../components/reusable/Text/SansText';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
 type FormValues = {
   dob: string;
@@ -27,96 +26,59 @@ type FormValues = {
 };
 
 const BirthDetails = () => {
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-  } = useForm<FormValues>({
+  const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
     defaultValues: {
-      dob: "",
-      time: "",
-      place: "",
+      dob: '',
+      time: '',
+      place: '',
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
-  const [
-    updateProfile,
-    {
-      isLoading:
-      updateLoading,
-    },
-  ] = useUpdateProfileMutation();
-  const dob = watch("dob");
-  const time = watch("time");
-  const place = watch("place");
+  const [updateProfile, { isLoading: updateLoading }] =
+    useUpdateProfileMutation();
+  const dob = watch('dob');
+  const time = watch('time');
+  const place = watch('place');
   const user = useSelector((state: RootState) => state.auth.user);
   useEffect(() => {
-    const profile =
-      user?.profile;
+    const profile = user?.profile;
     if (!profile) return;
     /* DATE */
     if (profile?.dateOfBirth) {
-      const date =
-        new Date(
-          profile.dateOfBirth
-        );
-      const formattedDate = `${String(
-        date.getDate()
-      ).padStart(2, "0")}/${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}/${date.getFullYear()}`;
-      setValue(
-        "dob",
-        formattedDate
-      );
+      const date = new Date(profile.dateOfBirth);
+      const formattedDate = `${String(date.getDate()).padStart(
+        2,
+        '0',
+      )}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+      setValue('dob', formattedDate);
     }
 
     /* TIME */
 
     if (profile?.timeOfBirth) {
-      setValue(
-        "time",
-        profile.timeOfBirth
-      );
+      setValue('time', profile.timeOfBirth);
     }
     if (profile?.placeOfBirth) {
-      setValue(
-        "place",
-        profile.placeOfBirth
-      );
+      setValue('place', profile.placeOfBirth);
     }
-  }, [user,setValue]);
+  }, [user, setValue]);
 
   const isFormValid =
-    isValidDate(dob) &&
-    isValidTime(time) &&
-    place?.trim()?.length > 2;
+    isValidDate(dob) && isValidTime(time) && place?.trim()?.length > 2;
 
-
-  const onSubmit = async (
-    data: FormValues
-  ) => {
+  const onSubmit = async (data: FormValues) => {
     try {
-      const res=await updateProfile({
-        dateOfBirth:
-          data.dob,
+      const res = await updateProfile({
+        dateOfBirth: data.dob,
 
-        timeOfBirth:
-          data.time,
+        timeOfBirth: data.time,
 
-        placeOfBirth:
-          data.place,
+        placeOfBirth: data.place,
       }).unwrap();
 
-      console.log(
-        "PROFILE UPDATED",res
-      );
+      console.log('PROFILE UPDATED', res);
     } catch (error) {
-      console.log(
-        "UPDATE PROFILE ERROR:",
-        error
-      );
+      console.log('UPDATE PROFILE ERROR:', error);
     }
   };
 
@@ -125,29 +87,19 @@ const BirthDetails = () => {
       <ScreenWrapper>
         <View style={styles.container}>
           <KeyboardAwareScrollView
-            showsVerticalScrollIndicator={
-              false
-            }
+            showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             enableOnAndroid
             extraScrollHeight={40}
-            contentContainerStyle={
-              styles.scrollContent
-            }
+            contentContainerStyle={styles.scrollContent}
           >
             {/* HEADER */}
 
-            <AppHeader>
-              <AuthTitle title="Birth details" />
-            </AppHeader>
+            <AppBar title="Birth details" />
 
             {/* FORM */}
 
-            <View
-              style={
-                styles.formContainer
-              }
-            >
+            <View style={styles.formContainer}>
               {/* DOB */}
 
               <FormInput
@@ -156,29 +108,18 @@ const BirthDetails = () => {
                 label="Birth Date"
                 transform={formatDate}
                 placeholder="DD/MM/YYYY"
-                 keyboardType="numeric"
+                keyboardType="numeric"
                 maxLength={10}
                 rules={{
-                  required:
-                    "Birth date is required",
+                  required: 'Birth date is required',
 
-                  validate: (
-                    value: string
-                  ) =>
-                    isValidDate(
-                      value
-                    ) ||
-                    "Enter valid birth date",
+                  validate: (value: string) =>
+                    isValidDate(value) || 'Enter valid birth date',
                 }}
-                onChangeText={(
-                  text: string
-                ) => {
-                  return formatDate(
-                    text
-                  );
+                onChangeText={(text: string) => {
+                  return formatDate(text);
                 }}
               />
-              
 
               {/* TIME */}
 
@@ -190,20 +131,11 @@ const BirthDetails = () => {
                 autoCapitalize="characters"
                 maxLength={8}
                 rules={{
-                  validate: (
-                    value: string
-                  ) =>
-                    isValidTime(
-                      value
-                    ) ||
-                    "Enter valid birth time",
+                  validate: (value: string) =>
+                    isValidTime(value) || 'Enter valid birth time',
                 }}
-                onChangeText={(
-                  text: string
-                ) => {
-                  return formatTime(
-                    text
-                  );
+                onChangeText={(text: string) => {
+                  return formatTime(text);
                 }}
               />
 
@@ -215,22 +147,16 @@ const BirthDetails = () => {
                 label="Birth Place"
                 placeholder="Enter city, state, country...."
                 rules={{
-                  required:
-                    "Birth place is required",
+                  required: 'Birth place is required',
 
                   minLength: {
                     value: 3,
-                    message:
-                      "Enter valid birth place",
+                    message: 'Enter valid birth place',
                   },
 
-                  validate: (
-                    value: string
-                  ) =>
-                    /^[a-zA-Z\s,.-]+$/.test(
-                      value
-                    ) ||
-                    "Invalid characters entered",
+                  validate: (value: string) =>
+                    /^[a-zA-Z\s,.-]+$/.test(value) ||
+                    'Invalid characters entered',
                 }}
               />
             </View>
@@ -239,30 +165,17 @@ const BirthDetails = () => {
           {/* FIXED BOTTOM */}
 
           {isFormValid && (
-            <View
-              style={
-                styles.bottomContainer
-              }
-            >
+            <View style={styles.bottomContainer}>
               <ReusableButton
                 title="Save Birth Details"
-                onPress={handleSubmit(
-                  onSubmit
-                )}
+                onPress={handleSubmit(onSubmit)}
                 width="100%"
                 loading={updateLoading}
                 disabled={updateLoading}
               />
 
-              <SansText
-                style={
-                  styles.footerText
-                }
-              >
-                These details are
-                used to generate
-                accurate charts &
-                insights
+              <SansText style={styles.footerText}>
+                These details are used to generate accurate charts & insights
               </SansText>
             </View>
           )}
@@ -290,20 +203,21 @@ const styles = StyleSheet.create({
   },
 
   bottomContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 24,
-    backgroundColor: "#F7F1DF", gap: 10,
+    backgroundColor: '#F7F1DF',
+    gap: 10,
   },
 
   footerText: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 11,
-    color: "#777",
+    color: '#777',
     lineHeight: 16,
   },
 });

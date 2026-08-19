@@ -166,9 +166,3 @@ const PoojaAndProducts = () => {
 };
 
 export default PoojaAndProducts;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     padding: 16,
-//   },
-// });

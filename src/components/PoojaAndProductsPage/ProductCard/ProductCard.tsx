@@ -10,6 +10,8 @@ import {
 import { SatoshiText } from '../../reusable/Text/SatoshiText';
 import { SansText } from '../../reusable/Text/SansText';
 import { ICONS } from '../../../assets/svg';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '../../shared/AppHeader/AppHeader';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;
@@ -26,11 +28,11 @@ type ProductCardProps = {
     intent?: string;
     category?: string;
   };
-  onPress?: (item: any) => void;
 };
 
-const ProductCard = ({ item, onPress }: ProductCardProps) => {
+const ProductCard = ({ item }: ProductCardProps) => {
   const {
+    _id,
     name,
     imageUrls,
     discountedPrice,
@@ -39,6 +41,7 @@ const ProductCard = ({ item, onPress }: ProductCardProps) => {
     reviews = { length: 0 },
   } = item;
 
+  const navigation = useNavigation<NavigationProp>();
   const hasDiscount =
     discountedPrice && basePrice && discountedPrice < basePrice;
   const discountPercentage = hasDiscount
@@ -50,7 +53,7 @@ const ProductCard = ({ item, onPress }: ProductCardProps) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => onPress?.(item)}
+      onPress={() => navigation.navigate('ProductDetails', { id: _id })}
       activeOpacity={0.8}
     >
       {/* Image Container - No padding */}

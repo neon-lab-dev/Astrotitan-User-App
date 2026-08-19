@@ -6,10 +6,8 @@ import HeartIcon from '@/assets/icons/visual/intent/favourite.svg';
 import MarriageIcon from '@/assets/icons/visual/intent/marriage.svg';
 import TieIcon from '@/assets/icons/visual/intent/tie.svg';
 import WellnessIcon from '@/assets/icons/visual/intent/wellness.svg';
-
 import ChatIcon from '@/assets/icons/actions/bubble-chat.svg';
 import CallIcon from '@/assets/icons/visual/call.svg';
-
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
@@ -18,44 +16,30 @@ import {
   TextInput,
   View,
 } from 'react-native';
-
 import { useSelector } from 'react-redux';
 import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-
 import SelectableOptions from '../../../../components/reusable/SelectableOptions/SelectableOptions';
-
 import { RootState } from '../../../../redux/store';
-
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import QuestionScreen from '../../../../components/RequestConsultationForm/QuestionScreen';
-
 import {
   useBookConsultationMutation,
 } from '../../../../redux/features/consultation/consultationApi';
-
 import {
   useGetAllSlotsByAstrologerIdQuery,
 } from '../../../../redux/features/slot/slotApi';
-
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 const RequestConsultationForm = () => {
   const route = useRoute<any>();
-
   const astrologerId = route.params?.id as string;
-
   const navigation = useNavigation<any>();
 
-  /*
-   * IMPORTANT:
-   * QuestionScreen also uses userDetailForm.step.
-   * Therefore this screen MUST use the same Redux slice.
-   */
   const step = useSelector(
     (state: RootState) => state.userDetailForm.step,
   );
@@ -465,12 +449,12 @@ const RequestConsultationForm = () => {
           <Text
             style={{
               fontSize: 15,
-              fontWeight: '600',
+              fontWeight: '500',
               color: '#222',
               marginBottom: 8,
             }}
           >
-            Reason behind consultation
+            Share your concern
           </Text>
 
           <Text
@@ -488,7 +472,7 @@ const RequestConsultationForm = () => {
           <TextInput
             value={value || ''}
             onChangeText={setValue}
-            placeholder="Write your reason or question..."
+            placeholder="Please share more details about your concern..."
             placeholderTextColor="#999"
             multiline
             textAlignVertical="top"
@@ -520,7 +504,7 @@ const RequestConsultationForm = () => {
               <Text
                 style={{
                   fontSize: 15,
-                  fontWeight: '600',
+                  fontWeight: '500',
                   color: '#222',
                   marginBottom: 10,
                 }}
@@ -620,7 +604,7 @@ const RequestConsultationForm = () => {
                   style={{
                     fontSize: 15,
                     fontWeight:
-                      '600',
+                      '500',
                     color:
                       '#222',
                   }}

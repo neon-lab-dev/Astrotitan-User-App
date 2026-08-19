@@ -1,8 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { NavigationProp } from '../../shared/AppHeader/AppHeader';
-import { useNavigation } from '@react-navigation/native';
 import { FlatList, Text, View } from 'react-native';
 import { INTENTS } from '../../../data/intents';
 import IntentCard from '../../tabs/ecommerce/ecommerce/IntentCard/IntentCard';
@@ -10,7 +8,6 @@ import ProductCardSkeleton from '../../tabs/ecommerce/ecommerce/ProductCard/Prod
 import ProductCard from '../ProductCard/ProductCard';
 
 const Products = ({ products, isLoading }: any) => {
-  const navigation = useNavigation<NavigationProp>();
   return (
     <View style={{ paddingHorizontal: 16 }}>
       {/* <View
@@ -76,10 +73,8 @@ const Products = ({ products, isLoading }: any) => {
 
             return (
               <ProductCard
+              key={item?._id}
                 item={item}
-                onPress={() => {
-                  navigation.navigate('PujaDetails', { id: item?._id });
-                }}
               />
             );
           }}

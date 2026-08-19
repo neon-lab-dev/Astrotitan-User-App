@@ -65,7 +65,7 @@ const OrderSuccessful = () => {
 
   const handleContinueShopping = () => {
     setCounter(null);
-    navigation.navigate("RemediesScreen");
+    navigation.navigate("PoojaAndProducts");
   };
 
   return (

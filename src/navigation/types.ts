@@ -36,7 +36,7 @@ export type RootStackParamList = {
   BlogScreen: undefined;
   NotificationScreen: undefined;
   RequestedFormCompleted: undefined;
-  RemediesScreen: undefined;
+  PoojaAndProducts: undefined;
   CartScreen: undefined;
   CheckoutScreen: undefined;
   KundliRequestDetails: {

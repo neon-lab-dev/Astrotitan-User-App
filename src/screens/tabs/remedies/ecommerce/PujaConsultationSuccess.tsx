@@ -23,7 +23,7 @@ const PujaConsultationSuccess = () => {
                 {
                   name: 'RemediesTab',
                   state: {
-                    routes: [{ name: 'RemediesScreen' }],
+                    routes: [{ name: 'PoojaAndProducts' }],
                   },
                 },
               ],

@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SelectZodiacSign from "../screens/tabs/home/astrology/SelectZodiacSign";
-import RemediesScreen from "../screens/tabs/remedies/RemediesScreen";
+import PoojaAndProducts from "../screens/tabs/remedies/PoojaAndProducts";
 import CartScreen from "../screens/tabs/remedies/ecommerce/CartScreen";
 import ProductDetails from "../screens/tabs/remedies/ecommerce/ProductDetails";
 import PujaDetails from "../screens/tabs/remedies/ecommerce/PujaDetails";
@@ -27,8 +27,8 @@ export default function RemediesNavigator() {
     >
 
       <Stack.Screen
-        name="RemediesScreen"
-        component={RemediesScreen}
+        name="PoojaAndProducts"
+        component={PoojaAndProducts}
       />
 
       <Stack.Screen

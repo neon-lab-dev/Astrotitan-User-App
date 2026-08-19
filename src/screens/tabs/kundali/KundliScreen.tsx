@@ -1,11 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
+import { ScrollView, View, StyleSheet, RefreshControl } from 'react-native';
 import AnimatedScreen from '../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../components/layout/ScreenWrapper';
 import AppHeader from '../../../components/reusable/AppHeader/AppHeader';
@@ -17,10 +11,11 @@ import { SansText } from '../../../components/reusable/Text/SansText';
 import { SatoshiText } from '../../../components/reusable/Text/SatoshiText';
 import { ICONS } from '../../../assets/svg';
 import AppBar from '../../../components/reusable/AppBar/AppBar';
+import Tabs from '../../../components/reusable/Tabs/Tabs';
 
 const KundliScreen = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'requests' | 'new'>('requests');
+  const [activeTab, setActiveTab] = useState<'requests' | 'new'>('new');
   const { data, isLoading, refetch } = useGetMyKundliRequestsQuery({});
 
   const requests = data?.data?.data || [];
@@ -40,6 +35,20 @@ const KundliScreen = () => {
   }, [refreshing, refetch]);
 
   const IconComponent = ICONS.EmptyFile;
+
+  const tabs = [
+    {
+      key: 'new',
+      label: 'New Request',
+      icon: <ICONS.AddIcon width={20} height={20} />,
+    },
+    {
+      key: 'requests',
+      label: 'My Requests',
+      icon: <ICONS.File width={20} height={20} />,
+      badge: requests.length > 0 ? requests.length : undefined,
+    },
+  ];
 
   if (isLoading) {
     return (
@@ -73,58 +82,14 @@ const KundliScreen = () => {
           }
           contentContainerStyle={styles.scrollContent}
         >
-          <AppBar
-            title="Kundali"
-          />
+          <AppBar title="Kundli" />
 
           {/* Tabs */}
-          <View style={styles.tabContainer}>
-            <TouchableOpacity
-              style={[styles.tab, activeTab === 'requests' && styles.tabActive]}
-              onPress={() => setActiveTab('requests')}
-              activeOpacity={0.8}
-            >
-              <View style={styles.tabContent}>
-                <SatoshiText
-                  style={[
-                    styles.tabText,
-                    activeTab === 'requests' && styles.tabTextActive,
-                  ]}
-                >
-                  My Requests
-                </SatoshiText>
-
-                {requests.length > 0 && (
-                  <View style={styles.badge}>
-                    <SansText style={styles.badgeText}>
-                      {requests.length}
-                    </SansText>
-                  </View>
-                )}
-              </View>
-
-              {activeTab === 'requests' && <View style={styles.underline} />}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.tab, activeTab === 'new' && styles.tabActive]}
-              onPress={() => setActiveTab('new')}
-              activeOpacity={0.8}
-            >
-              <View style={styles.tabContent}>
-                <SatoshiText
-                  style={[
-                    styles.tabText,
-                    activeTab === 'new' && styles.tabTextActive,
-                  ]}
-                >
-                  + New Request
-                </SatoshiText>
-              </View>
-
-              {activeTab === 'new' && <View style={styles.underline} />}
-            </TouchableOpacity>
-          </View>
+          <Tabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={key => setActiveTab(key as 'requests' | 'new')}
+          />
 
           {/* Content */}
           <View style={styles.contentContainer}>
@@ -179,44 +144,6 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     color: '#8E8E93',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    // backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#c4c092',
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tabActive: {
-    // No background color, just text color and underline
-  },
-  tabContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-  },
-  tabText: {
-    fontSize: 15,
-    color: '#414142',
-    fontFamily: 'Satoshi-Medium',
-  },
-  tabTextActive: {
-    color: '#a5820e',
-  },
-  underline: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: '#D4AF37',
-    borderRadius: 2,
   },
   badge: {
     marginTop: 4,

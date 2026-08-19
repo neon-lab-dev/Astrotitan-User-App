@@ -42,13 +42,11 @@ const AppBar = ({
 
   title,
 
-  backgroundColor = '#EDDEAD',
+  backgroundColor = '#715700',
   showBorder = true,
   borderColor = '#E6D18B',
-  showRightIcon = true,
   children,
 }: Props) => {
-
   const navigation = useNavigation<NavigationProp>();
 
   const { data: myNotifications } = useGetMyNotificationsQuery({});
@@ -88,10 +86,7 @@ const AppBar = ({
         },
       ]}
     >
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={backgroundColor}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
       <View
         style={[
@@ -118,11 +113,7 @@ const AppBar = ({
               right: 8,
             }}
           >
-            <Ionicons
-              name="arrow-back"
-              size={24}
-              color="#0D0D0D"
-            />
+            <Ionicons name="arrow-back" size={24} color="#ffffff" />
           </TouchableOpacity>
         ) : (
           /*
@@ -136,19 +127,12 @@ const AppBar = ({
         {/* CENTER - TITLE */}
         {/* -------------------------------- */}
         {title ? (
-          <View
-            pointerEvents="none"
-            style={styles.titleContainer}
-          >
-            <SatoshiText style={styles.title}>
-              {title}
-            </SatoshiText>
+          <View pointerEvents="none" style={styles.titleContainer}>
+            <SatoshiText style={styles.title}>{title}</SatoshiText>
           </View>
         ) : null}
 
-        {children ? (
-          <View >{children}</View>
-        ) : (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <IconButton
             Icon={NotificationIcon}
             iconColor="#0D0D0D"
@@ -158,7 +142,8 @@ const AppBar = ({
             update={unreadCount > 0}
             updateCount={unreadCount}
           />
-        )}
+          {children && <View>{children}</View>}
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -178,10 +163,9 @@ const styles = StyleSheet.create({
     position: 'relative',
 
     width: '100%',
-    minHeight: 66,
 
     paddingHorizontal: 20,
-    paddingVertical: 13,
+    paddingVertical: 8,
 
     flexDirection: 'row',
     alignItems: 'center',
@@ -232,14 +216,14 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 21,
+    fontSize: 18,
     lineHeight: 28,
 
     fontFamily: 'Satoshi-Medium',
 
     letterSpacing: -0.32,
 
-    color: '#0D0D0D',
+    color: '#fefcfc',
 
     textAlign: 'center',
   },

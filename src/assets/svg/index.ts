@@ -60,6 +60,7 @@ import CalendarLightGray from "@/assets/icons/visual/calendar-light-gray.svg";
 import LocationLightGray from "@/assets/icons/visual/location-light-gray.svg";
 import RightArrow from "@/assets/icons/visual/right-arrow.svg";
 import EmptyFile from "@/assets/icons/visual/empty-file.svg";
+import File from "@/assets/icons/visual/file.svg";
 
 export const ICONS = {
   homeActive: HomeActive,
@@ -115,7 +116,8 @@ export const ICONS = {
   CalendarLightGray:CalendarLightGray,
   LocationLightGray:LocationLightGray,
   RightArrow:RightArrow,
-  EmptyFile:EmptyFile
+  EmptyFile:EmptyFile,
+  File:File
 };
 
 export type IconName = keyof typeof ICONS;

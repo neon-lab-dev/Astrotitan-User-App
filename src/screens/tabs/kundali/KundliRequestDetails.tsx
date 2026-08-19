@@ -104,7 +104,13 @@ const KundliRequestDetails = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#816B22"
+            colors={['#816B22']}
+            progressBackgroundColor="#FBF7EB"
+          />
         }
         contentContainerStyle={styles.scrollContent}
       >

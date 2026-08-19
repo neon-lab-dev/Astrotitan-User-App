@@ -6,8 +6,6 @@ import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
-import AppHeader from '../../../../components/reusable/AppHeader/AppHeader';
-import AuthTitle from '../../../../components/auth/AuthTitle';
 import { SansText } from '../../../../components/reusable/Text/SansText';
 import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -16,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useGetMyConsultationBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
 import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
 import SessionHistoryCard from '../../../../components/SessionHistoryPage/SessionHistoryCard/SessionHistoryCard';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
 const SessionHistory = () => {
   type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -59,9 +58,7 @@ const SessionHistory = () => {
             />
           }
         >
-          <AppHeader showBack={false}>
-            <AuthTitle titleFontSize={17} title="Session Logs" />
-          </AppHeader>
+          <AppBar title="Session Logs" />
 
           <View
             style={{

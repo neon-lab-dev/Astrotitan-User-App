@@ -74,7 +74,7 @@ const CartScreen = () => {
 
             <ReusableButton
               title="Explore Products"
-              onPress={() => navigation.replace("RemediesScreen")}
+              onPress={() => navigation.replace("PoojaAndProducts")}
               width="60%"
             />
           </View>

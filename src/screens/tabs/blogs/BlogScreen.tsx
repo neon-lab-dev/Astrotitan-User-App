@@ -92,7 +92,7 @@ const BlogScreen = () => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.categoryScrollContent}
             >
-              {BLOG_CATEGORIES.map((category) => {
+              {BLOG_CATEGORIES.map(category => {
                 const isSelected = selectedCategory === category.id;
                 return (
                   <TouchableOpacity
@@ -132,7 +132,7 @@ const BlogScreen = () => {
                 data={[1, 2, 3]}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                  gap: 16,
+                  gap: 10,
                 }}
                 ItemSeparatorComponent={() => (
                   <View
@@ -148,11 +148,9 @@ const BlogScreen = () => {
                 <BlogCard
                   key={blog._id}
                   title={blog?.title || 'Untitled Blog'}
-                  image={{
+                  thumbnail={{
                     uri: blog?.thumbnail,
                   }}
-                  ctaText="Read Article"
-                  height={194}
                   onPress={() =>
                     navigation.navigate('ArticleScreen', { id: blog?._id })
                   }

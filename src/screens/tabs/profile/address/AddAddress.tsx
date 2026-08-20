@@ -1,23 +1,23 @@
-import React, {
-  useEffect,
-} from "react";
+/* eslint-disable react-native/no-inline-styles */
+import React, { useEffect } from 'react';
 
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 
-import { useAddAddressMutation, useUpdateAddressMutation } from "../../../../redux/features/address/addressApi"
-import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
-import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
-import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../../components/auth/AuthTitle";
-import KeyboardSafeSection from "../../../../components/layout/KeyboardSafeSection";
-import FormInput from "../../../../components/reusable/InputField/FormInput";
-import { SansText } from "../../../../components/reusable/Text/SansText";
-import { TouchableOpacity, View } from "react-native";
-import ReusableButton from "../../../../components/reusable/ReusableButton/ReusableButton";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../../navigation/types";
-
+import {
+  useAddAddressMutation,
+  useUpdateAddressMutation,
+} from '../../../../redux/features/address/addressApi';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import KeyboardSafeSection from '../../../../components/layout/KeyboardSafeSection';
+import FormInput from '../../../../components/reusable/InputField/FormInput';
+import { SansText } from '../../../../components/reusable/Text/SansText';
+import { TouchableOpacity, View } from 'react-native';
+import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../../navigation/types';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
 type FormType = {
   fullName: string;
@@ -38,39 +38,23 @@ type FormType = {
 
   country: string;
 
-  type: "home" | "office";
+  type: 'home' | 'office';
 };
 
 const AddAddress = () => {
- type NavigationProp =
-     NativeStackNavigationProp<RootStackParamList>;
- 
-   const navigation = useNavigation<NavigationProp>();
- const route = useRoute<any>();
-    const params = route.params || {};
-  const isEdit =
-    params.mode === "edit";
+  type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-  const parsedData =
-    params.data
-      ? JSON.parse(
-        params.data as string
-      )
-      : null;
+  const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<any>();
+  const params = route.params || {};
+  const isEdit = params.mode === 'edit';
 
-  const [
-    addAddress,
-    {
-      isLoading: addLoading,
-    },
-  ] = useAddAddressMutation();
+  const parsedData = params.data ? JSON.parse(params.data as string) : null;
 
-  const [
-    updateAddress,
-    {
-      isLoading: updateLoading,
-    },
-  ] = useUpdateAddressMutation();
+  const [addAddress, { isLoading: addLoading }] = useAddAddressMutation();
+
+  const [updateAddress, { isLoading: updateLoading }] =
+    useUpdateAddressMutation();
 
   const {
     control,
@@ -81,72 +65,49 @@ const AddAddress = () => {
     formState: { isValid },
   } = useForm<FormType>({
     defaultValues: {
-      fullName: "",
-      phoneNumber: "",
-      alternativePhoneNumber:
-        "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      state: "",
-      pinCode: "",
-      country: "India",
-      type: "home",
+      fullName: '',
+      phoneNumber: '',
+      alternativePhoneNumber: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      pinCode: '',
+      country: 'India',
+      type: 'home',
     },
 
-    mode: "onChange",
+    mode: 'onChange',
   });
 
-  const selectedType =
-    watch("type");
+  const selectedType = watch('type');
 
   /* =======================================================
    * PREFILL EDIT DATA
    * ======================================================= */
 
   useEffect(() => {
-    if (
-      isEdit &&
-      parsedData
-    ) {
+    if (isEdit && parsedData) {
       reset({
-        fullName:
-          parsedData.fullName ||
-          "",
+        fullName: parsedData.fullName || '',
 
-        phoneNumber:
-          parsedData.phoneNumber ||
-          "",
+        phoneNumber: parsedData.phoneNumber || '',
 
-        alternativePhoneNumber:
-          parsedData.alternativePhoneNumber ||
-          "",
+        alternativePhoneNumber: parsedData.alternativePhoneNumber || '',
 
-        addressLine1:
-          parsedData.addressLine1 ||
-          "",
+        addressLine1: parsedData.addressLine1 || '',
 
-        addressLine2:
-          parsedData.addressLine2 ||
-          "",
+        addressLine2: parsedData.addressLine2 || '',
 
-        city:
-          parsedData.city || "",
+        city: parsedData.city || '',
 
-        state:
-          parsedData.state || "",
+        state: parsedData.state || '',
 
-        pinCode:
-          parsedData.pinCode ||
-          "",
+        pinCode: parsedData.pinCode || '',
 
-        country:
-          parsedData.country ||
-          "India",
+        country: parsedData.country || 'India',
 
-        type:
-          parsedData.type ||
-          "home",
+        type: parsedData.type || 'home',
       });
     }
   }, []);
@@ -155,9 +116,7 @@ const AddAddress = () => {
    * SUBMIT
    * ======================================================= */
 
-  const onSubmit = async (
-    data: FormType
-  ) => {
+  const onSubmit = async (data: FormType) => {
     try {
       if (isEdit) {
         await updateAddress({
@@ -166,17 +125,12 @@ const AddAddress = () => {
           body: data,
         }).unwrap();
       } else {
-        await addAddress(
-          data
-        ).unwrap();
+        await addAddress(data).unwrap();
       }
 
-      navigation.replace("AddressScreen")
+      navigation.replace('AddressScreen');
     } catch (err) {
-      console.log(
-        "ADDRESS ERROR:",
-        err
-      );
+      console.log('ADDRESS ERROR:', err);
     }
   };
 
@@ -184,21 +138,12 @@ const AddAddress = () => {
     <AnimatedScreen>
       <ScreenWrapper>
         {/* HEADER */}
-        <AppHeader>
-          <AuthTitle
-            title={
-              isEdit
-                ? "Edit Address"
-                : "Delivery Address"
-            }
-          />
-        </AppHeader>
+        <AppBar title={isEdit ? 'Edit Address' : 'Delivery Address'} />
 
         <View
           style={{
             flex: 1,
-            justifyContent:
-              "space-between",
+            justifyContent: 'space-between',
 
             padding: 16,
           }}
@@ -216,8 +161,7 @@ const AddAddress = () => {
               label="Full Name"
               placeholder="Enter full name"
               rules={{
-                required:
-                  "Required",
+                required: 'Required',
               }}
             />
 
@@ -229,8 +173,7 @@ const AddAddress = () => {
               placeholder="Enter phone number"
               keyboardType="numeric"
               rules={{
-                required:
-                  "Required",
+                required: 'Required',
               }}
             />
 
@@ -250,8 +193,7 @@ const AddAddress = () => {
               label="Flat / Apartment / Floor"
               placeholder="Enter address"
               rules={{
-                required:
-                  "Required",
+                required: 'Required',
               }}
             />
 
@@ -262,8 +204,7 @@ const AddAddress = () => {
               label="Area / Locality"
               placeholder="Enter locality"
               rules={{
-                required:
-                  "Required",
+                required: 'Required',
               }}
             />
 
@@ -274,36 +215,30 @@ const AddAddress = () => {
               label="City"
               placeholder="Enter city"
               rules={{
-                required:
-                  "Required",
+                required: 'Required',
               }}
             />
 
             {/* STATE + PINCODE */}
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: 'row',
                 gap: 12,
               }}
             >
-              <View
-                style={{ flex: 1 }}
-              >
+              <View style={{ flex: 1 }}>
                 <FormInput
                   control={control}
                   name="state"
                   label="State"
                   placeholder="Enter state"
                   rules={{
-                    required:
-                      "Required",
+                    required: 'Required',
                   }}
                 />
               </View>
 
-              <View
-                style={{ flex: 1 }}
-              >
+              <View style={{ flex: 1 }}>
                 <FormInput
                   control={control}
                   name="pinCode"
@@ -311,15 +246,12 @@ const AddAddress = () => {
                   placeholder="Enter pincode"
                   keyboardType="numeric"
                   rules={{
-                    required:
-                      "Required",
+                    required: 'Required',
 
                     pattern: {
-                      value:
-                        /^[0-9]{6}$/,
+                      value: /^[0-9]{6}$/,
 
-                      message:
-                        "Invalid pincode",
+                      message: 'Invalid pincode',
                     },
                   }}
                 />
@@ -341,8 +273,7 @@ const AddAddress = () => {
             <View
               style={{
                 height: 1,
-                backgroundColor:
-                  "#E6D18B",
+                backgroundColor: '#E6D18B',
               }}
             />
 
@@ -358,41 +289,28 @@ const AddAddress = () => {
 
               <View
                 style={{
-                  flexDirection:
-                    "row",
+                  flexDirection: 'row',
 
                   gap: 12,
                 }}
               >
-                {[
-                  "home",
-                  "office",
-                ].map((type) => {
-                  const isSelected =
-                    selectedType ===
-                    type;
+                {['home', 'office'].map(type => {
+                  const isSelected = selectedType === type;
 
                   return (
                     <TouchableOpacity
                       key={type}
                       onPress={() =>
-                        setValue(
-                          "type",
-                          type as
-                          | "home"
-                          | "office"
-                        )
+                        setValue('type', type as 'home' | 'office')
                       }
                       style={{
                         paddingVertical: 12,
 
-                        flexDirection:
-                          "row",
+                        flexDirection: 'row',
 
                         gap: 8,
 
-                        alignItems:
-                          "center",
+                        alignItems: 'center',
 
                         paddingHorizontal: 18,
 
@@ -400,19 +318,14 @@ const AddAddress = () => {
 
                         borderWidth: 1,
 
-                        borderColor:
-                          "#D4AF37",
+                        borderColor: '#D4AF37',
 
-                        backgroundColor:
-                          isSelected
-                            ? "#D4AF37"
-                            : "#FBF7EB",
+                        backgroundColor: isSelected ? '#D4AF37' : '#FBF7EB',
                       }}
                     >
                       <SansText
                         style={{
-                          color:
-                            "#0D0D0D",
+                          color: '#0D0D0D',
                         }}
                       >
                         {type}
@@ -428,13 +341,9 @@ const AddAddress = () => {
 
                           borderRadius: 12,
 
-                          borderColor:
-                            isSelected
-                              ? "#FBF7EB"
-                              : "#D4AF37",
+                          borderColor: isSelected ? '#FBF7EB' : '#D4AF37',
 
-                          backgroundColor:
-                            "#FBF7EB",
+                          backgroundColor: '#FBF7EB',
                         }}
                       />
                     </TouchableOpacity>
@@ -446,23 +355,10 @@ const AddAddress = () => {
 
           {/* BUTTON */}
           <ReusableButton
-            title={
-              isEdit
-                ? "Update Address"
-                : "Add Address"
-            }
-            onPress={handleSubmit(
-              onSubmit
-            )}
-            loading={
-              addLoading ||
-              updateLoading
-            }
-            disabled={
-              !isValid ||
-              addLoading ||
-              updateLoading
-            }
+            title={isEdit ? 'Update Address' : 'Add Address'}
+            onPress={handleSubmit(onSubmit)}
+            loading={addLoading || updateLoading}
+            disabled={!isValid || addLoading || updateLoading}
             style={{
               marginTop: 24,
             }}

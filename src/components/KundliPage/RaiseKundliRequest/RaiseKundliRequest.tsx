@@ -13,7 +13,6 @@ import Step2_PersonalDetails from './Step2_PersonalDetails';
 import Step3_BirthDetails from './Step3_BirthDetails';
 import Step4_KundliType from './Step4_KundliType';
 import Step5_Review from './Step5_Review';
-import ProgressIndicator from './ProgressIndiator';
 import { KundliFormData } from './types';
 import { useSendKundliRequestMutation } from '../../../redux/features/kundliRequest/kundliRequestApi';
 import AnimatedScreen from '../../layout/AnimatedScreen';
@@ -71,7 +70,6 @@ const RaiseKundliRequest = ({
   };
 
   const steps = getSteps();
-  const totalSteps = steps.length;
   const currentStepIndex = steps.indexOf(currentStep);
 
   const handleFilePick = () => {
@@ -268,10 +266,6 @@ const RaiseKundliRequest = ({
   return (
     <AnimatedScreen>
       <View style={styles.container}>
-        <ProgressIndicator
-          currentStep={currentStepIndex + 1}
-          totalSteps={totalSteps}
-        />
 
         <ScrollView
           style={styles.content}

@@ -69,7 +69,6 @@ const AddressScreen = () => {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{

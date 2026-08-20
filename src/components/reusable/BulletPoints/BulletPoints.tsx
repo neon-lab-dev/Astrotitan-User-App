@@ -27,11 +27,11 @@ const styles = StyleSheet.create({
   },
 
   dot: {
-    height: 8,
-    width: 8,
+    height: 5,
+    width: 5,
     borderRadius: 999,
     backgroundColor: "#0D0D0D",
-    marginTop: 9,
+    marginTop: 11,
   },
 
   text: {

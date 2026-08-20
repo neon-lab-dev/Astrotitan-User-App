@@ -60,11 +60,9 @@ const BlogInsights: React.FC<TBlogInsightsProps> = ({ isLoading, data }) => {
             <BlogCard
               key={blog._id}
               title={blog?.title || 'Untitled Blog'}
-              image={{
+              thumbnail={{
                 uri: blog?.thumbnail,
               }}
-              ctaText="Read Article"
-              height={194}
               onPress={() =>
                 navigation.navigate('ArticleScreen', { id: blog?._id })
               }

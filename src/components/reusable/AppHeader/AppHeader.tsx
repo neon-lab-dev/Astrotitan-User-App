@@ -11,26 +11,24 @@ import {
 } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { SansText } from '../Text/SansText';
+import AuthTitle from '../../auth/AuthTitle';
 type Props = {
   showBack?: boolean;
   onPressBack?: () => void;
-
-  backText?: React.ReactNode;
-  backgroundColor?: string;
-  showBorder?: boolean;
-  borderColor?: string;
-
-  children?: React.ReactNode;
+  step: number;
+  totalSteps?: number;
+  title?: string;
+  description?: string;
 };
 
 const AppHeader = ({
   showBack = true,
   onPressBack,
-  backText,
-  backgroundColor = '#EDDEAD',
-  showBorder = true,
-  borderColor = '#E6D18B',
-  children,
+  step,
+  totalSteps,
+  title,
+  description,
 }: Props) => {
   const navigation = useNavigation();
 
@@ -63,35 +61,44 @@ const AppHeader = ({
         style={[
           styles.container,
           {
-            backgroundColor,
-            borderBottomWidth: showBorder ? 1 : 0,
-            borderBottomColor: borderColor,
+            backgroundColor: '#715700',
+            borderBottomWidth: 1,
+            borderBottomColor: '#EDDEAD',
           },
         ]}
       >
-        {/* 🔥 TOP ROW */}
-        {showBack && (
-          <View style={styles.backRow}>
-            <TouchableOpacity
-              onPress={() => {
-                if (onPressBack) {
-                  onPressBack();
-                } else {
-                  navigation.goBack();
-                }
-              }}
-              style={{ padding: 8 }}
-            >
-              <Ionicons name="arrow-back" size={24} color="#0D0D0D" />
-            </TouchableOpacity>
+        <View style={styles.backRow}>
+          <TouchableOpacity
+            onPress={() => {
+              if (handleBack) {
+                handleBack();
+              } else {
+                navigation.goBack();
+              }
+            }}
+            style={{ padding: 8 }}
+          >
+            <Ionicons name="arrow-back" size={24} color="#fcfcfc" />
+          </TouchableOpacity>
 
-            {/* TEXT */}
-            <View style={{ flex: 1 }}>{backText}</View>
-          </View>
-        )}
+          {/* TEXT */}
+          <SansText style={styles.text}>
+            <SansText style={styles.bold}>Step {step + 1} </SansText> of{' '}
+            {totalSteps}
+          </SansText>
+        </View>
 
-        {/* 🔥 CONTENT BELOW */}
-        <View style={styles.childrenContainer}>{children}</View>
+        {/*CONTENT BELOW */}
+        <AuthTitle title={title}>
+          <SansText
+            style={{
+              fontSize: 16,
+              color: '#d5d5d5',
+            }}
+          >
+            {description}
+          </SansText>
+        </AuthTitle>
       </View>
     </SafeAreaView>
   );
@@ -112,7 +119,18 @@ const styles = StyleSheet.create({
   backRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 12,
+  },
+
+  text: {
+    color: '#d5d5d5',
+    fontSize: 14,
+  },
+  bold: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Satoshi-Bold',
   },
 
   childrenContainer: {

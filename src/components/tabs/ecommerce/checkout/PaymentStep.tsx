@@ -1,8 +1,9 @@
-import { StyleSheet, View } from "react-native";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import SectionTitle from "../../../reusable/SectionTitle/SectionTitle";
-import { SansText } from "../../../reusable/Text/SansText";
+/* eslint-disable react-native/no-inline-styles */
+import { StyleSheet, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../redux/store';
+import SectionTitle from '../../../reusable/SectionTitle/SectionTitle';
+import { SansText } from '../../../reusable/Text/SansText';
 
 interface Props {
   value: any;
@@ -12,17 +13,14 @@ interface Props {
 const PaymentStep = ({ value, setValue }: Props) => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
-
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
 
-
   const shipping = cartItems.length > 0 ? 100 : 0;
 
   const total = subtotal + shipping;
-
 
   return (
     <View
@@ -40,26 +38,22 @@ const PaymentStep = ({ value, setValue }: Props) => {
             gap: 10,
           }}
         >
-          <Row label="Subtotal" value={`₹ ${subtotal}/-`} />
+          <Row label="Subtotal" value={`₹${subtotal}/-`} />
 
-          <Row label="Shipping Charges" value={`₹ ${shipping}/-`} />
+          <Row label="Shipping Charges" value={`₹${shipping}/-`} />
 
           {/* <Row label="Discount Applied" value="NA" /> */}
 
           <View style={styles.divider} />
 
-          <Row label="Total" value={`₹ ${total}/-`} />
+          <Row label="Total" value={`₹${total}/-`} />
         </View>
       </View>
-
-
     </View>
   );
 };
 
 export default PaymentStep;
-
-
 
 const Row = ({
   label,
@@ -83,41 +77,41 @@ const Row = ({
 
 const styles = StyleSheet.create({
   summaryCard: {
-    backgroundColor: "#FBF7EB",
+    backgroundColor: '#FBF7EB',
     borderRadius: 18,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#E6D18B",
+    borderColor: '#E6D18B',
   },
 
   divider: {
     height: 1,
 
-    backgroundColor: "#E6D18B",
+    backgroundColor: '#E6D18B',
 
     marginVertical: 4,
   },
 
   row: {
-    flexDirection: "row",
+    flexDirection: 'row',
 
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
 
-    alignItems: "center",
+    alignItems: 'center',
   },
 
   bold: {
-    fontFamily: "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
 
     fontSize: 16,
   },
 
   normal: {
-    color: "#444",
+    color: '#444',
   },
 
   optionCard: {
-    backgroundColor: "#FBF7EB",
+    backgroundColor: '#FBF7EB',
 
     borderRadius: 16,
 
@@ -125,25 +119,25 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: "#D4AF37",
+    borderColor: '#D4AF37',
 
-    flexDirection: "row",
+    flexDirection: 'row',
 
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
 
-    alignItems: "center",
+    alignItems: 'center',
   },
 
   activeOption: {
-    borderColor: "#D4AF37",
+    borderColor: '#D4AF37',
 
-    backgroundColor: "#FFF8E1",
+    backgroundColor: '#FFF8E1',
   },
 
   optionText: {
     fontSize: 14,
 
-    fontFamily: "Satoshi-Medium",
+    fontFamily: 'Satoshi-Medium',
   },
 
   radio: {
@@ -155,10 +149,10 @@ const styles = StyleSheet.create({
 
     borderWidth: 1.5,
 
-    borderColor: "#D4AF37",
+    borderColor: '#D4AF37',
   },
 
   radioActive: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: '#D4AF37',
   },
 });

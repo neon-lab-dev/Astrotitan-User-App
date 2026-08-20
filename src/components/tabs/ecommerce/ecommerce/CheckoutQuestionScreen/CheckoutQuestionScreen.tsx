@@ -1,145 +1,70 @@
-
-
-
-import React, {
-  useEffect,
-  useState,
-} from "react";
-
+/* eslint-disable react-native/no-inline-styles */
+import React, { useEffect, useState } from 'react';
+import { BackHandler, ScrollView, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, store } from '../../../../../redux/store';
 import {
-  BackHandler,
-  ScrollView,
-  View,
-} from "react-native";
-
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
-import { RootState, store } from "../../../../../redux/store";
-import { nextStep, prevStep, setAnswer } from "../../../../../redux/features/checkout/checkoutSlice";
-import AppHeader from "../../../../reusable/AppHeader/AppHeader";
-import StepHeader from "../../../../userDetailsForm/StepHeader";
-import AuthTitle from "../../../../auth/AuthTitle";
-import { SansText } from "../../../../reusable/Text/SansText";
-import ReusableButton from "../../../../reusable/ReusableButton/ReusableButton";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+  nextStep,
+  prevStep,
+  setAnswer,
+} from '../../../../../redux/features/checkout/checkoutSlice';
+import ReusableButton from '../../../../reusable/ReusableButton/ReusableButton';
+import { useFocusEffect } from '@react-navigation/native';
+import AppHeader from '../../../../reusable/AppHeader/AppHeader';
 
 interface Props {
   questionKey: string;
-
   questionText: string;
-
   questionDescription: string;
-
-  validate?: (
-    value: any
-  ) => boolean;
-
-  initialValue?:
-    | string
-    | object
-    | null;
-
-  onFinalSubmit?: (
-    data: any
-  ) => void;
-
+  initialValue?: string | object | null;
+  onFinalSubmit?: (data: any) => void;
   children: (props: {
     value: any;
-
-    setValue: (
-      val: any
-    ) => void;
+    setValue: (val: any) => void;
   }) => React.ReactNode;
 }
 
-const CheckoutQuestionScreen: React.FC<
-  Props
-> = ({
+const CheckoutQuestionScreen: React.FC<Props> = ({
   questionKey,
   questionText,
   questionDescription,
   children,
-  validate,
   initialValue,
   onFinalSubmit,
 }) => {
-  const dispatch =
-    useDispatch();
-
-    const navigation = useNavigation<any>();
-
-  // ✅ CORRECT SLICE
-  const savedValue =
-    useSelector(
-      (
-        state: RootState
-      ) =>
-        state.checkout
-          .answers[
-          questionKey
-        ]
-    );
-
-  // ✅ CORRECT SLICE
-  const step = useSelector(
-    (
-      state: RootState
-    ) => state.checkout.step
+  const dispatch = useDispatch();
+  const savedValue = useSelector(
+    (state: RootState) => state.checkout.answers[questionKey],
   );
-
+  const step = useSelector((state: RootState) => state.checkout.step);
   const totalSteps = 3;
-
-  const [value, setValue] =
-    useState(
-      savedValue ??
-        initialValue
-    );
-
-  const isValid = validate
-    ? validate(value)
-    : true;
+  const [value, setValue] = useState(savedValue ?? initialValue);
 
   useEffect(() => {
-    if (
-      savedValue !== undefined
-    ) {
+    if (savedValue !== undefined) {
       setValue(savedValue);
     } else {
-      setValue(
-        initialValue
-      );
+      setValue(initialValue);
     }
-  }, [
-    savedValue,
-    initialValue,
-  ]);
+  }, [savedValue, initialValue]);
 
   const handleNext = () => {
     dispatch(
       setAnswer({
         key: questionKey,
         value,
-      })
+      }),
     );
 
-    if (
-      step ===
-      totalSteps - 1
-    ) {
-      // ✅ CORRECT STORE PATH
+    if (step === totalSteps - 1) {
+      // CORRECT STORE PATH
       const finalData = {
-        ...store.getState()
-          .checkout.answers,
+        ...store.getState().checkout.answers,
 
-        [questionKey]:
-          value,
+        [questionKey]: value,
       };
 
-      onFinalSubmit?.(
-        finalData
-      );
+      onFinalSubmit?.(finalData);
 
       return;
     }
@@ -149,93 +74,44 @@ const CheckoutQuestionScreen: React.FC<
 
   useFocusEffect(
     React.useCallback(() => {
-      const onBackPress =
-        () => {
-          if (step > 0) {
-            dispatch(
-              setAnswer({
-                key: questionKey,
-                value,
-              })
-            );
+      const onBackPress = () => {
+        if (step > 0) {
+          dispatch(
+            setAnswer({
+              key: questionKey,
+              value,
+            }),
+          );
 
-            dispatch(
-              prevStep()
-            );
+          dispatch(prevStep());
 
-            return true;
-          }
+          return true;
+        }
 
-          return false;
-        };
+        return false;
+      };
 
-      const subscription =
-        BackHandler.addEventListener(
-          "hardwareBackPress",
-          onBackPress
-        );
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
 
-      return () =>
-        subscription.remove();
-    }, [
-  step,
-  value,
-  dispatch,
-  questionKey,
-])
+      return () => subscription.remove();
+    }, [step, value, dispatch, questionKey]),
   );
-
-  const handleBack = () => {
-    if (step === 0) {
-      navigation.goBack();
-      return;
-    }
-
-    dispatch(
-      setAnswer({
-        key: questionKey,
-        value,
-      })
-    );
-
-    dispatch(prevStep());
-  };
 
   return (
     <View
       style={{
         flex: 1,
-        
       }}
     >
-      {/* HEADER */}
       <AppHeader
-        onPressBack={
-          handleBack
-        }
-        showBack={true}
-      >
-        <StepHeader
-          step={step}
-          total={totalSteps}
-        />
-
-        <AuthTitle
-          title={
-            questionText
-          }
-        >
-          <SansText
-            style={{
-              fontSize: 16,
-            }}
-          >
-            {
-              questionDescription
-            }
-          </SansText>
-        </AuthTitle>
-      </AppHeader>
+        title={questionText}
+        description={questionDescription}
+        step={step}
+        totalSteps={totalSteps}
+      />
 
       {/* CONTENT */}
       <View
@@ -249,9 +125,7 @@ const CheckoutQuestionScreen: React.FC<
 
             paddingBottom: 40,
           }}
-          showsVerticalScrollIndicator={
-            false
-          }
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
           {children({
@@ -262,34 +136,23 @@ const CheckoutQuestionScreen: React.FC<
       </View>
 
       {/* FOOTER */}
-      {isValid && (
         <View
           style={{
             padding: 16,
 
-            backgroundColor:
-              "#FBF7EB",
+            backgroundColor: '#FBF7EB',
 
             borderTopRightRadius: 16,
 
             borderTopLeftRadius: 16,
-
           }}
         >
           <ReusableButton
-            title={
-              step ===
-              totalSteps - 1
-                ? "Place Order"
-                : "Continue"
-            }
+            title={step === totalSteps - 1 ? 'Place Order' : 'Continue'}
             variant="solid"
-            onPress={
-              handleNext
-            }
+            onPress={handleNext}
           />
         </View>
-      )}
     </View>
   );
 };

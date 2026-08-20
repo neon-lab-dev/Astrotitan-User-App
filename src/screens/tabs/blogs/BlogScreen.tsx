@@ -11,14 +11,13 @@ import {
 import { useGetBlogsQuery } from '../../../redux/features/blog/blogApi';
 import AnimatedScreen from '../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../components/layout/ScreenWrapper';
-import AppHeader from '../../../components/reusable/AppHeader/AppHeader';
-import AuthTitle from '../../../components/auth/AuthTitle';
 import { useCallback, useState } from 'react';
 import FeatureCardSkeleton from '../../../components/tabs/home/home/FeatureCard/FeatureCardSkeleton';
 import BlogCard from '../../../components/HomePage/BlogInsights/BlogCard';
 import { SansText } from '../../../components/reusable/Text/SansText';
 import { NavigationProp } from '../../../components/shared/AppHeader/AppHeader';
 import { useNavigation } from '@react-navigation/native';
+import AppBar from '../../../components/reusable/AppBar/AppBar';
 
 // Sample categories - Replace with your actual categories from API
 const BLOG_CATEGORIES = [
@@ -35,7 +34,7 @@ const BLOG_CATEGORIES = [
 const BlogScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const { data, isLoading, refetch, isFetching } = useGetBlogsQuery(
     {
@@ -84,9 +83,7 @@ const BlogScreen = () => {
           }
           contentContainerStyle={styles.scrollContent}
         >
-          <AppHeader showBack={false}>
-            <AuthTitle titleFontSize={17} title="Blogs and Articles" />
-          </AppHeader>
+          <AppBar title="Blogs and Articles" />
 
           {/* Scrollable Category Tabs */}
           <View style={styles.categoryContainer}>

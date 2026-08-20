@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Satoshi-Medium",
     letterSpacing: -0.32,
-    color: "#fff",
+    color: "#000",
   },
 
   subtitle: {

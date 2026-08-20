@@ -1,23 +1,18 @@
-import LocationIcon from "@/assets/icons/navigation/location.svg";
-import UserInactive from "@/assets/icons/navigation/user-inactive.svg";
-import CallIcon from "@/assets/icons/visual/call.svg";
-
-import React from "react";
-
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SatoshiText } from "../../../reusable/Text/SatoshiText";
-import { SansText } from "../../../reusable/Text/SansText";
-import ReusableButton from "../../../reusable/ReusableButton/ReusableButton";
+/* eslint-disable react-native/no-inline-styles */
+import LocationIcon from '@/assets/icons/navigation/location.svg';
+import UserInactive from '@/assets/icons/navigation/user-inactive.svg';
+import CallIcon from '@/assets/icons/visual/call.svg';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SatoshiText } from '../../../reusable/Text/SatoshiText';
+import { SansText } from '../../../reusable/Text/SansText';
+import ReusableButton from '../../../reusable/ReusableButton/ReusableButton';
 import TickIcon from '@/assets/icons/visual/tick.svg';
 
 type Props = {
   data: {
     _id?: string;
-    type: "home" | "office";
+    type: 'home' | 'office';
     fullName: string;
     phoneNumber: string;
     alternativePhoneNumber?: string;
@@ -31,9 +26,7 @@ type Props = {
   onEdit?: () => void;
   onDelete?: () => void;
   showActions?: boolean;
-  showChangeButton?: boolean;
   showSelectOption?: boolean;
-  onChangeAddress?: () => void;
   selected?: boolean;
   onSelect?: () => void;
 };
@@ -43,104 +36,74 @@ const AddressCard = ({
   onEdit,
   onDelete,
   showActions = false,
-  showChangeButton = false,
   showSelectOption = false,
-  onChangeAddress,
   selected = false,
   onSelect,
-
 }: Props) => {
   return (
     <View style={styles.wrapper}>
       {/* CARD */}
       <View style={styles.card}>
         {/* NAME */}
-        {/* NAME */}
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
             gap: 12,
           }}
         >
           {/* LEFT */}
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
               gap: 10,
               flex: 1,
             }}
           >
-            <UserInactive
-              width={18}
-              height={18}
-            />
+            <UserInactive width={18} height={18} />
 
-            <SatoshiText
-              style={styles.nameText}
-              numberOfLines={1}
-            >
+            <SatoshiText style={styles.nameText} numberOfLines={1}>
               {data.fullName}
             </SatoshiText>
           </View>
 
           {/* RIGHT BADGE */}
           <View style={styles.typeBadge}>
-            <SansText style={styles.typeText}>
-              {data.type}
-            </SansText>
+            <SansText style={styles.typeText}>{data.type}</SansText>
           </View>
         </View>
+
         {/* PHONE */}
         <View style={styles.row}>
-          <CallIcon
-            width={18}
-            height={18}
-          />
+          <CallIcon width={18} height={18} />
 
-          <SansText style={styles.infoText}>
-            {data.phoneNumber}
-          </SansText>
+          <SansText style={styles.infoText}>{data.phoneNumber}</SansText>
         </View>
 
         {/* ADDRESS */}
         <View style={styles.row}>
-          <LocationIcon
-            width={18}
-            height={18}
-          />
+          <LocationIcon width={18} height={18} />
 
           <SansText style={styles.infoText}>
             {data.addressLine1} {data.addressLine2}
-            {"\n"}
-
-            {data.city},{" "}
-            {data.state} -{" "}
-            {data.pinCode}
-            {"\n"}
-
+            {'\n'}
+            {data.city}, {data.state} - {data.pinCode}
+            {'\n'}
             {data.country}
           </SansText>
         </View>
 
-        {
-          showSelectOption && (
-            <TouchableOpacity
-              onPress={onSelect}
-              style={[
-                styles.circle,
-                selected && styles.selectedCircle,
-              ]}
-            >
-              {selected && (
-                <TickIcon width={12} height={12} />
-              )}
-            </TouchableOpacity>
-          )
-        }
-
+        {/* ✅ Radio Button */}
+        {showSelectOption && (
+          <TouchableOpacity
+            onPress={onSelect}
+            style={[styles.circle, selected && styles.selectedCircle]}
+          >
+            {selected && <TickIcon width={12} height={12} />}
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* EDIT + DELETE BUTTONS */}
@@ -168,17 +131,14 @@ const AddressCard = ({
         </View>
       )}
 
-      {/* CHANGE ADDRESS BUTTON */}
-      {showChangeButton && (
+      {/* CHANGE ADDRESS BUTTON - Removed */}
+      {/* {showChangeButton && (
         <ReusableButton
           title="Change Address"
           variant="outline"
-          onPress={() =>
-            onChangeAddress?.()
-          }
+          onPress={() => onChangeAddress?.()}
         />
-      )}
-
+      )} */}
     </View>
   );
 };
@@ -191,73 +151,76 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#FBF7EB",
+    backgroundColor: '#FBF7EB',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#D4AF37",
+    borderColor: '#D4AF37',
     gap: 14,
-    position: "relative"
+    position: 'relative',
   },
 
   row: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 10,
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
   },
 
   nameText: {
     flexShrink: 1,
     fontSize: 16,
-    color: "#0D0D0D",
-    fontFamily: "Satoshi-Bold",
+    color: '#0D0D0D',
+    fontFamily: 'Satoshi-Bold',
     flex: 1,
   },
 
   infoText: {
     fontSize: 14,
-    color: "#4B4B4B",
+    color: '#4B4B4B',
     lineHeight: 24,
-    fontFamily: "Satoshi-Medium",
+    fontFamily: 'Satoshi-Medium',
     flex: 1,
   },
 
   actionRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 12,
-    alignItems: "center",
+    alignItems: 'center',
   },
 
   typeBadge: {
-    backgroundColor: "#EFE5C8",
+    backgroundColor: '#EFE5C8',
     borderRadius: 999,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flexShrink: 0,
   },
 
   typeText: {
     fontSize: 12,
-    textTransform: "capitalize",
-    color: "#0D0D0D",
-    fontFamily: "GeneralSans-Bold",
+    textTransform: 'capitalize',
+    color: '#0D0D0D',
+    fontFamily: 'GeneralSans-Bold',
   },
+
   circle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: '#D4AF37',
-    alignItems: 'center',   // ✅ center tick
-    justifyContent: 'center', // ✅ center tick
-    position:"absolute",
-    bottom:10,
-    right:10
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 12,
+    right: 12,
+    backgroundColor: '#FFFFFF',
   },
+
   selectedCircle: {
-    backgroundColor: '#E9F7EB',
-    borderColor: "#D4AF37",
+    backgroundColor: '#EFE5C8',
+    borderColor: '#ffe17d',
   },
 });

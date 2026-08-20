@@ -2,8 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { ScrollView, View, StyleSheet, RefreshControl } from 'react-native';
 import AnimatedScreen from '../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../components/layout/ScreenWrapper';
-import AppHeader from '../../../components/reusable/AppHeader/AppHeader';
-import AuthTitle from '../../../components/auth/AuthTitle';
 import { useGetMyKundliRequestsQuery } from '../../../redux/features/kundliRequest/kundliRequestApi';
 import AllKundliRequests from '../../../components/KundliPage/AllKundliRequests/AllKundliRequests';
 import RaiseKundliRequest from '../../../components/KundliPage/RaiseKundliRequest/RaiseKundliRequest';
@@ -54,9 +52,6 @@ const KundliScreen = () => {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          <AppHeader showBack={false}>
-            <AuthTitle title="Kundli" />
-          </AppHeader>
           <View style={styles.loaderContainer}>
             <SansText style={styles.loadingText}>Loading...</SansText>
           </View>

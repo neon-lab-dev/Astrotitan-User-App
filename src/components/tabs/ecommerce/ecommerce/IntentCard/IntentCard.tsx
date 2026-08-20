@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     height: 120,
-    // ✅ Box card with previous bg and border
     backgroundColor: "#ffffff",
     borderRadius: 16,
     shadowColor: '#000',

@@ -1,202 +1,147 @@
-import React from "react";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
-import { useRoute } from "@react-navigation/native";
-import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
-import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
-import { SansText } from "../../../../components/reusable/Text/SansText";
-import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../../components/auth/AuthTitle";
-import { SatoshiText } from "../../../../components/reusable/Text/SatoshiText";
-import ReusableButton from "../../../../components/reusable/ReusableButton/ReusableButton";
-import AddressCard from "../../../../components/tabs/profile/address/AddressCard";
-import { useGetMyAddressesQuery } from "../../../../redux/features/address/addressApi";
-import AddressCardSkeleton from "../../../../components/tabs/profile/address/AddressCardSkeleton/AddressCardSkeleton";
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import { SansText } from '../../../../components/reusable/Text/SansText';
+import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
+import AddressCard from '../../../../components/tabs/profile/address/AddressCard';
+import { useGetMyAddressesQuery } from '../../../../redux/features/address/addressApi';
+import AddressCardSkeleton from '../../../../components/tabs/profile/address/AddressCardSkeleton/AddressCardSkeleton';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
 /* ---------------- ACTIONS ---------------- */
 
 const cancelOrder = () => {
-  console.log(
-    "CANCEL ORDER"
-  );
+  console.log('CANCEL ORDER');
 };
 
-const trackShipment =
-  () => {
-    console.log(
-      "TRACK SHIPMENT"
-    );
-  };
+const trackShipment = () => {
+  console.log('TRACK SHIPMENT');
+};
 
-const writeReview =
-  () => {
-    console.log(
-      "WRITE REVIEW"
-    );
-  };
+const writeReview = () => {
+  console.log('WRITE REVIEW');
+};
 
 const reorder = () => {
-  console.log("REORDER");
+  console.log('REORDER');
 };
 
 /* ---------------- STATUS CONFIG ---------------- */
 
-export const ORDER_STATUS_CONFIG =
-{
+export const ORDER_STATUS_CONFIG = {
   pending: {
-    title: "Order Pending",
+    title: 'Order Pending',
 
-    subtitle:
-      "Your order is awaiting confirmation.",
+    subtitle: 'Your order is awaiting confirmation.',
 
-    color: "#B38A00",
+    color: '#B38A00',
 
-    buttonText:
-      "Cancel Order",
+    buttonText: 'Cancel Order',
 
-    disableButton:
-      false,
+    disableButton: false,
 
-    footer:
-      "Order can be cancelled before processing",
+    footer: 'Order can be cancelled before processing',
 
-    onPress:
-      cancelOrder,
+    onPress: cancelOrder,
   },
 
   placed: {
-    title:
-      "Order Placed",
+    title: 'Order Placed',
 
-    subtitle:
-      "Your order has been placed successfully.",
+    subtitle: 'Your order has been placed successfully.',
 
-    color: "#816B22",
+    color: '#816B22',
 
-    buttonText:
-      "Cancel Order",
+    buttonText: 'Cancel Order',
 
-    disableButton:
-      false,
+    disableButton: false,
 
-    footer:
-      "Order can be cancelled before shipping",
+    footer: 'Order can be cancelled before shipping',
 
-    onPress:
-      cancelOrder,
+    onPress: cancelOrder,
   },
 
   processing: {
-    title:
-      "Order Processing",
+    title: 'Order Processing',
 
-    subtitle:
-      "Your order is being prepared.",
+    subtitle: 'Your order is being prepared.',
 
-    color: "#5E5ADB",
+    color: '#5E5ADB',
 
-    buttonText:
-      "Cancel Order",
+    buttonText: 'Cancel Order',
 
-    disableButton:
-      false,
+    disableButton: false,
 
-    footer:
-      "Order can be cancelled before shipping",
+    footer: 'Order can be cancelled before shipping',
 
-    onPress:
-      cancelOrder,
+    onPress: cancelOrder,
   },
 
   shipped: {
-    title:
-      "Order Shipped",
+    title: 'Order Shipped',
 
-    subtitle:
-      "Your order has been shipped.",
+    subtitle: 'Your order has been shipped.',
 
-    color: "#111111",
+    color: '#111111',
 
-    buttonText:
-      "Track Shipment",
+    buttonText: 'Track Shipment',
 
-    disableButton:
-      false,
+    disableButton: false,
 
-    footer:
-      "Expected delivery in 2-3 days",
+    footer: 'Expected delivery in 2-3 days',
 
-    onPress:
-      trackShipment,
+    onPress: trackShipment,
   },
 
   out_for_delivery: {
-    title:
-      "Out for delivery",
+    title: 'Out for delivery',
 
-    subtitle:
-      "Your order will be delivered today.",
+    subtitle: 'Your order will be delivered today.',
 
-    color: "#1D7A34",
+    color: '#1D7A34',
 
-    buttonText:
-      "Out For Delivery",
+    buttonText: 'Out For Delivery',
 
-    disableButton:
-      true,
+    disableButton: true,
 
-    footer:
-      "Order cannot be cancelled now",
+    footer: 'Order cannot be cancelled now',
 
-    onPress: () => { },
+    onPress: () => {},
   },
 
   delivered: {
-    title:
-      "Order Delivered",
+    title: 'Order Delivered',
 
-    subtitle:
-      "Your order was delivered successfully.",
+    subtitle: 'Your order was delivered successfully.',
 
-    color: "#1D7A34",
+    color: '#1D7A34',
 
-    buttonText:
-      "Write a Review",
+    buttonText: 'Write a Review',
 
-    disableButton:
-      false,
+    disableButton: false,
 
-    footer:
-      "Thank you for shopping with us",
+    footer: 'Thank you for shopping with us',
 
-    onPress:
-      writeReview,
+    onPress: writeReview,
   },
 
   cancelled: {
-    title:
-      "Order Cancelled",
+    title: 'Order Cancelled',
 
-    subtitle:
-      "Your order has been cancelled.",
+    subtitle: 'Your order has been cancelled.',
 
-    color: "#C2371E",
+    color: '#C2371E',
 
-    buttonText:
-      "Reorder",
+    buttonText: 'Reorder',
 
-    disableButton:
-      false,
+    disableButton: false,
 
-    footer:
-      "Refund will be processed shortly",
+    footer: 'Refund will be processed shortly',
 
-    onPress:
-      reorder,
+    onPress: reorder,
   },
 };
 
@@ -207,20 +152,12 @@ const OrdersDetails = () => {
 
   const rawOrder = route.params?.order;
 
-  const order =
-    typeof rawOrder === "string"
-      ? JSON.parse(rawOrder)
-      : rawOrder;
+  const order = typeof rawOrder === 'string' ? JSON.parse(rawOrder) : rawOrder;
 
-
-  const {
-    data,
-    isLoading,
-    refetch,
-  } = useGetMyAddressesQuery({});
+  const { data, isLoading, refetch } = useGetMyAddressesQuery({});
 
   const address = data?.data?.find(
-    (item: any) => item._id === order?.addressId
+    (item: any) => item._id === order?.addressId,
   );
 
   /* ---------------- NOT FOUND ---------------- */
@@ -233,31 +170,24 @@ const OrdersDetails = () => {
             style={{
               flex: 1,
 
-              justifyContent:
-                "center",
+              justifyContent: 'center',
 
-              alignItems:
-                "center",
+              alignItems: 'center',
             }}
           >
-            <SansText>
-              Order not found
-            </SansText>
+            <SansText>Order not found</SansText>
           </View>
         </ScreenWrapper>
       </AnimatedScreen>
     );
   }
- console.log(rawOrder)
   /* ---------------- PRODUCT ---------------- */
   const orderedItems = order?.orderedItems || [];
 
   /* ---------------- STATUS ---------------- */
 
   const currentStatus =
-    ORDER_STATUS_CONFIG[
-    order?.status as keyof typeof ORDER_STATUS_CONFIG
-    ] ||
+    ORDER_STATUS_CONFIG[order?.status as keyof typeof ORDER_STATUS_CONFIG] ||
     ORDER_STATUS_CONFIG.pending;
 
   /* ---------------- DELIVERY ---------------- */
@@ -265,43 +195,26 @@ const OrdersDetails = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <View
-          style={
-            styles.container
-          }
-        >
+        <View style={styles.container}>
           {/* HEADER */}
-
-          <AppHeader>
-            <AuthTitle title="Order Details">
-              <SansText
-                style={{
-                  fontSize: 16,
-                }}
-              >
-                Track your
-                product order
-                updates.
-              </SansText>
-            </AuthTitle>
-          </AppHeader>
-
-<SatoshiText style={{paddingTop:16,paddingHorizontal:16,fontFamily:"Satoshi-Bold"}}>Order Id: #{order.orderId}</SatoshiText>
+          <AppBar title="Order Details" />
+          <SatoshiText
+            style={{
+              paddingTop: 16,
+              paddingHorizontal: 16,
+              fontFamily: 'Satoshi-Bold',
+            }}
+          >
+            Order Id: #{order.orderId}
+          </SatoshiText>
           {/* PRODUCT */}
           <ScrollView>
             {orderedItems.map((item: any) => (
-              <View
-                key={item._id}
-                style={styles.productCard}
-              >
-                <View
-                  style={styles.productRow}
-                >
+              <View key={item._id} style={styles.productCard}>
+                <View style={styles.productRow}>
                   <Image
                     source={{
-                      uri:
-                        item?.productId
-                          ?.imageUrls?.[0],
+                      uri: item?.productId?.imageUrls?.[0],
                     }}
                     style={styles.image}
                   />
@@ -311,30 +224,15 @@ const OrdersDetails = () => {
                       flex: 1,
                     }}
                   >
-                    <SatoshiText
-                      style={
-                        styles.productTitle
-                      }
-                    >
+                    <SatoshiText style={styles.productTitle}>
                       {item?.name}
                     </SatoshiText>
 
-                    <SansText
-                      style={
-                        styles.quantity
-                      }
-                    >
-                      Quantity:{" "}
-                      {item?.quantity}
+                    <SansText style={styles.quantity}>
+                      Quantity: {item?.quantity}
                     </SansText>
 
-                    <SansText
-                      style={
-                        styles.quantity
-                      }
-                    >
-                      ₹{item?.price}
-                    </SansText>
+                    <SansText style={styles.quantity}>₹{item?.price}</SansText>
 
                     {/* <SansText
                       style={
@@ -355,63 +253,37 @@ const OrdersDetails = () => {
                 paddingHorizontal: 16,
               }}
             >
-              <View
-                style={
-                  styles.section
-                }
-              >
+              <View style={styles.section}>
                 <SatoshiText
                   style={[
                     styles.statusTitle,
                     {
-                      color:
-                        currentStatus.color,
+                      color: currentStatus.color,
                     },
                   ]}
                 >
-                  {
-                    currentStatus.title
-                  }
+                  {currentStatus.title}
                 </SatoshiText>
 
-                <SansText
-                  style={
-                    styles.statusSubtitle
-                  }
-                >
-                  {
-                    currentStatus.subtitle
-                  }
+                <SansText style={styles.statusSubtitle}>
+                  {currentStatus.subtitle}
                 </SansText>
               </View>
 
               {/* DIVIDER */}
 
-              <View
-                style={
-                  styles.divider
-                }
-              />
+              <View style={styles.divider} />
 
               {/* ADDRESS */}
 
-              <View
-                style={
-                  styles.section
-                }
-              >
-                <SatoshiText
-                  style={
-                    styles.sectionTitle
-                  }
-                >
-                  Delivery
-                  details
+              <View style={styles.section}>
+                <SatoshiText style={styles.sectionTitle}>
+                  Delivery details
                 </SatoshiText>
 
                 {isLoading ? (
                   <>
-                    {[1].map((item) => (
+                    {[1].map(item => (
                       <AddressCardSkeleton key={item} />
                     ))}
                   </>
@@ -422,12 +294,9 @@ const OrdersDetails = () => {
                       type: address.type,
                       fullName: address.fullName,
                       phoneNumber: address.phoneNumber,
-                      alternativePhoneNumber:
-                        address.alternativePhoneNumber,
-                      addressLine1:
-                        address.addressLine1,
-                      addressLine2:
-                        address.addressLine2,
+                      alternativePhoneNumber: address.alternativePhoneNumber,
+                      addressLine1: address.addressLine1,
+                      addressLine2: address.addressLine2,
                       city: address.city,
                       state: address.state,
                       pinCode: address.pinCode,
@@ -437,8 +306,8 @@ const OrdersDetails = () => {
                 ) : (
                   <SansText
                     style={{
-                      color: "#777",
-                      textAlign: "center",
+                      color: '#777',
+                      textAlign: 'center',
                       marginTop: 12,
                     }}
                   >
@@ -449,33 +318,12 @@ const OrdersDetails = () => {
 
               {/* TOTAL */}
 
-              <View
-                style={
-                  styles.section
-                }
-              >
-                <View
-                  style={
-                    styles.totalRow
-                  }
-                >
-                  <SansText
-                    style={
-                      styles.totalLabel
-                    }
-                  >
-                    Total Amount
-                  </SansText>
+              <View style={styles.section}>
+                <View style={styles.totalRow}>
+                  <SansText style={styles.totalLabel}>Total Amount</SansText>
 
-                  <SatoshiText
-                    style={
-                      styles.totalAmount
-                    }
-                  >
-                    ₹
-                    {
-                      order?.totalAmount
-                    }
+                  <SatoshiText style={styles.totalAmount}>
+                    ₹{order?.totalAmount}
                   </SatoshiText>
                 </View>
               </View>
@@ -533,12 +381,11 @@ const styles = StyleSheet.create({
 
     marginHorizontal: 16,
 
-    backgroundColor:
-      "#FBF7EB",
+    backgroundColor: '#FBF7EB',
 
     borderWidth: 1,
 
-    borderColor: "#D4AF37",
+    borderColor: '#D4AF37',
 
     borderRadius: 16,
 
@@ -546,9 +393,9 @@ const styles = StyleSheet.create({
   },
 
   productRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
 
-    alignItems: "center",
+    alignItems: 'center',
 
     gap: 12,
   },
@@ -564,12 +411,11 @@ const styles = StyleSheet.create({
   productTitle: {
     fontSize: 16,
 
-    color: "#0d0d0d",
+    color: '#0d0d0d',
 
     lineHeight: 22,
 
-    fontFamily:
-      "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
   },
 
   quantity: {
@@ -577,7 +423,7 @@ const styles = StyleSheet.create({
 
     fontSize: 14,
 
-    color: "#777",
+    color: '#777',
   },
 
   orderId: {
@@ -585,10 +431,9 @@ const styles = StyleSheet.create({
 
     fontSize: 14,
 
-    color: "#816B22",
+    color: '#816B22',
 
-    fontFamily:
-      "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
   },
 
   section: {
@@ -600,8 +445,7 @@ const styles = StyleSheet.create({
 
     lineHeight: 28,
 
-    fontFamily:
-      "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
   },
 
   statusSubtitle: {
@@ -609,7 +453,7 @@ const styles = StyleSheet.create({
 
     fontSize: 14,
 
-    color: "#0d0d0d",
+    color: '#0d0d0d',
 
     lineHeight: 22,
   },
@@ -617,8 +461,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
 
-    backgroundColor:
-      "#E4D7AE",
+    backgroundColor: '#E4D7AE',
 
     marginTop: 22,
   },
@@ -626,36 +469,33 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 21,
 
-    color: "#111111",
+    color: '#111111',
 
-    fontFamily:
-      "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
 
     marginBottom: 14,
   },
 
   totalRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
 
-    justifyContent:
-      "space-between",
+    justifyContent: 'space-between',
 
-    alignItems: "center",
+    alignItems: 'center',
   },
 
   totalLabel: {
     fontSize: 16,
 
-    color: "#555",
+    color: '#555',
   },
 
   totalAmount: {
     fontSize: 21,
 
-    color: "#0D0D0D",
+    color: '#0D0D0D',
 
-    fontFamily:
-      "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
   },
 
   bottomContainer: {
@@ -667,11 +507,11 @@ const styles = StyleSheet.create({
   },
 
   footerText: {
-    textAlign: "center",
+    textAlign: 'center',
 
     fontSize: 11,
 
-    color: "#777",
+    color: '#777',
 
     lineHeight: 16,
   },

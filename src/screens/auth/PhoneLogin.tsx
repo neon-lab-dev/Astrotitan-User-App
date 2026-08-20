@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
-import { useLoginMutation } from "../../redux/features/auth/authApi";
-import AnimatedScreen from "../../components/layout/AnimatedScreen";
-import AuthTitle from "../../components/auth/AuthTitle";
-import CountrySelector from "../../components/auth/CountrySelector";
-import FormInput from "../../components/reusable/InputField/FormInput";
-import { SansText } from "../../components/reusable/Text/SansText";
-import OrDivider from "../../components/auth/OrDivider";
-import ReusableButton from "../../components/reusable/ReusableButton/ReusableButton";
-import AuthSecondaryNavigation from "../../components/auth/AuthSecondaryNavigation";
-import TermsAndConditions from "../../components/auth/TermsAndConditions";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import AuthLayout from "../../components/layout/layouts/AuthLayout";
+/* eslint-disable react-native/no-inline-styles */
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLoginMutation } from '../../redux/features/auth/authApi';
+import AnimatedScreen from '../../components/layout/AnimatedScreen';
+import AuthTitle from '../../components/auth/AuthTitle';
+import CountrySelector from '../../components/auth/CountrySelector';
+import FormInput from '../../components/reusable/InputField/FormInput';
+import { SansText } from '../../components/reusable/Text/SansText';
+import OrDivider from '../../components/auth/OrDivider';
+import ReusableButton from '../../components/reusable/ReusableButton/ReusableButton';
+import AuthSecondaryNavigation from '../../components/auth/AuthSecondaryNavigation';
+import TermsAndConditions from '../../components/auth/TermsAndConditions';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import AuthLayout from '../../components/layout/layouts/AuthLayout';
 
 type LoginForm = {
   phone: string;
@@ -26,21 +27,21 @@ export default function PhoneLogin() {
     formState: { isValid },
   } = useForm<LoginForm>({
     defaultValues: {
-      phone: "",
+      phone: '',
     },
-    mode: "onBlur", // 🔥 IMPORTANT
+    mode: 'onBlur',
   });
   const [country, setCountry] = useState({
-    name: "India",
-    code: "IN",
-    callingCode: "91",
-    flag: "🇮🇳",
+    name: 'India',
+    code: 'IN',
+    callingCode: '91',
+    flag: '🇮🇳',
   });
 
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const params = route.params || {};
-  const phone = watch("phone");
+  const phone = watch('phone');
   const isFormFilled = phone.length >= 10;
 
   useEffect(() => {
@@ -61,22 +62,22 @@ export default function PhoneLogin() {
       // const fullPhone = formatPhone(country.callingCode, data.phone);
 
       const payload = {
-        email: "",
-        phoneNumber: data.phone, 
-        role: "user",
+        email: '',
+        phoneNumber: data.phone,
+        role: 'user',
       };
 
       await login(payload).unwrap();
 
       navigation.navigate({
-        name: "OTPScreen",
+        name: 'OTPScreen',
         params: {
-          source: "login",
-          phone:data.phone,
+          source: 'login',
+          phone: data.phone,
         },
       });
     } catch (err: any) {
-      console.log("LOGIN ERROR:", err);
+      console.log('LOGIN ERROR:', err);
     }
   };
   return (
@@ -84,9 +85,9 @@ export default function PhoneLogin() {
       <AnimatedScreen>
         <View style={styles.container}>
           <View>
-            <AuthTitle title="Welcome Back"></AuthTitle>
+            <AuthTitle title="Welcome Back" children="Enter your phone number to continue"/>
 
-            <View style={{ gap: 26 }}>
+            <View style={{ marginTop: 26, marginBottom: 24, gap: 16 }}>
               <CountrySelector
                 label="Country"
                 value={country.name}
@@ -100,13 +101,13 @@ export default function PhoneLogin() {
                 name="phone"
                 label="Mobile Number"
                 variant="phone"
-                callingCode={country.callingCode} // 🔥 IMPORTANT
+                callingCode={country.callingCode}
                 placeholder="Enter mobile number"
                 rules={{
-                  required: "Mobile number cannot be empty!",
+                  required: 'Mobile number cannot be empty!',
                   minLength: {
                     value: 10,
-                    message: "Enter valid number",
+                    message: 'Enter valid number',
                   },
                 }}
               />
@@ -114,50 +115,63 @@ export default function PhoneLogin() {
               {/* API ERROR */}
               {error && (
                 <SansText style={styles.apiError}>
-                  {(error as any)?.data?.message || "Login failed"}
+                  {(error as any)?.data?.message || 'Login failed'}
                 </SansText>
               )}
             </View>
 
-            <OrDivider />
             <ReusableButton
-              title="Login with email"
-              variant="outline"
-              onPress={() => navigation.replace("LoginWithEmail")}
+              title="Send OTP"
+              variant="solid"
+              loading={isLoading}
+              onPress={handleSubmit(onSubmit)}
+              disabled={!isValid || !isFormFilled}
             />
+
+            <OrDivider />
+
+            <TouchableOpacity
+              onPress={() => navigation.replace('LoginWithEmail')}
+            >
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: '#7a7a7a',
+                  fontSize: 14,
+                  fontFamily: 'GeneralSans-Medium',
+                  textDecorationLine: 'underline',
+                }}
+              >
+                Login with Email
+              </Text>
+            </TouchableOpacity>
           </View>
           <View style={{ gap: 24 }}>
             <AuthSecondaryNavigation
               question="New User?"
               option=" Signup"
-              action={() => navigation.replace("RegisterWithPhone")}
+              action={() => navigation.replace('RegisterWithPhone')}
             />
-            {isValid && isFormFilled && (
-              <ReusableButton
-                title="Send OTP"
-                variant="solid"
-                loading={isLoading}
-                onPress={handleSubmit(onSubmit)}
-              />
-            )}
+
             <TermsAndConditions />
           </View>
         </View>
-      </AnimatedScreen></AuthLayout>
+      </AnimatedScreen>
+    </AuthLayout>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     paddingVertical: 32,
     paddingHorizontal: 16,
   },
   apiError: {
-    color: "#C2371E",
-    fontFamily: "GeneralSans-Medium",
-    textAlign: "left",
+    color: '#C2371E',
+    fontFamily: 'GeneralSans-Medium',
+    textAlign: 'left',
     fontSize: 14,
     marginTop: 12,
   },

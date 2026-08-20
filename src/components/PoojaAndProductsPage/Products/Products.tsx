@@ -52,7 +52,7 @@ const Products = ({ products, isLoading }: any) => {
             fontFamily: 'Satoshi-Bold',
           }}
         >
-          Career Growth
+          Astro Essentials
         </Text>
 
         <FlatList
@@ -71,12 +71,7 @@ const Products = ({ products, isLoading }: any) => {
               return <ProductCardSkeleton />;
             }
 
-            return (
-              <ProductCard
-              key={item?._id}
-                item={item}
-              />
-            );
+            return <ProductCard key={item?._id} item={item} />;
           }}
         />
       </View>

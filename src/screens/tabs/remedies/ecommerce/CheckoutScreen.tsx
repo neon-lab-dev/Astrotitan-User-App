@@ -1,115 +1,76 @@
-import React, { useState } from "react";
+/* eslint-disable no-lone-blocks */
+/* eslint-disable react-native/no-inline-styles */
+import React, { useState } from 'react';
 
-import { useDispatch, useSelector, } from "react-redux";
-import DeliveryAddressStep from "../../../../components/tabs/ecommerce/checkout/DeliveryAddressStep";
-import OrderReviewStep from "../../../../components/tabs/ecommerce/checkout/OrderReviewStep";
-import PaymentStep from "../../../../components/tabs/ecommerce/checkout/PaymentStep";
-import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
-import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
-import CheckoutQuestionScreen from "../../../../components/tabs/ecommerce/ecommerce/CheckoutQuestionScreen/CheckoutQuestionScreen";
-import { RootState } from "../../../../redux/store";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../../navigation/types";
-import { useNavigation } from "@react-navigation/native";
-import { useCreateProductOrderMutation, useGetRazorpayKeyQuery, useVerifyPaymentMutation } from "../../../../redux/features/orders/orderApi";
-import { selectUser } from "../../../../redux/features/auth/authSlice";
-import { clearCart } from "../../../../redux/features/cart/cartSlice";
-import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
+import { useDispatch, useSelector } from 'react-redux';
+import DeliveryAddressStep from '../../../../components/tabs/ecommerce/checkout/DeliveryAddressStep';
+import OrderReviewStep from '../../../../components/tabs/ecommerce/checkout/OrderReviewStep';
+import PaymentStep from '../../../../components/tabs/ecommerce/checkout/PaymentStep';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import CheckoutQuestionScreen from '../../../../components/tabs/ecommerce/ecommerce/CheckoutQuestionScreen/CheckoutQuestionScreen';
+import { RootState } from '../../../../redux/store';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../../navigation/types';
+import { useNavigation } from '@react-navigation/native';
+import {
+  useCreateProductOrderMutation,
+  useGetRazorpayKeyQuery,
+  useVerifyPaymentMutation,
+} from '../../../../redux/features/orders/orderApi';
+import { selectUser } from '../../../../redux/features/auth/authSlice';
+import { clearCart } from '../../../../redux/features/cart/cartSlice';
+import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
-import { SatoshiText } from "../../../../components/reusable/Text/SatoshiText";
+import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 
 const checkoutSteps = [
   {
-    key: "deliveryAddress",
-
+    key: 'deliveryAddress',
     initialValue: {
-      addressId: "",
+      addressId: '',
     },
-
-    text: "Delivery Address",
-
-    description:
-      "Choose where your order should be delivered.",
-
-    render: ({
-      value,
-      setValue,
-    }: any) => (
-      <DeliveryAddressStep
-        value={value}
-        setValue={setValue}
-      />
+    text: 'Delivery Address',
+    description: 'Choose where your order should be delivered.',
+    render: ({ value, setValue }: any) => (
+      <DeliveryAddressStep value={value} setValue={setValue} />
     ),
-
     validate: (value: any) => !!value?.addressId,
   },
-
   {
-    key: "orderReview",
-
+    key: 'orderReview',
     initialValue: {},
-
-    text: "Review Your Order",
-
-    description:
-      "Verify your products before payment.",
-
-    render: ({
-      value,
-      setValue,
-    }: any) => (
-      <OrderReviewStep
-        value={value}
-        setValue={setValue}
-      />
+    text: 'Review Your Order',
+    description: 'Verify your products before payment.',
+    render: ({ value, setValue }: any) => (
+      <OrderReviewStep value={value} setValue={setValue} />
     ),
-
     validate: () => true,
   },
-
   {
-    key: "payment",
-
+    key: 'payment',
     initialValue: {
-      paymentMethod: "cod",
+      paymentMethod: 'cod',
     },
-
-    text: "Payment Method",
-
-    description:
-      "Complete your order securely.",
-
-    render: ({
-      value,
-      setValue,
-    }: any) => (
-      <PaymentStep
-        value={value}
-        setValue={setValue}
-      />
+    text: 'Payment Method',
+    description: 'Complete your order securely.',
+    render: ({ value, setValue }: any) => (
+      <PaymentStep value={value} setValue={setValue} />
     ),
-
-    validate: (value: any) =>
-      !!value,
+    validate: (value: any) => !!value,
   },
 ];
 
 const CheckoutScreen = () => {
-  type NavigationProp =
-    NativeStackNavigationProp<RootStackParamList>;
+  type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
   const navigation = useNavigation<NavigationProp>();
-  const step = useSelector(
-    (state: RootState) =>
-      state.checkout.step
-  );
+  const step = useSelector((state: RootState) => state.checkout.step);
 
   const user = useSelector(selectUser) as any;
   const dispatch = useDispatch();
 
-  const currentStep =
-    checkoutSteps[step];
-
+  const currentStep = checkoutSteps[step];
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
@@ -118,12 +79,8 @@ const CheckoutScreen = () => {
   const [createProductOrder] = useCreateProductOrderMutation();
   const [verifyPayment] = useVerifyPaymentMutation();
 
-  const cartItems = useSelector(
-    (state: RootState) =>
-      state.cart.items
-  );
+  const cartItems = useSelector((state: RootState) => state.cart.items);
   const openRazorpayPayment = (order: any, razorpayOrder: any) => {
-
     return new Promise((resolve, reject) => {
       if (!RazorpayCheckout) {
         reject(new Error('Razorpay SDK not loaded'));
@@ -153,18 +110,17 @@ const CheckoutScreen = () => {
 
       RazorpayCheckout.open(options)
         .then((data: any) => {
-
           resolve(data);
         })
         .catch((error: any) => {
-          // ✅ Payment error or cancellation
+          // Payment error or cancellation
           console.log('Payment error:', error);
           reject(error);
         });
     });
   };
 
-  // ✅ Handle Place Order
+  // Handle Place Order
   const handlePlaceProductOrder = async (formData: any) => {
     setLoading(true);
 
@@ -197,7 +153,7 @@ const CheckoutScreen = () => {
         (sum, item) => sum + (item?.price || 0) * (item?.quantity || 0),
         0,
       );
-      // ✅ Step 1: Create order in backend
+      // Step 1: Create order in backend
       const orderResponse = await createProductOrder({
         orderedItems,
         totalAmount: totalAmount,
@@ -211,7 +167,7 @@ const CheckoutScreen = () => {
       try {
         setLoading(false);
         const paymentData = await openRazorpayPayment(order, razorpayOrder);
-        // ✅ Step 3: Verify payment
+        // Step 3: Verify payment
         await handleVerifyPayment(
           paymentData?.razorpay_order_id,
           paymentData?.razorpay_payment_id,
@@ -224,12 +180,14 @@ const CheckoutScreen = () => {
         if (paymentError?.code === 'PAYMENT_CANCELLED') {
           Alert.alert('Payment Cancelled', 'You cancelled the payment');
         } else {
-          Alert.alert('Payment Failed', paymentError?.description || 'Something went wrong');
+          Alert.alert(
+            'Payment Failed',
+            paymentError?.description || 'Something went wrong',
+          );
         }
         setLoading(false);
         setIsPlacingOrder(false);
       }
-
     } catch (error: any) {
       console.error('❌ Order creation error:', error);
       Alert.alert('Error', error?.message || 'Failed to place order');
@@ -238,7 +196,7 @@ const CheckoutScreen = () => {
     }
   };
 
-  // ✅ Handle Verify Payment
+  // Handle Verify Payment
   const handleVerifyPayment = async (
     razorpayOrderId: string,
     razorpayPaymentId: string,
@@ -256,10 +214,10 @@ const CheckoutScreen = () => {
       const response = await verifyPayment(payload).unwrap();
 
       if (response.success) {
-        // ✅ Clear cart
+        // Clear cart
         dispatch(clearCart());
 
-        // ✅ Navigate to success screen
+        // Navigate to success screen
         navigation.replace('OrderSuccessful', { slug: orderId });
 
         Alert.alert('Success', 'Payment verified successfully!');
@@ -282,65 +240,51 @@ const CheckoutScreen = () => {
       <View
         style={{
           ...StyleSheet.absoluteFill,
-          backgroundColor: "rgba(0,0,0,0.45)",
-          justifyContent: "center",
-          alignItems: "center",
+          backgroundColor: 'rgba(0,0,0,0.45)',
+          justifyContent: 'center',
+          alignItems: 'center',
           zIndex: 9999,
         }}
       >
-        <ActivityIndicator
-          size="large"
-          color="#D4AF37"
-        />
+        <ActivityIndicator size="large" color="#D4AF37" />
 
         <SatoshiText
           style={{
             marginTop: 20,
-            color: "#fff",
+            color: '#fff',
             fontSize: 16,
           }}
         >
           Preparing secure payment...
         </SatoshiText>
       </View>
-    )
+    );
   }
   if (!currentStep) return null;
 
-
-  return (<AnimatedScreen>
-    <ScreenWrapper>
-      <CheckoutQuestionScreen
-        key={currentStep.key}
-        questionKey={
-          currentStep.key
-        }
-        questionDescription={
-          currentStep.description
-        }
-        questionText={
-          currentStep.text
-        }
-        validate={
-          currentStep.validate
-        }
-        initialValue={
-          currentStep.initialValue
-        }
-        onFinalSubmit={
-          handlePlaceProductOrder
-        }
-      >
-        {currentStep.render}
-      </CheckoutQuestionScreen>
-         {loading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#D4AF37" />
-          <SatoshiText style={styles.loadingText}>
-            Preparing secure payment...
-          </SatoshiText>
-        </View>
-      )}</ScreenWrapper></AnimatedScreen>
+  return (
+    <AnimatedScreen>
+      <ScreenWrapper>
+        <CheckoutQuestionScreen
+          key={currentStep.key}
+          questionKey={currentStep.key}
+          questionDescription={currentStep.description}
+          questionText={currentStep.text}
+          initialValue={currentStep.initialValue}
+          onFinalSubmit={handlePlaceProductOrder}
+        >
+          {currentStep.render}
+        </CheckoutQuestionScreen>
+        {loading && (
+          <View style={styles.overlay}>
+            <ActivityIndicator size="large" color="#D4AF37" />
+            <SatoshiText style={styles.loadingText}>
+              Preparing secure payment...
+            </SatoshiText>
+          </View>
+        )}
+      </ScreenWrapper>
+    </AnimatedScreen>
   );
 };
 
@@ -349,16 +293,16 @@ export default CheckoutScreen;
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: "rgba(0,0,0,0.45)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 9999,
     elevation: 9999, // Android
   },
 
   loadingText: {
     marginTop: 20,
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
   },
 });

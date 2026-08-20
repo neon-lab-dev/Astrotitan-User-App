@@ -194,7 +194,7 @@ const ProfileScreen = () => {
                   }}
                 />
                 <ProfileItem
-                  title="Orders"
+                  title="My Orders"
                   icon="PackageIcon"
                   onPress={() => {
                     navigation.navigate('OrdersScreen');

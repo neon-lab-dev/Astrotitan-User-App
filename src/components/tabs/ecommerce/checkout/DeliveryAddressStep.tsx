@@ -1,18 +1,11 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
-
+/* eslint-disable react-native/no-inline-styles */
+import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
-
-import AddressCard from "../../profile/address/AddressCard";
-import CheckoutAddressForm from "../../profile/address/CheckoutAddressForm";
-import AddressSelectionSheet from "../../../reusable/BottomSheet/AddressSelectionSheet";
-
-import BottomSheetService from "../../../../redux/features/ui/GlobalSheet/BottomSheetService";
-
 import { useGetMyAddressesQuery } from "../../../../redux/features/address/addressApi";
 import AddressCardSkeleton from "../../profile/address/AddressCardSkeleton/AddressCardSkeleton";
+import LocationIcon from '@/assets/icons/navigation/location.svg';
+import { SansText } from "../../../reusable/Text/SansText";
+import AddressCard from "../../profile/address/AddressCard";
 
 type FormType = {
   addressId: string;
@@ -20,212 +13,104 @@ type FormType = {
 
 interface Props {
   value: FormType;
-  setValue: (
-    data: FormType
-  ) => void;
+  setValue: (data: FormType) => void;
 }
 
-const DeliveryAddressStep = ({
-  value,
-  setValue,
-}: Props) => {
-  const {
-    data,
-    isLoading,
-    refetch,
-  } = useGetMyAddressesQuery({});
+const DeliveryAddressStep = ({ value, setValue }: Props) => {
+  const { data, isLoading, refetch } = useGetMyAddressesQuery({});
+  const addresses = data?.data || [];
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
-  const addresses =
-    data?.data || [];
+  // ✅ Set default selected address
+  useEffect(() => {
+    if (addresses.length === 0) return;
 
-  const [
-    selectedAddress,
-    setSelectedAddress,
-  ] = useState<any>(null);
-
- useEffect(() => {
-  if (addresses.length === 0) return;
-
-  // If parent already has an address, sync it
-  if (value?.addressId) {
-    const found = addresses.find(
-      (item: any) => item._id === value.addressId
-    );
-
-    if (found) {
-      setSelectedAddress(found);
-      return;
+    // If parent has an address, use it
+    if (value?.addressId) {
+      const found = addresses.find((item: any) => item._id === value.addressId);
+      if (found) {
+        setSelectedAddressId(value.addressId);
+        return;
+      }
     }
-  }
 
-  // Otherwise select the first address by default
-  const firstAddress = addresses[0];
+    // Otherwise select the first address
+    const firstAddress = addresses[0];
+    setSelectedAddressId(firstAddress._id);
+    setValue({ addressId: firstAddress._id });
+  }, [addresses]);
 
-  setSelectedAddress(firstAddress);
-
-  setValue({
-    addressId: firstAddress._id,
-  });
-}, [addresses]);
-
-  const openAddressBottomSheet =
-    () => {
-      BottomSheetService.open(
-        <AddressSelectionSheet
-          addresses={
-            addresses
-          }
-          selectedId={
-            selectedAddress?._id
-          }
-          onSelect={(
-            address: any
-          ) => {
-            setSelectedAddress(
-              address
-            );
-
-            setValue({
-              addressId:
-                address._id,
-            });
-
-            BottomSheetService.close();
-          }}
-          onPress={() => {
-            BottomSheetService.close();
-
-            BottomSheetService.open(
-              <View
-                style={{
-                  flex: 1,
-                  paddingHorizontal: 16,
-                }}
-              >
-                <CheckoutAddressForm
-                  onSuccess={(address) => {
-                    setSelectedAddress(address);
-
-                    setValue({
-                      addressId: address._id,
-                    });
-
-                    refetch();
-
-                    BottomSheetService.close();
-                  }}
-                />
-              </View>,
-              {
-                height: 700,
-                hasGradient: true,
-              }
-            );
-          }}
-        />,
-        {
-          height: 600,
-          hasGradient: true,
-        }
-      );
-    };
+  // ✅ Handle address selection
+  const handleSelectAddress = (addressId: string) => {
+    setSelectedAddressId(addressId);
+    setValue({ addressId });
+  };
 
   if (isLoading) {
-    return (<ScrollView
-      showsVerticalScrollIndicator={
-        false
-      }
-      contentContainerStyle={{
-        paddingVertical: 16,
-        gap: 18,
-        paddingBottom: 24,
-      }}
-    >
-      {[1].map(
-        (item) => (
-          <AddressCardSkeleton
-            key={item}
-          />
-        )
-      )}
-    </ScrollView>);
-  }
-
-  if (
-    addresses.length === 0
-  ) {
     return (
-
-      <CheckoutAddressForm
-        onSuccess={(
-          address
-        ) => {
-          setSelectedAddress(
-            address
-          );
-
-          setValue({
-            addressId:
-              address._id,
-          });
-
-          refetch();
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingVertical: 16,
+          gap: 18,
+          paddingBottom: 24,
         }}
-      />
-
-
-
+      >
+        {[1, 2].map((item) => (
+          <AddressCardSkeleton key={item} />
+        ))}
+      </ScrollView>
     );
   }
 
-  if (!selectedAddress) {
-    return null;
+  if (addresses.length === 0) {
+    return (
+      <View style={{ paddingTop: 16, alignItems: 'center' }}>
+        <View style={{ alignItems: 'center', paddingVertical: 40 }}>
+          <View style={{
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            backgroundColor: 'rgba(212, 175, 55, 0.08)',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <LocationIcon width={40} height={40} color="#D4AF37" />
+          </View>
+          <SansText style={{ fontSize: 16, color: '#1a1a2e', marginTop: 12, fontFamily: 'Satoshi-Bold' }}>
+            No Address Found
+          </SansText>
+          <SansText style={{ fontSize: 14, color: '#8E8E93', textAlign: 'center', marginTop: 4 }}>
+            Please add a delivery address to continue
+          </SansText>
+        </View>
+      </View>
+    );
   }
 
   return (
     <View style={{ paddingTop: 16 }}>
-      <AddressCard
-        data={selectedAddress}
-        showChangeButton
-        onChangeAddress={() => {
-          if (
-            addresses.length > 1
-          ) {
-            openAddressBottomSheet();
-            return;
-          }
-
-          BottomSheetService.open(
-            <View style={{
-              flex: 1,
-              paddingHorizontal: 16,
-            }}>
-              <CheckoutAddressForm
-                onSuccess={(
-                  address
-                ) => {
-                  setSelectedAddress(
-                    address
-                  );
-
-                  setValue({
-                    addressId:
-                      address._id,
-                  });
-
-                  refetch();
-
-                  BottomSheetService.close();
-                }}
-              />
-            </View>,
-            {
-              height: 700,
-              hasGradient: true,
-            }
-          );
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          gap: 16,
+          paddingBottom: 24,
         }}
-      />
+      >
+        {addresses.map((address: any) => {
+          const isSelected = selectedAddressId === address._id;
+
+          return (
+            <AddressCard
+              key={address._id}
+              data={address}
+              showSelectOption={true}
+              selected={isSelected}
+              onSelect={() => handleSelectAddress(address._id)}
+            />
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };

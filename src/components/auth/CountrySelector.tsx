@@ -1,6 +1,6 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { SansText } from "../reusable/Text/SansText";
-import Ionicons from "@react-native-vector-icons/ionicons";
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SansText } from '../reusable/Text/SansText';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
 type Props = {
   label?: string;
@@ -8,16 +8,12 @@ type Props = {
   flag?: string;
 };
 
-export default function CountrySelector({
-  label,
-  value,
-  flag,
-}: Props) {
+export default function CountrySelector({ label, value, flag }: Props) {
   return (
     <View>
       {label && <SansText style={styles.label}>{label}</SansText>}
 
-      <TouchableOpacity style={styles.container} >
+      <TouchableOpacity style={styles.container}>
         <View style={styles.left}>
           {/* You can later replace with flag dynamically */}
           <SansText style={styles.flag}>{flag}</SansText>
@@ -32,40 +28,35 @@ export default function CountrySelector({
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: 16,
-    color: "#0D0D0D",
-    marginBottom: 8,
+    fontSize: 14,
+    color: '#0D0D0D',
     lineHeight: 26,
   },
-
   container: {
-    height: 72,
-    borderRadius: 18,
+    height: 55,
+    borderRadius: 10,
     borderWidth: 1.2,
-    borderColor: "#D4AF37",
-    backgroundColor: "#E9D8A6",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    borderColor: '#D4AF37',
+    backgroundColor: '#E9D8A6',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-
   left: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
-
   flag: {
     fontSize: 16,
-    includeFontPadding: false, // 🔥 same as text
-    textAlignVertical: "center",
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
-
   text: {
     fontSize: 16,
-    color: "#1C1C1C",
-    includeFontPadding: false, // 🔥 ANDROID FIX
-    textAlignVertical: "center",
+    color: '#1C1C1C',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
 });

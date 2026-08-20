@@ -1,3 +1,5 @@
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable react-native/no-inline-styles */
 
 import React from "react";
 import {
@@ -159,12 +161,12 @@ const OrderReviewStep = ({
         >
           <Row
             label="Subtotal"
-            value={`₹ ${subtotal}/-`}
+            value={`₹${subtotal}/-`}
           />
 
           <Row
             label="Shipping Charges"
-            value={`₹ ${shipping}/-`}
+            value={`₹${shipping}/-`}
           />
 
         </View>k
@@ -180,7 +182,7 @@ const OrderReviewStep = ({
 
         <Row
           label="Total"
-          value={`₹ ${total}/-`}
+          value={`₹${total}/-`}
         />
       </View>
     </View>

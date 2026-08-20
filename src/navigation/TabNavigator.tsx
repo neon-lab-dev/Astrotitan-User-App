@@ -41,6 +41,7 @@ const hiddenRoutes = [
   "AstrologerChatScreen",
   "RequestedSessions",
   "NotificationScreen",
+  "SessionHistory",
   "PersonalInformation"
 ];
 

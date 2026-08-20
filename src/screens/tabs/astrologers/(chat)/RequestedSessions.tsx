@@ -11,8 +11,6 @@ import {
 
 import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
 import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
-import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../../components/auth/AuthTitle";
 import { SansText } from "../../../../components/reusable/Text/SansText";
 import ContentSection from "../../../../components/reusable/ContentSectoin/ContentSection";
 import ReusableButton from "../../../../components/reusable/ReusableButton/ReusableButton";
@@ -24,6 +22,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useGetMyConsultationBookingsQuery } from "../../../../redux/features/consultation/consultationApi";
 import { setSelectedConsultation } from "../../../../redux/features/consultation/consultationChatSlice";
 import { useDispatch } from "react-redux";
+import AppBar from "../../../../components/reusable/AppBar/AppBar";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -92,11 +91,12 @@ const RequestedSessions = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <AppHeader>
+        {/* <AppBar>
           <AuthTitle title="Requested Sessions">
             <SansText>Your upcoming sessions</SansText>
           </AuthTitle>
-        </AppHeader>
+        </AppBar> */}
+        <AppBar title="Requested Sessions"/>
 
         <View style={{ flex: 1 }}>
           {isLoading ? (
@@ -172,7 +172,9 @@ const RequestedSessions = () => {
           <ReusableButton
             title="View Astrologers"
             style={{ margin: 16 }}
-            onPress={() => navigation.navigate("AstrologerScreen")}
+            onPress={() => {
+          navigation.getParent()?.navigate('AstrologersTab');
+        }}
           />
         </View>
       </ScreenWrapper>

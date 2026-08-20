@@ -150,7 +150,7 @@ const CheckoutScreen = () => {
 
       // Calculate total
       const totalAmount = cartItems.reduce(
-        (sum, item) => sum + (item?.price || 0) * (item?.quantity || 0),
+        (sum, item) => 100 +sum + (item?.price || 0) * (item?.quantity || 0),
         0,
       );
       // Step 1: Create order in backend

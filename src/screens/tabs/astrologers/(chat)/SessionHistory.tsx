@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 16,
+    paddingBottom:16
   },
   skeletonContainer: {
     paddingVertical: 16,

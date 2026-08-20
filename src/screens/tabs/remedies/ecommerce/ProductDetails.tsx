@@ -55,7 +55,7 @@ const ProductDetails = () => {
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+ const cartCount = cartItems.length;
 
   const [whoExpanded, setWhoExpanded] = useState(true);
 

@@ -34,7 +34,7 @@ const PoojaAndProducts = () => {
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+ const cartCount = cartItems.length;
 
   const StoreIcon = ICONS.StoreIcon;
   const PoojaIcon = ICONS.firePitInactive;

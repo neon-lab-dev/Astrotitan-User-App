@@ -31,7 +31,7 @@ const IntentProducts = () => {
   const navigation = useNavigation<NavigationProp>();
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+   const cartCount = cartItems.length;
 
   const [selectedCategory, setSelectedCategory] = useState('');
   const [refreshing, setRefreshing] = useState(false);

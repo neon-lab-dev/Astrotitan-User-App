@@ -1,12 +1,9 @@
-
-
+/* eslint-disable react-native/no-inline-styles */
 import React, {
   useEffect,
   useState,
 } from "react";
-
 import { useForm } from "react-hook-form";
-
 import {
   Image,
   ScrollView,
@@ -14,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
 import {
   useDispatch,
 } from "react-redux";
@@ -29,13 +25,12 @@ import { useGetMeQuery, useUpdateProfileMutation } from "../../../redux/features
 import { updateUser } from "../../../redux/features/auth/authSlice";
 import AnimatedScreen from "../../../components/layout/AnimatedScreen";
 import ScreenWrapper from "../../../components/layout/ScreenWrapper";
-import AppHeader from "../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../components/auth/AuthTitle";
 import { SansText } from "../../../components/reusable/Text/SansText";
 import UserIcon from '@/assets/icons/visual/user-circle.svg';
 import FormInput from "../../../components/reusable/InputField/FormInput";
 import { isValidDate } from "../../../utils/validators/dateValidators";
 import ReusableButton from "../../../components/reusable/ReusableButton/ReusableButton";
+import AppBar from "../../../components/reusable/AppBar/AppBar";
 
 type FormValues = {
   firstName: string;
@@ -321,21 +316,7 @@ const PersonalInformation =
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          <AppHeader>
-            <AuthTitle title="Personal information">
-              <SansText
-                style={{
-                  lineHeight: 22,
-                }}
-              >
-                Help us tailor
-                guidance that
-                feels more
-                relevant to
-                you.
-              </SansText>
-            </AuthTitle>
-          </AppHeader>
+          <AppBar title="Personal Information" />
 
           <View
             style={{

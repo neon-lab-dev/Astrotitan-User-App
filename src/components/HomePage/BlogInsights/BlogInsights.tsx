@@ -43,7 +43,7 @@ const BlogInsights: React.FC<TBlogInsightsProps> = ({ isLoading, data }) => {
           data={[1, 2]}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            gap: 16,
+            gap: 10,
           }}
           ItemSeparatorComponent={() => (
             <View

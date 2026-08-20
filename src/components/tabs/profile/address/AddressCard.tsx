@@ -95,7 +95,7 @@ const AddressCard = ({
           </SansText>
         </View>
 
-        {/* ✅ Radio Button */}
+        {/* Radio Button */}
         {showSelectOption && (
           <TouchableOpacity
             onPress={onSelect}

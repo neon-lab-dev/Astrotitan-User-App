@@ -1,4 +1,3 @@
-// components/RaiseKundliRequest/Step2_PersonalDetails.tsx
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Control } from 'react-hook-form';
@@ -35,21 +34,6 @@ const Step2_PersonalDetails = ({ control, isAnalyzeMode = false }: Props) => {
 
         <FormInput
           control={control}
-          name="userEmail"
-          label="Email Address"
-          placeholder="Enter your email"
-          keyboardType="email-address"
-          rules={{
-            required: 'Email is required',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Enter a valid email address',
-            },
-          }}
-        />
-
-        <FormInput
-          control={control}
           name="userPhoneNumber"
           label="Phone Number"
           placeholder="Enter your phone number"
@@ -63,12 +47,12 @@ const Step2_PersonalDetails = ({ control, isAnalyzeMode = false }: Props) => {
           }}
         />
 
-        {/* ✅ userNotes - Required Textarea */}
+        {/* userNotes - Required Textarea */}
         <FormInput
           control={control}
           name="userNotes"
           label="Your Concern / Query"
-          placeholder="Briefly describe your concern or what you'd like to know..."
+          placeholder="Briefly describe your concern..."
           multiline
           numberOfLines={4}
           style={styles.textArea}

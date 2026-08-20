@@ -1,5 +1,4 @@
 /* eslint-disable react-native/no-inline-styles */
-
 import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useGetMyQueriesQuery } from '../../../../redux/features/quary/quaryApi';
@@ -13,6 +12,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
+import { SansText } from '../../../../components/reusable/Text/SansText';
 
 const Queries = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -42,7 +42,7 @@ const Queries = () => {
     } finally {
       setRefreshing(false);
     }
-  }, []);
+  }, [refetch]);
 
   return (
     <AnimatedScreen>
@@ -182,6 +182,10 @@ const Queries = () => {
                   }}
                 >
                   <DocumentSearchIcon height={124} width={124} />
+
+                  <SansText style={{ textAlign: 'center', fontSize: 16, color: '#000', fontFamily: 'Satoshi-Bold' }}>
+                    No Queries Found
+                  </SansText>
                 </View>
               </View>
             </ScrollView>
@@ -230,7 +234,7 @@ const Queries = () => {
             onPress={() => {
               navigation.navigate('RaiseQuery');
             }}
-            title="Raise a new query"
+            title="Raise a Query"
           />
         </View>
       </ScreenWrapper>

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import notifee, { AndroidImportance } from '@notifee/react-native';
-// ✅ Import modular Firebase APIs
+// Import modular Firebase APIs
 import { firebase } from '@react-native-firebase/app';
 import { 
   getMessaging, 
@@ -15,7 +15,7 @@ import {
 } from '@react-native-firebase/messaging';
 import { useUpdatePushTokenMutation } from '../redux/features/auth/authApi';
 
-// ✅ Get the Firebase app instance
+// Get the Firebase app instance
 const app = firebase.app();
 
 export const useFCMToken = () => {
@@ -23,7 +23,7 @@ export const useFCMToken = () => {
   const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
   const [updatePushToken] = useUpdatePushTokenMutation();
 
-  // ✅ Request user permission for notifications (Modular API)
+  // Request user permission for notifications (Modular API)
   const requestUserPermission = async (): Promise<boolean> => {
     try {
       const messaging = getMessaging(app);
@@ -34,7 +34,7 @@ export const useFCMToken = () => {
         authStatus === firebase.messaging.AuthorizationStatus.PROVISIONAL;
 
       if (enabled) {
-        console.log('✅ Notification permission granted');
+        console.log('Notification permission granted');
         setPermissionGranted(true);
       } else {
         console.log('❌ Notification permission not granted');
@@ -47,7 +47,7 @@ export const useFCMToken = () => {
     }
   };
 
-  // ✅ Get FCM token and send to backend (Modular API)
+  // Get FCM token and send to backend (Modular API)
   const getAndRegisterToken = async () => {
     try {
       const messaging = getMessaging(app);
@@ -57,11 +57,11 @@ export const useFCMToken = () => {
         console.log('📱 FCM Token:', token);
         setFcmToken(token);
         
-        // ✅ Send token to backend
+        // Send token to backend
         try {
           const payload = { pushToken: token };
           await updatePushToken(payload).unwrap();
-          console.log('✅ Token sent to backend');
+          console.log('Token sent to backend');
         } catch (error) {
           console.error('❌ Failed to send token to backend:', error);
         }
@@ -74,7 +74,7 @@ export const useFCMToken = () => {
     }
   };
 
-  // ✅ Handle token refresh (Modular API)
+  // Handle token refresh (Modular API)
   const setupTokenRefreshListener = () => {
     const messaging = getMessaging(app);
     return onTokenRefresh(messaging, async (newToken) => {
@@ -85,14 +85,14 @@ export const useFCMToken = () => {
       try {
         const payload = { pushToken: newToken };
         await updatePushToken(payload).unwrap();
-        console.log('✅ Refreshed token sent to backend');
+        console.log('Refreshed token sent to backend');
       } catch (error) {
         console.error('❌ Failed to send refreshed token:', error);
       }
     });
   };
 
-  // ✅ Setup notification channels (Android only)
+  // Setup notification channels (Android only)
   const setupNotificationChannels = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -109,14 +109,14 @@ export const useFCMToken = () => {
           importance: AndroidImportance.DEFAULT,
         });
 
-        console.log('✅ Notification channels created');
+        console.log('Notification channels created');
       } catch (error) {
         console.error('Error creating notification channels:', error);
       }
     }
   };
 
-  // ✅ Main setup on component mount
+  // Main setup on component mount
   useEffect(() => {
     const setup = async () => {
       const granted = await requestUserPermission();
@@ -147,11 +147,11 @@ export const useFCMToken = () => {
   };
 };
 
-// ✅ Setup notification listeners (Modular API)
+// Setup notification listeners (Modular API)
 export const setupNotificationListeners = () => {
   const messaging = getMessaging(app);
 
-  // ✅ Create notification channel for Android
+  // Create notification channel for Android
   const createChannel = async () => {
     try {
       await notifee.createChannel({
@@ -166,7 +166,7 @@ export const setupNotificationListeners = () => {
   };
   createChannel();
 
-  // ✅ Foreground message handler (Modular API)
+  // Foreground message handler (Modular API)
   const unsubscribeForeground = onMessage(messaging, async (remoteMessage) => {
     console.log('📨 Message received in foreground:', remoteMessage);
     
@@ -194,7 +194,7 @@ export const setupNotificationListeners = () => {
     }
   });
 
-  // ✅ Background message handler (Modular API)
+  // Background message handler (Modular API)
   const backgroundHandler = async (remoteMessage: any) => {
     console.log('📨 Message handled in the background:', remoteMessage);
     if (remoteMessage.data) {
@@ -206,7 +206,7 @@ export const setupNotificationListeners = () => {
   // Note: This should be set at app level, not component level
   // For React Native, you should set this in index.js or a separate file
   
-  // ✅ iOS specific - Handle notification tap
+  // iOS specific - Handle notification tap
   const handleNotificationTap = async () => {
     const initialNotification = await notifee.getInitialNotification();
     if (initialNotification) {
@@ -218,7 +218,7 @@ export const setupNotificationListeners = () => {
   return unsubscribeForeground;
 };
 
-// ✅ Helper: Check if notification permission is granted (Modular API)
+// Helper: Check if notification permission is granted (Modular API)
 export const checkNotificationPermission = async () => {
   try {
     const messaging = getMessaging(app);
@@ -233,12 +233,12 @@ export const checkNotificationPermission = async () => {
   }
 };
 
-// ✅ Helper: Delete FCM token (for logout) (Modular API)
+// Helper: Delete FCM token (for logout) (Modular API)
 export const deleteFCMToken = async () => {
   try {
     const messaging = getMessaging(app);
     await deleteToken(messaging);
-    console.log('✅ FCM token deleted');
+    console.log('FCM token deleted');
   } catch (error) {
     console.error('Error deleting FCM token:', error);
   }

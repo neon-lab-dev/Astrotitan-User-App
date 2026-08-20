@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from "react";
 import { View } from "react-native";
 import SuccessScreen from "../../../../components/reusable/successScreen/successScreen";
@@ -16,7 +17,7 @@ const RaiseQuerySuccess = () => {
   return (
     <SuccessScreen
       title="Query submitted"
-      description="We Received your Query , We will fi it as soon as possible "
+      description="We have received your query and will get back to you soon."
       buttons={[
 
         {
@@ -43,6 +44,7 @@ const RaiseQuerySuccess = () => {
     >
       <View
         style={{
+          flexDirection: 'row',
           justifyContent: "center",
           alignItems: "center",
           marginTop: 8,
@@ -56,7 +58,7 @@ const RaiseQuerySuccess = () => {
             textAlign: "center",
           }}
         >
-          Ticket ID
+          Ticket ID : 
         </SansText>
 
 

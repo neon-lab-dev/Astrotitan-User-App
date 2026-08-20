@@ -18,7 +18,7 @@ type TBlogInsightsProps = {
 const BlogInsights: React.FC<TBlogInsightsProps> = ({ isLoading, data }) => {
   const navigation = useNavigation<NavigationProp>();
 
-  // ✅ Show only first 3 blogs
+  // Show only first 3 blogs
   const displayData = data?.slice(0, 3) || [];
 
   const handleSeeMore = () => {
@@ -71,7 +71,7 @@ const BlogInsights: React.FC<TBlogInsightsProps> = ({ isLoading, data }) => {
             />
           ))}
 
-          {/* ✅ See More Button */}
+          {/* See More Button */}
           <TouchableOpacity
             style={{
               marginTop: 8,

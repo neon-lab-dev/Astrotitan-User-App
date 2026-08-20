@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     padding: 12,
-    justifyContent: 'space-between', // ✅ Pushes button to bottom
+    justifyContent: 'space-between', // Pushes button to bottom
   },
   productName: {
     fontSize: 13,

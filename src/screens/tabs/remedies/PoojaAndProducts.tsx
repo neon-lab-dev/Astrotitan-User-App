@@ -53,6 +53,7 @@ const PoojaAndProducts = () => {
   ];
 
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const {
     data: productsResponse,
@@ -71,6 +72,7 @@ const PoojaAndProducts = () => {
   } = useGetAllPujasQuery({
     limit: 20,
     skip: 0,
+    category: selectedCategory,
   });
 
   const poojas = pujasResponse?.data?.pujas || [];
@@ -93,7 +95,14 @@ const PoojaAndProducts = () => {
         return <Products products={products} isLoading={isLoading} />;
 
       case 'pooja':
-        return <Poojas poojas={poojas} isLoading={isPujasLoading} />;
+        return (
+          <Poojas
+            poojas={poojas}
+            isLoading={isPujasLoading}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        );
 
       default:
         return null;
@@ -134,11 +143,7 @@ const PoojaAndProducts = () => {
         />
 
         {/* Tabs */}
-        <Tabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
+        <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
         <ScrollView
           refreshControl={

@@ -18,7 +18,7 @@ interface Props {
     questionDescription: string;
     validate?: (value: any) => boolean;
     initialValue?: string | object | null;
-    onFinalSubmit?: (data: any) => void; // ✅ ADD THIS
+    onFinalSubmit?: (data: any) => void; // ADD THIS
     children: (props: {
         value: string;
         setValue: (val: string) => void;
@@ -54,7 +54,7 @@ const QuestionScreen: React.FC<Props> = ({ questionKey, questionText, questionDe
       [questionKey]: value,
     };
 
-    onFinalSubmit?.(finalData); // ✅ CLEAN
+    onFinalSubmit?.(finalData); // CLEAN
 
     return;
   }

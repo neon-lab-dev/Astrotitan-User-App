@@ -139,10 +139,10 @@ const FilterSection = ({ value,  onApply, onClear }: Props) => {
                 ratings: [],
               };
 
-              // ✅ reset local UI state (THIS FIXES TICKS)
+              // reset local UI state (THIS FIXES TICKS)
               setFilters(emptyFilters);
 
-              // ✅ reset parent state
+              // reset parent state
               onClear();
             }}
           />

@@ -52,7 +52,7 @@ export default function OtpScreen() {
   const [resendLoginOtp] = useResendLoginOtpMutation();
   const [resendSignupOtp] = useResendSignupOtpMutation();
 
-  // ✅ VERIFY OTP
+  // VERIFY OTP
   const onSubmit = async (otpValue: string) => {
     if (loading) return;
 
@@ -118,7 +118,7 @@ export default function OtpScreen() {
     }
   };
 
-  // ✅ TIMER
+  // TIMER
   useEffect(() => {
     if (timer === 0) {
       setCanResend(true);
@@ -136,7 +136,7 @@ export default function OtpScreen() {
     return () => clearInterval(interval);
   }, [timer, otpArray]);
 
-  // ✅ RESEND OTP
+  // RESEND OTP
   const handleResend = async () => {
     try {
       setLoading(true);
@@ -164,7 +164,7 @@ export default function OtpScreen() {
     }
   };
 
-  // ✅ INPUT HANDLING
+  // INPUT HANDLING
   const handleBackspace = (key: string, index: number) => {
     if (key === 'Backspace' && !otpArray[index] && index > 0) {
       inputs.current[index - 1]?.focus();

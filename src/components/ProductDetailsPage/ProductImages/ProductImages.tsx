@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   imageContainer: {
   },
   productImage: {
-    width: width, // ✅ Full width of screen
+    width: width, // Full width of screen
     height: 380,
   },
   indicatorContainer: {

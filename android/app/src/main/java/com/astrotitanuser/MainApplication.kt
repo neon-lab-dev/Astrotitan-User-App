@@ -14,7 +14,7 @@ class MainApplication : Application(), ReactApplication {
     getDefaultReactHost(
       context = applicationContext,
       packageList = PackageList(this).packages.apply {
-        // ✅ Fix: Remove "packages." and just use "add()"
+        // Fix: Remove "packages." and just use "add()"
         add(RazorpayPackage())
       },
     )

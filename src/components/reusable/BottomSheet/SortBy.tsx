@@ -9,7 +9,7 @@ type Props = {
 };
 
 const SortBySection = ({ onApply }: Props) => {
-  // ✅ MUST BE ARRAY because multiple=true
+  // MUST BE ARRAY because multiple=true
   const [value, setValue] = useState<string>("relevance");
 
   return (
@@ -25,7 +25,7 @@ const SortBySection = ({ onApply }: Props) => {
         value={value}
         onChange={(val: string) => {
           setValue(val);
-          onApply(val); // ✅ FULL VALUE
+          onApply(val); // FULL VALUE
         }}
       />
 

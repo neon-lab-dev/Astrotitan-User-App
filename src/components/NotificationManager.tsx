@@ -14,7 +14,7 @@ export const NotificationManager: React.FC = () => {
 
   useEffect(() => {
     if (fcmToken) {
-      console.log('✅ App is ready with FCM token:', fcmToken);
+      console.log('App is ready with FCM token:', fcmToken);
     }
   }, [fcmToken]);
 

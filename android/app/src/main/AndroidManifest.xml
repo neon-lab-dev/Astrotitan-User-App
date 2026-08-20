@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="${usesCleartextTraffic}"
         android:supportsRtl="true">
 
-        <!-- ✅ MainActivity ONLY -->
+        <!-- MainActivity ONLY -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

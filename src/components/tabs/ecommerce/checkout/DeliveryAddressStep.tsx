@@ -21,7 +21,7 @@ const DeliveryAddressStep = ({ value, setValue }: Props) => {
   const addresses = data?.data || [];
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
-  // ✅ Set default selected address
+  // Set default selected address
   useEffect(() => {
     if (addresses.length === 0) return;
 
@@ -40,7 +40,7 @@ const DeliveryAddressStep = ({ value, setValue }: Props) => {
     setValue({ addressId: firstAddress._id });
   }, [addresses]);
 
-  // ✅ Handle address selection
+  // Handle address selection
   const handleSelectAddress = (addressId: string) => {
     setSelectedAddressId(addressId);
     setValue({ addressId });

@@ -1,23 +1,20 @@
-import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import SelectZodiacScreen from '../../../../components/reusable/zodiacSigns/zodiacSigns';
+import { RootStackParamList } from '../../../../navigation/types';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
-import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
-import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../../components/auth/AuthTitle";
-import SelectZodiacScreen from "../../../../components/reusable/zodiacSigns/zodiacSigns";
-
-import { RootStackParamList } from "../../../../navigation/types";
-
-type NavigationProp =
-  NativeStackNavigationProp<RootStackParamList>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const SelectZodiacSign = () => {
   const navigation = useNavigation<NavigationProp>();
 
   const handleContinue = (sign: string) => {
-    navigation.replace("HoroscopeScreen", {
+    navigation.replace('HoroscopeScreen', {
       sign,
     });
   };
@@ -25,13 +22,9 @@ const SelectZodiacSign = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenWrapper>
-        <AppHeader showBack={true}>
-          <AuthTitle title="Select your zodiac sign" />
-        </AppHeader>
+        <AppBar title="Select Your Zodiac Sign" />
 
-        <SelectZodiacScreen
-          handleContinue={handleContinue}
-        />
+        <SelectZodiacScreen handleContinue={handleContinue} />
       </ScreenWrapper>
     </SafeAreaView>
   );

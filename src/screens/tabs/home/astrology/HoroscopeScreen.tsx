@@ -5,16 +5,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BottomSheetService from '../../../../redux/features/ui/GlobalSheet/BottomSheetService';
 import SelectZodiacScreen from '../../../../components/reusable/zodiacSigns/zodiacSigns';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
-import AppHeader from '../../../../components/reusable/AppHeader/AppHeader';
-import { getToday } from '../../../../utils/getToday';
-import { SansText } from '../../../../components/reusable/Text/SansText';
-import SectionTitle from '../../../../components/reusable/SectionTitle/SectionTitle';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import InsightSection from '../../../../components/tabs/home/home/InsightSection/InsightSection';
 import Tabs from './../../../../components/tabs/home/home/TabOption/TabOption';
 import { zodiacSigns } from '../../../../data/zodiacSigns';
 import { useRoute } from "@react-navigation/native";
 import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
 // import { ChevronDown } from "lucide-react-native";
 const HoroscopeScreen = () => {
   const route = useRoute<any>();
@@ -29,7 +26,7 @@ const HoroscopeScreen = () => {
   const [dailyHoroscope, setDailyHoroscope] = useState("");
   const [periodicHoroscope, setPeriodicHoroscope] = useState("");
 
-  // ✅ Sync param
+  // Sync param
   useEffect(() => {
     if (sign) {
       setSelectedZodiac(sign as string);
@@ -56,7 +53,7 @@ const HoroscopeScreen = () => {
   };
 
 
-  // ✅ API CALL
+  // API CALL
   const fetchDailyHoroscope = async () => {
     try {
       setLoading(true);
@@ -115,16 +112,7 @@ const HoroscopeScreen = () => {
           <View style={{ gap: 24 }}>
 
             {/* TITLE */}
-            <AppHeader backgroundColor="transparent" borderColor="transparent" backText={<SansText style={{ fontSize: 14, color: "#4A4A4A" }}>
-              {getToday()}
-            </SansText>}>
-              <SectionTitle
-                title={`Daily horoscope for ${selectedZodiac.charAt(0).toUpperCase() +
-                  selectedZodiac.slice(1)
-                  }`}
-              />
-
-            </AppHeader>
+            <AppBar title="Daily Horoscope" />
 
 
             {/* DAY TABS */}

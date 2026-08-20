@@ -20,7 +20,7 @@ export const authApi = baseApi.injectEndpoints({
     verifyLoginOtp: builder.mutation({
       query: (otpData) => ({
         method: "POST",
-        url: "/account/verify-login-otp", // ✅ FIXED
+        url: "/account/verify-login-otp", // FIXED
         body: otpData,
       }),
     }),

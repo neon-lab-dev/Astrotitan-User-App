@@ -4,7 +4,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { SatoshiText } from '../Text/SatoshiText';
 
 interface Props {
-  value: number; // ✅ percentage (0–100)
+  value: number; // percentage (0–100)
   size?: number;
   strokeWidth?: number;
 }
@@ -17,7 +17,7 @@ const CircularProgress: React.FC<Props> = ({
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  const progress = value / 100; // ✅ FIXED
+  const progress = value / 100; // FIXED
   const strokeDashoffset = circumference * (1 - progress);
 
   return (

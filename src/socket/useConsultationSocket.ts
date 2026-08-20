@@ -51,7 +51,7 @@ export const useConsultationSocket = () => {
     socketInstance = socket;
 
     socket.on('connect', () => {
-      console.log('✅ Connected to consultation socket server');
+      console.log('Connected to consultation socket server');
       isConnectedRef.current = true;
     });
 
@@ -65,7 +65,7 @@ export const useConsultationSocket = () => {
       isConnectedRef.current = false;
     });
 
-    // ✅ Handle receiving message
+    // Handle receiving message
     socket.on('receiveConsultationMessage', (message: any) => {
       console.log('📩 Received consultation message:', message);
 
@@ -78,9 +78,9 @@ export const useConsultationSocket = () => {
       // This will be handled by the server emitting updateConsultationChatList
     });
 
-    // ✅ Handle message sent confirmation
+    // Handle message sent confirmation
     socket.on('consultationMessageSent', (message: any) => {
-      console.log('✅ Consultation message sent confirmation:', message);
+      console.log('Consultation message sent confirmation:', message);
 
       if (message.tempId && message._id) {
         dispatch(
@@ -93,13 +93,13 @@ export const useConsultationSocket = () => {
       }
     });
 
-    // ✅ Handle chat list update
+    // Handle chat list update
     socket.on('updateConsultationChatList', (chatList: any[]) => {
       console.log('📋 Consultation chat list updated:', chatList);
       dispatch(setConsultationChatList(chatList));
     });
 
-    // ✅ Handle messages read
+    // Handle messages read
     socket.on('consultationMessagesRead', ({ consultationId, by }: any) => {
       console.log('📖 Consultation messages read:', consultationId, by);
       if (consultationId === selectedConsultationId) {
@@ -107,7 +107,7 @@ export const useConsultationSocket = () => {
       }
     });
 
-    // ✅ Handle typing indicator
+    // Handle typing indicator
     socket.on(
       'consultationUserTyping',
       ({ consultationId, sender, isTyping }: any) => {
@@ -116,7 +116,7 @@ export const useConsultationSocket = () => {
       },
     );
 
-    // ✅ Handle online users
+    // Handle online users
     socket.on('consultationOnlineUsers', (users: string[]) => {
       console.log('👥 Consultation online users:', users);
       dispatch(setConsultationOnlineUsers(users));
@@ -142,7 +142,7 @@ export const useConsultationSocket = () => {
     };
   }, [user?.account?._id, dispatch, selectedConsultationId]);
 
-  // ✅ Send message function
+  // Send message function
   const sendConsultationMessage = (data: {
     consultationId: string;
     sender: string;
@@ -158,7 +158,7 @@ export const useConsultationSocket = () => {
     return false;
   };
 
-  // ✅ Mark messages as read function
+  // Mark messages as read function
   const markConsultationMessagesRead = (consultationId: string) => {
     if (socketRef.current && isConnectedRef.current) {
       socketRef.current.emit('markConsultationMessagesRead', {
@@ -170,7 +170,7 @@ export const useConsultationSocket = () => {
     return false;
   };
 
-  // ✅ Typing indicator function
+  // Typing indicator function
   const sendTypingIndicator = (data: {
     consultationId: string;
     sender: string;

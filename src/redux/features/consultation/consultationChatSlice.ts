@@ -64,12 +64,12 @@ const consultationChatSlice = createSlice({
   name: "consultationChat",
   initialState,
   reducers: {
-    // ✅ Set chat list
+    // Set chat list
     setConsultationChatList: (state, action: PayloadAction<ConsultationChatUser[]>) => {
       state.chatList = action.payload;
     },
 
-    // ✅ Select a consultation
+    // Select a consultation
     setSelectedConsultation: (
       state,
       action: PayloadAction<{
@@ -83,12 +83,12 @@ const consultationChatSlice = createSlice({
       state.currentParticipantId = action.payload.currentParticipantId;
     },
 
-    // ✅ Set messages for selected consultation
+    // Set messages for selected consultation
     setSelectedConsultationMessages: (state, action: PayloadAction<ConsultationChatMessage[]>) => {
       state.selectedConsultationMessages = action.payload;
     },
 
-    // ✅ Add a message to selected consultation
+    // Add a message to selected consultation
    addConsultationMessage: (state, action: PayloadAction<ConsultationChatMessage>) => {
   const newMessage = action.payload;
   
@@ -110,7 +110,7 @@ const consultationChatSlice = createSlice({
   }
 },
 
-    // ✅ Update message ID (replace temp with real)
+    // Update message ID (replace temp with real)
     updateConsultationMessageId: (state, action: PayloadAction<{ tempId: string; realId: string; createdAt?: string }>) => {
   const { tempId, realId, createdAt } = action.payload;
   const message = state.selectedConsultationMessages.find(m => m.tempId === tempId || m._id === tempId);
@@ -122,7 +122,7 @@ const consultationChatSlice = createSlice({
   }
 },
 
-    // ✅ Mark messages as read in a consultation
+    // Mark messages as read in a consultation
     markConsultationMessagesAsRead: (state, action: PayloadAction<string>) => {
       const consultationId = action.payload;
       state.selectedConsultationMessages = state.selectedConsultationMessages.map((msg) => {
@@ -141,7 +141,7 @@ const consultationChatSlice = createSlice({
       });
     },
 
-    // ✅ Update unread count for a consultation
+    // Update unread count for a consultation
     updateUnreadCount: (
       state,
       action: PayloadAction<{ consultationId: string; unreadCount: number }>
@@ -155,7 +155,7 @@ const consultationChatSlice = createSlice({
       });
     },
 
-    // ✅ Update chat status (when consultation status changes)
+    // Update chat status (when consultation status changes)
     updateConsultationStatus: (
       state,
       action: PayloadAction<{ consultationId: string; status: string }>
@@ -169,7 +169,7 @@ const consultationChatSlice = createSlice({
       });
     },
 
-    // ✅ Clear selected consultation
+    // Clear selected consultation
     clearSelectedConsultation: (state) => {
       state.selectedConsultationId = null;
       state.selectedConsultationMessages = [];
@@ -177,7 +177,7 @@ const consultationChatSlice = createSlice({
       state.currentParticipantId = null;
     },
 
-    // ✅ Clear all chat data
+    // Clear all chat data
     clearConsultationChat: (state) => {
       state.chatList = [];
       state.selectedConsultationId = null;
@@ -187,7 +187,7 @@ const consultationChatSlice = createSlice({
       state.onlineUsers = [];
     },
 
-    // ✅ Online users
+    // Online users
     setConsultationOnlineUsers: (state, action: PayloadAction<string[]>) => {
       state.onlineUsers = action.payload;
     },
@@ -202,7 +202,7 @@ const consultationChatSlice = createSlice({
       state.onlineUsers = state.onlineUsers.filter((id) => id !== action.payload);
     },
 
-    // ✅ Loading states
+    // Loading states
     setConsultationChatLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },

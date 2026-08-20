@@ -43,7 +43,6 @@ const RaiseKundliRequest = ({
     defaultValues: {
       requestType: 'generateKundli',
       userName: '',
-      userEmail: '',
       userPhoneNumber: '',
       dateOfBirth: undefined as any,
       timeOfBirth: '',
@@ -115,14 +114,12 @@ const RaiseKundliRequest = ({
       const fieldsToAdd = isAnalyzeMode
         ? [
             'userName',
-            'userEmail',
             'userPhoneNumber',
             'userNotes',
             'kundliType',
           ]
         : [
             'userName',
-            'userEmail',
             'userPhoneNumber',
             'dateOfBirth',
             'timeOfBirth',
@@ -240,7 +237,6 @@ const RaiseKundliRequest = ({
       case 2:
         return (
           !!formData.userName &&
-          !!formData.userEmail &&
           !!formData.userPhoneNumber
         );
       case 3:
@@ -439,10 +435,8 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    marginTop: 16,
     gap: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#D4AF37',
   },
 });
 

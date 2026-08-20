@@ -9,7 +9,7 @@ export const loadAuth = async () => {
 
 
   if (token) {
-    // ✅ Step 1: set token FIRST (even if user is stale/null)
+    // Step 1: set token FIRST (even if user is stale/null)
     store.dispatch(
       setAuth({
         token,
@@ -17,14 +17,14 @@ export const loadAuth = async () => {
       }),
     );
     try {
-      // ✅ Step 2: call getMe AFTER token is in Redux
+      // Step 2: call getMe AFTER token is in Redux
       const result = await store.dispatch(
         authApi.endpoints.getMe.initiate({}, { forceRefetch: true }),
       );
 
       if ("data" in result) {
         const freshUser = result.data.data;
-        // ✅ Step 3: update Redux with fresh user (KEEP token)
+        // Step 3: update Redux with fresh user (KEEP token)
         store.dispatch(
           setAuth({
             token,

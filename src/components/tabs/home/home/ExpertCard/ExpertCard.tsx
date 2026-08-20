@@ -23,7 +23,7 @@ type Props = {
   image: any;
 };
 
-// ✅ Fallback image - use a reliable placeholder
+// Fallback image - use a reliable placeholder
 const FALLBACK_IMAGE = require('@/assets/images/user-profile-placeholder.png');
 
 const ExpertCard = ({ _id, name, experience, tags, rating, image }: Props) => {
@@ -54,26 +54,26 @@ const ExpertCard = ({ _id, name, experience, tags, rating, image }: Props) => {
   };
 
   const getImageSource = () => {
-    // ✅ If image error occurred, use fallback
+    // If image error occurred, use fallback
     if (imageError) {
       return FALLBACK_IMAGE;
     }
 
-    // ✅ If no image, use fallback
+    // If no image, use fallback
     if (!image) {
       return FALLBACK_IMAGE;
     }
 
-    // ✅ If image is a string (URL), use { uri: image }
+    // If image is a string (URL), use { uri: image }
     if (typeof image === 'string') {
       return { uri: image };
     }
 
-    // ✅ If image is already a valid source object
+    // If image is already a valid source object
     return image;
   };
 
-  // ✅ Handle image load error
+  // Handle image load error
   const handleImageError = () => {
     console.log('⚠️ Image failed to load:', image);
     setImageError(true);

@@ -94,7 +94,7 @@ const SessionHistory = () => {
             </View>
           </ScrollView>
 
-          {/* ✅ Button always at bottom */}
+          {/* Button always at bottom */}
           <View style={styles.buttonContainer}>
             <ReusableButton
               onPress={() => navigation.navigate('RequestedSessions')}

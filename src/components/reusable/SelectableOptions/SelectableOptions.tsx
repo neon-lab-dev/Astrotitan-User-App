@@ -1,4 +1,4 @@
-import TickIcon from '@/assets/icons/visual/tick.svg'; // ✅ FIX import
+import TickIcon from '@/assets/icons/visual/tick.svg'; // FIX import
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SansText } from '../Text/SansText';
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: '#D4AF37',
-    alignItems: 'center',   // ✅ center tick
-    justifyContent: 'center', // ✅ center tick
+    alignItems: 'center',   // center tick
+    justifyContent: 'center', // center tick
   },
   selectedCircle: {
     backgroundColor: '#E9F7EB',

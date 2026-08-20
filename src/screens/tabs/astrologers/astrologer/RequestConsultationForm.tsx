@@ -12,8 +12,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Pressable,
-  Text,
-  TextInput,
   View,
 } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -33,6 +31,8 @@ import {
   useGetAllSlotsByAstrologerIdQuery,
 } from '../../../../redux/features/slot/slotApi';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AppInput from './../../../../components/reusable/InputField/AppInput';
+import { SansText } from '../../../../components/reusable/Text/SansText';
 
 
 const RequestConsultationForm = () => {
@@ -241,7 +241,7 @@ const RequestConsultationForm = () => {
       Alert.alert(
         'Error',
         error?.data?.message ||
-          'Something went wrong while booking the consultation.',
+        'Something went wrong while booking the consultation.',
       );
     }
   };
@@ -442,51 +442,22 @@ const RequestConsultationForm = () => {
           }}
         >
 
-          {/* ==================================================
-              REASON / DESCRIPTION
-          ================================================== */}
 
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: '500',
-              color: '#222',
-              marginBottom: 8,
+
+          <AppInput
+            label="Share your concern"
+            value={typeof value === 'string' ? value : ''}
+            onChangeText={(text: string) => {
+              setValue(text);
+              setRequestMessage(text);
             }}
-          >
-            Share your concern
-          </Text>
-
-          <Text
-            style={{
-              fontSize: 13,
-              lineHeight: 19,
-              color: '#777',
-              marginBottom: 10,
-            }}
-          >
-            Tell the astrologer what you would
-            like to discuss or get guidance on.
-          </Text>
-
-          <TextInput
-            value={value || ''}
-            onChangeText={setValue}
-            placeholder="Please share more details about your concern..."
+            placeholder="Tell the astrologer what you would like to discuss or get guidance on."
             placeholderTextColor="#999"
             multiline
-            textAlignVertical="top"
+            numberOfLines={4}
             style={{
-              minHeight: 120,
-              borderWidth: 1,
-              borderColor: '#DDD',
-              borderRadius: 12,
-              paddingHorizontal: 14,
-              paddingVertical: 12,
-              fontSize: 15,
-              color: '#222',
-              backgroundColor: '#FFF',
-              marginBottom: 28,
+              height: 100,
+              textAlignVertical: 'top',
             }}
           />
 
@@ -501,16 +472,19 @@ const RequestConsultationForm = () => {
                   DATE
               ============================== */}
 
-              <Text
+              <SansText
                 style={{
-                  fontSize: 15,
-                  fontWeight: '500',
-                  color: '#222',
                   marginBottom: 10,
+                  marginTop: 10,
+
+                  fontSize: 14,
+                  color: "#0D0D0D",
+                  lineHeight: 26,
+
                 }}
               >
                 Select Date
-              </Text>
+              </SansText>
 
               <Pressable
                 onPress={() =>
@@ -519,17 +493,18 @@ const RequestConsultationForm = () => {
                   )
                 }
                 style={{
-                  borderWidth: 1,
-                  borderColor: '#DDD',
-                  borderRadius: 12,
-                  paddingHorizontal: 16,
                   paddingVertical: 14,
-                  backgroundColor:
-                    '#FFF',
                   marginBottom: 20,
+                  borderRadius: 10,
+                  borderWidth: 1.2,
+                  borderColor: "#e7c555",
+                  backgroundColor: "#fdf5da",
+                  flex: 1,
+                  paddingHorizontal: 16,
+
                 }}
               >
-                <Text
+                <SansText
                   style={{
                     fontSize: 15,
                     color: '#222',
@@ -547,7 +522,7 @@ const RequestConsultationForm = () => {
                         'numeric',
                     },
                   )}
-                </Text>
+                </SansText>
               </Pressable>
 
               {/* ==============================
@@ -575,7 +550,7 @@ const RequestConsultationForm = () => {
                     if (
                       date &&
                       event.type !==
-                        'dismissed'
+                      'dismissed'
                     ) {
                       setSelectedDate(
                         date,
@@ -600,19 +575,17 @@ const RequestConsultationForm = () => {
                   marginBottom: 12,
                 }}
               >
-                <Text
+                <SansText
                   style={{
                     fontSize: 15,
-                    fontWeight:
-                      '500',
                     color:
                       '#222',
                   }}
                 >
                   Available Slots
-                </Text>
+                </SansText>
 
-                <Text
+                <SansText
                   style={{
                     fontSize: 13,
                     color:
@@ -629,7 +602,7 @@ const RequestConsultationForm = () => {
                         'short',
                     },
                   )}
-                </Text>
+                </SansText>
               </View>
 
               {/* ==============================
@@ -640,19 +613,19 @@ const RequestConsultationForm = () => {
                 isSlotsLoading ||
                 isSlotsFetching
               ) && (
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color:
-                      '#777',
-                    marginBottom:
-                      12,
-                  }}
-                >
-                  Loading available
-                  slots...
-                </Text>
-              )}
+                  <SansText
+                    style={{
+                      fontSize: 14,
+                      color:
+                        '#777',
+                      marginBottom:
+                        12,
+                    }}
+                  >
+                    Loading available
+                    slots...
+                  </SansText>
+                )}
 
               {/* ==============================
                   NO SLOTS
@@ -661,14 +634,14 @@ const RequestConsultationForm = () => {
               {!isSlotsLoading &&
                 !isSlotsFetching &&
                 slots.length ===
-                  0 && (
+                0 && (
                   <View
                     style={{
                       paddingVertical:
                         20,
                     }}
                   >
-                    <Text
+                    <SansText
                       style={{
                         fontSize:
                           14,
@@ -682,7 +655,7 @@ const RequestConsultationForm = () => {
                       available
                       for this
                       date.
-                    </Text>
+                    </SansText>
                   </View>
                 )}
 
@@ -703,80 +676,45 @@ const RequestConsultationForm = () => {
                       key={
                         slot?._id
                       }
+                      disabled={slot.isBooked}
                       onPress={() => {
-                        setSelectedSlotId(
-                          slot?._id,
-                        );
+                        setSelectedSlotId(slot?._id ?? null);
 
-                        /*
-                         * According to your
-                         * website logic:
-                         *
-                         * bookedSlotId =
-                         * selected slot _id
-                         *
-                         * slotId =
-                         * parent slot _id
-                         */
                         setBookedSlotId(
-                          data?.data?._id ||
-                            null,
-                        );
-
-                        /*
-                         * Save selected
-                         * slot into
-                         * QuestionScreen.
-                         */
-                        setValue(
-                          slot?._id,
+                          data?.data?._id ?? null,
                         );
                       }}
                       style={{
-                        borderWidth:
-                          1,
-
-                        borderColor:
-                          isSelected
-                            ? '#E7BFC4'
+                        borderWidth: 1,
+                        borderColor: isSelected
+                          ? '#e7c555'
+                          : slot.isBooked
+                            ? '#D1D1D1'
                             : '#E5E5E5',
 
-                        backgroundColor:
-                          isSelected
-                            ? '#FFF5F5'
+                        backgroundColor: isSelected
+                          ? '#fdf5da'
+                          : slot.isBooked
+                            ? '#F5F5F5'
                             : '#FFF',
-
-                        borderRadius:
-                          12,
-
-                        paddingHorizontal:
-                          16,
-
-                        paddingVertical:
-                          15,
-
-                        marginBottom:
-                          10,
+                        borderRadius: 12,
+                        paddingHorizontal: 16,
+                        paddingVertical: 15,
+                        marginBottom: 10,
                       }}
                     >
-                      <Text
+                      <SansText
                         style={{
-                          fontSize:
-                            14,
-                          fontWeight:
-                            '600',
-                          color:
-                            '#222',
+                          fontSize: 14,
+                          fontWeight: '600',
+                          color: '#222',
                         }}
                       >
                         {slot?.startTime ||
-                          slot?.start ||
-                          slot?.from}{' '}
+                          slot?.start || slot?.from}{' '}
                         -{' '}
-                        {slot?.endTime ||
-                          slot?.end ||
-                          slot?.to}
-                      </Text>
+                        {slot?.endTime || slot?.end || slot?.to}
+                      </SansText>
                     </Pressable>
                   );
                 },
@@ -801,7 +739,7 @@ const RequestConsultationForm = () => {
         const hasReason =
           !!value &&
           value.trim().length >
-            0;
+          0;
 
         if (!hasReason) {
           return false;

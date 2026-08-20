@@ -3,7 +3,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SansText } from '../reusable/Text/SansText';
-import CircularProgress from './CircularProgress';
 
 interface Props {
     step: number;
@@ -13,7 +12,7 @@ interface Props {
 const StepHeader: React.FC<Props> = ({ step, total }) => {
     return (
         <View style={styles.container}>
-            <CircularProgress step={step} total={total} />
+            {/* <CircularProgress step={step} total={total} /> */}
 
             <SansText style={styles.text}>
                 <SansText style={styles.bold}>Step {step + 1}</SansText> of {total}
@@ -32,10 +31,10 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     text: {
-        color:"#949494",
+        color:"#E2E0E0",
         fontSize: 14,
     },
     bold: {
-        color:"#0D0D0D",
+        color:"#ffffff",
     },
 });

@@ -149,11 +149,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#D4AF37',
   },
-  badgeText: {
-    fontSize: 10,
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',

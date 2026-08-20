@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 15,
     color: '#1a1a2e',
-    fontFamily: 'Satoshi-Semibold',
+    // fontFamily: 'Satoshi-Semibold',
   },
   tabTextActive: {
     color: '#6c5300',

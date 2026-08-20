@@ -1,11 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { INTENTS } from '../../../data/intents';
 import IntentCard from '../../tabs/ecommerce/ecommerce/IntentCard/IntentCard';
 import ProductCardSkeleton from '../../tabs/ecommerce/ecommerce/ProductCard/ProductCardSkeleton';
 import ProductCard from '../ProductCard/ProductCard';
+import { SatoshiText } from '../../reusable/Text/SatoshiText';
 
 const Products = ({ products, isLoading }: any) => {
   return (
@@ -45,7 +46,7 @@ const Products = ({ products, isLoading }: any) => {
       </View>
 
       <View style={{ marginTop: 24 }}>
-        <Text
+        <SatoshiText
           style={{
             fontSize: 16,
             color: '#1a1a2e',
@@ -53,7 +54,7 @@ const Products = ({ products, isLoading }: any) => {
           }}
         >
           Career Growth
-        </Text>
+        </SatoshiText>
 
         <FlatList
           data={isLoading ? [1, 2, 3] : products}

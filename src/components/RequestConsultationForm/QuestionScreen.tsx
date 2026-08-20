@@ -71,19 +71,12 @@ interface Props {
 
 const QuestionScreen: React.FC<Props> = ({
   questionKey,
-
   questionText,
-
   questionDescription,
-
   children,
-
   validate,
-
   initialValue,
-
   onFinalSubmit,
-
   loading = false,
 }) => {
 
@@ -93,10 +86,6 @@ const QuestionScreen: React.FC<Props> = ({
   const dispatch =
     useDispatch();
 
-  // ==================================================
-  // SAME REDUX SLICE AS REQUEST CONSULTATION SCREEN
-  // ==================================================
-
   const savedValue =
     useSelector(
       (
@@ -104,8 +93,8 @@ const QuestionScreen: React.FC<Props> = ({
       ) =>
         state.userDetailForm
           .answers[
-            questionKey
-          ],
+        questionKey
+        ],
     );
 
   const step =
@@ -117,30 +106,17 @@ const QuestionScreen: React.FC<Props> = ({
           .step,
     );
 
-  /*
-   * There are ALWAYS 3 steps:
-   *
-   * 0 = method
-   * 1 = guidance
-   * 2 = reason + date + slot
-   */
   const totalSteps = 3;
 
-  // ==================================================
-  // LOCAL VALUE
-  // ==================================================
 
   const [
     value,
     setValue,
   ] = useState<any>(
     savedValue ??
-      initialValue,
+    initialValue,
   );
 
-  // ==================================================
-  // SYNC REDUX VALUE
-  // ==================================================
 
   useEffect(() => {
 
@@ -171,16 +147,9 @@ const QuestionScreen: React.FC<Props> = ({
       ? validate(value)
       : true;
 
-  // ==================================================
-  // NEXT
-  // ==================================================
 
   const handleNext =
     () => {
-
-      /*
-       * First save current answer.
-       */
       dispatch(
         setAnswer({
           key:
@@ -189,24 +158,10 @@ const QuestionScreen: React.FC<Props> = ({
           value,
         }),
       );
-
-      /*
-       * STEP 3
-       *
-       * step = 2
-       *
-       * This is the LAST step.
-       */
       if (
         step ===
         totalSteps - 1
       ) {
-
-        /*
-         * Read the latest Redux
-         * state AFTER including
-         * current answer.
-         */
         const currentAnswers =
           store.getState()
             .userDetailForm
@@ -223,47 +178,27 @@ const QuestionScreen: React.FC<Props> = ({
           'FINAL FORM DATA:',
           finalData,
         );
-
-        /*
-         * ONLY HERE do we submit.
-         */
         onFinalSubmit?.(
           finalData,
         );
 
         return;
       }
-
-      /*
-       * Step 1 -> Step 2
-       *
-       * Step 2 -> Step 3
-       */
       dispatch(
         nextStep(),
       );
     };
 
-  // ==================================================
-  // HARDWARE BACK
-  // ==================================================
-
   useFocusEffect(
     React.useCallback(
       () => {
-
         const onBackPress =
           () => {
-
-            if (
-              step > 0
-            ) {
+            if (step > 0) {
 
               dispatch(
                 setAnswer({
-                  key:
-                    questionKey,
-
+                  key: questionKey,
                   value,
                 }),
               );
@@ -271,10 +206,8 @@ const QuestionScreen: React.FC<Props> = ({
               dispatch(
                 prevStep(),
               );
-
               return true;
             }
-
             return false;
           };
 
@@ -308,7 +241,6 @@ const QuestionScreen: React.FC<Props> = ({
         setAnswer({
           key:
             questionKey,
-
           value,
         }),
       );
@@ -318,10 +250,8 @@ const QuestionScreen: React.FC<Props> = ({
       ) {
 
         navigation.goBack();
-
         return;
       }
-
       dispatch(
         prevStep(),
       );
@@ -347,13 +277,11 @@ const QuestionScreen: React.FC<Props> = ({
           handleBack
         }
         showBack
-      >
-
-        <StepHeader
+        backText={<StepHeader
           step={step}
           total={totalSteps}
-        />
-
+        />}
+      >
         <AuthTitle
           title={
             questionText
@@ -362,6 +290,7 @@ const QuestionScreen: React.FC<Props> = ({
           <SansText
             style={{
               fontSize: 16,
+              color: "#ffffff"
             }}
           >
             {
@@ -425,7 +354,7 @@ const QuestionScreen: React.FC<Props> = ({
           <ReusableButton
             title={
               step ===
-              totalSteps - 1
+                totalSteps - 1
                 ? 'Book Appointment'
                 : 'Continue'
             }

@@ -1,20 +1,23 @@
-
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import { useDispatch } from "react-redux";
-import { useLazyGetMeQuery, useResendLoginOtpMutation, useResendSignupOtpMutation, useVerifyLoginOtpMutation, useVerifySignupOtpMutation } from "../../redux/features/auth/authApi";
-import { setAuth } from "../../redux/features/auth/authSlice";
-import { Storage } from "../../services/storage/storage";
-import AnimatedScreen from "../../components/layout/AnimatedScreen";
-import AppHeader from "../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../components/auth/AuthTitle";
-import { SansText } from "../../components/reusable/Text/SansText";
-import { SatoshiText } from "../../components/reusable/Text/SatoshiText";
-import ReusableButton from "../../components/reusable/ReusableButton/ReusableButton";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import AuthLayout from "../../components/layout/layouts/AuthLayout";
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
+import { useDispatch } from 'react-redux';
+import {
+  useLazyGetMeQuery,
+  useResendLoginOtpMutation,
+  useResendSignupOtpMutation,
+  useVerifyLoginOtpMutation,
+  useVerifySignupOtpMutation,
+} from '../../redux/features/auth/authApi';
+import { setAuth } from '../../redux/features/auth/authSlice';
+import { Storage } from '../../services/storage/storage';
+import AnimatedScreen from '../../components/layout/AnimatedScreen';
+import AppHeader from '../../components/reusable/AppHeader/AppHeader';
+import { SansText } from '../../components/reusable/Text/SansText';
+import ReusableButton from '../../components/reusable/ReusableButton/ReusableButton';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import AuthLayout from '../../components/layout/layouts/AuthLayout';
 
 type FormType = {
   otp: string;
@@ -23,25 +26,25 @@ type FormType = {
 export default function OtpScreen() {
   const navigation = useNavigation<any>();
   const [status, setStatus] = useState<
-    "default" | "error" | "success" | "expired" | "not_received"
-  >("default");
+    'default' | 'error' | 'success' | 'expired' | 'not_received'
+  >('default');
   const dispatch = useDispatch();
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { watch, setValue } = useForm<FormType>({
-    defaultValues: { otp: "" },
+    defaultValues: { otp: '' },
   });
 
   const [getMe] = useLazyGetMeQuery({});
   const inputs = useRef<TextInput[]>([]);
-  const [otpArray, setOtpArray] = useState(["", "", "", ""]);
+  const [otpArray, setOtpArray] = useState(['', '', '', '']);
   const route = useRoute<any>();
   const params = route.params || {};
 
-  const otp = watch("otp");
+  const otp = watch('otp');
 
   // 🔥 API hooks
   const [verifyLoginOtp] = useVerifyLoginOtpMutation();
@@ -55,7 +58,7 @@ export default function OtpScreen() {
 
     try {
       setLoading(true);
-      setStatus("default");
+      setStatus('default');
 
       const payload = {
         emailOrPhone: params.phone || params.email,
@@ -64,9 +67,8 @@ export default function OtpScreen() {
       // 🔥 IMPORTANT: capture response
       let response;
 
-      if (params.source === "login") {
+      if (params.source === 'login') {
         response = await verifyLoginOtp(payload).unwrap();
-
       } else {
         response = await verifySignupOtp(payload).unwrap();
       }
@@ -80,36 +82,34 @@ export default function OtpScreen() {
       await Storage.setRefreshToken(refreshToken);
       await Storage.setUser(user);
       await Storage.setProfileCompleted(isProfileCompleted);
-      setStatus("success");
+      setStatus('success');
       let finalUser = user;
       try {
         const meRes = await getMe({}).unwrap();
         finalUser = meRes.data;
         await Storage.setUser(finalUser);
       } catch {
-        console.log("Using fallback user");
+        console.log('Using fallback user');
       }
       if (isProfileCompleted) {
         navigation.reset({
           index: 0,
-          routes: [{ name: "HomeTabs" }],
+          routes: [{ name: 'HomeTabs' }],
         });
       } else {
         navigation.reset({
           index: 0,
-          routes: [{ name: "MultiStepForm" }],
+          routes: [{ name: 'MultiStepForm' }],
         });
       }
-
     } catch (err: any) {
-      const message =
-        err?.data?.message || "Invalid OTP. Please try again.";
+      const message = err?.data?.message || 'Invalid OTP. Please try again.';
 
-      if (message.toLowerCase().includes("expired")) {
-        setStatus("expired");
+      if (message.toLowerCase().includes('expired')) {
+        setStatus('expired');
         setCanResend(true);
       } else {
-        setStatus("error");
+        setStatus('error');
       }
 
       setErrorMessage(message);
@@ -123,14 +123,14 @@ export default function OtpScreen() {
     if (timer === 0) {
       setCanResend(true);
 
-      const isEmpty = otpArray.every((digit) => digit === "");
-      if (isEmpty) setStatus("not_received");
+      const isEmpty = otpArray.every(digit => digit === '');
+      if (isEmpty) setStatus('not_received');
 
       return;
     }
 
     const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
+      setTimer(prev => prev - 1);
     }, 1000);
 
     return () => clearInterval(interval);
@@ -145,7 +145,7 @@ export default function OtpScreen() {
         emailOrPhone: params.phone || params.email,
       };
 
-      if (params.source === "login") {
+      if (params.source === 'login') {
         await resendLoginOtp(payload).unwrap();
       } else {
         await resendSignupOtp(payload).unwrap();
@@ -153,12 +153,12 @@ export default function OtpScreen() {
 
       setTimer(30);
       setCanResend(false);
-      setStatus("default");
-      setOtpArray(["", "", "", ""]);
-      setValue("otp", "");
+      setStatus('default');
+      setOtpArray(['', '', '', '']);
+      setValue('otp', '');
     } catch {
-      setStatus("error");
-      setErrorMessage("Failed to resend OTP. Try again.");
+      setStatus('error');
+      setErrorMessage('Failed to resend OTP. Try again.');
     } finally {
       setLoading(false);
     }
@@ -166,7 +166,7 @@ export default function OtpScreen() {
 
   // ✅ INPUT HANDLING
   const handleBackspace = (key: string, index: number) => {
-    if (key === "Backspace" && !otpArray[index] && index > 0) {
+    if (key === 'Backspace' && !otpArray[index] && index > 0) {
       inputs.current[index - 1]?.focus();
     }
   };
@@ -182,8 +182,8 @@ export default function OtpScreen() {
       inputs.current[index + 1]?.focus();
     }
 
-    const fullOtp = newOtp.join("");
-    setValue("otp", fullOtp);
+    const fullOtp = newOtp.join('');
+    setValue('otp', fullOtp);
 
     if (fullOtp.length === 4) {
       onSubmit(fullOtp);
@@ -195,27 +195,21 @@ export default function OtpScreen() {
       <AnimatedScreen>
         <View style={styles.container}>
           <View>
-            <AppHeader>
-              <AuthTitle title="OTP Verification">
-                <SansText>
-                  Enter the 4-digit OTP sent to your{" "}
-                  {params.source === "login"
-                    ? "mobile number"
-                    : "email"}{" "}
-                  <SatoshiText style={styles.param}>
-                    {params.phone || params.email}
-                  </SatoshiText>
-                </SansText>
-              </AuthTitle>
-            </AppHeader>
+            <AppHeader
+              showStep={false}
+              title="OTP Verification"
+              description={`Enter the 4-digit OTP sent to your ${
+                params.source === 'login' ? 'mobile number' : 'email'
+              }`}
+            />
 
             <View style={styles.content}>
               <View style={styles.otpContainer}>
                 {[0, 1, 2, 3].map((_, index) => (
                   <TextInput
                     key={index}
-                    value={otp[index] || ""}
-                    onChangeText={(text) => handleChange(text, index)}
+                    value={otp[index] || ''}
+                    onChangeText={text => handleChange(text, index)}
                     onKeyPress={({ nativeEvent }) =>
                       handleBackspace(nativeEvent.key, index)
                     }
@@ -223,10 +217,10 @@ export default function OtpScreen() {
                     maxLength={1}
                     style={[
                       styles.otpBox,
-                      status === "error" && styles.errorBorder,
-                      status === "success" && styles.successBorder,
+                      status === 'error' && styles.errorBorder,
+                      status === 'success' && styles.successBorder,
                     ]}
-                    ref={(ref) => {
+                    ref={ref => {
                       if (ref) inputs.current[index] = ref;
                     }}
                   />
@@ -236,57 +230,53 @@ export default function OtpScreen() {
               {/* STATUS */}
               {loading && <ActivityIndicator />}
 
-              {status === "success" && (
+              {status === 'success' && (
                 <SansText style={styles.successText}>
                   OTP verified successfully
                 </SansText>
               )}
 
-              {status === "error" && (
-                <SansText style={styles.errorText}>
-                  {errorMessage}
+              {status === 'error' && (
+                <SansText style={styles.errorText}>{errorMessage}</SansText>
+              )}
+
+              {status === 'expired' && (
+                <SansText style={styles.errorText}>{errorMessage}</SansText>
+              )}
+
+              {status === 'not_received' && (
+                <SansText>
+                  Didn’t receive the OTP? You can request a new one.
                 </SansText>
               )}
 
-              {status === "expired" && (
-                <SansText style={styles.errorText}>
-                  {errorMessage}
-                </SansText>
+              {!canResend && status === 'default' && (
+                <SansText>Resend OTP in {timer}s</SansText>
               )}
-
-              {status === "not_received" && (
-                <SansText>Didn’t receive the OTP? You can request a new one.</SansText>
-              )}
-
-              {!canResend &&
-                status === "default" && (
-                  <SansText>
-                    Resend OTP in {timer}s
-                  </SansText>
-                )}
             </View>
           </View>
 
           {canResend && (
             <View style={styles.resendBox}>
               <ReusableButton
-                title={loading ? "Please wait..." : "Resend OTP"}
+                title={loading ? 'Please wait...' : 'Resend OTP'}
                 variant="solid"
                 onPress={handleResend}
               />
             </View>
           )}
         </View>
-      </AnimatedScreen></AuthLayout>
+      </AnimatedScreen>
+    </AuthLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "space-between" },
+  container: { flex: 1, justifyContent: 'space-between' },
 
   otpContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: 16,
   },
 
@@ -295,11 +285,11 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 20,
     borderWidth: 1.2,
-    borderColor: "#D4AF37",
-    textAlign: "center",
+    borderColor: '#D4AF37',
+    textAlign: 'center',
     fontSize: 21,
-    fontFamily: "Satoshi-Bold",
-    color: "#816B22",
+    fontFamily: 'Satoshi-Bold',
+    color: '#816B22',
   },
 
   content: {
@@ -309,30 +299,30 @@ const styles = StyleSheet.create({
   },
 
   param: {
-    fontFamily: "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
   },
 
   errorBorder: {
-    borderColor: "#C2371E",
-    color: "#C2371E",
+    borderColor: '#C2371E',
+    color: '#C2371E',
   },
 
   successBorder: {
-    borderColor: "#27AA36",
-    color: "#1B7726",
+    borderColor: '#27AA36',
+    color: '#1B7726',
   },
 
   successText: {
-    color: "#1B7726",
+    color: '#1B7726',
   },
 
   errorText: {
-    color: "#C2371E",
+    color: '#C2371E',
   },
 
   resendBox: {
     padding: 16,
-    backgroundColor: "#FBF7EB",
+    backgroundColor: '#FBF7EB',
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12,
   },

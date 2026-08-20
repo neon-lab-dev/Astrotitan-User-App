@@ -3,7 +3,7 @@ import NoteIcon from '@/assets/icons/navigation/note.svg';
 
 import React, { useCallback, useState } from 'react';
 
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View, StyleSheet } from 'react-native';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import { SansText } from '../../../../components/reusable/Text/SansText';
@@ -43,72 +43,65 @@ const SessionHistory = () => {
       setRefreshing(false);
     }
   }, [refreshing, refetch]);
+
+  const renderContent = () => {
+    if (isBookingLoading) {
+      return <SessionSkeleton />;
+    }
+
+    if (bookings.length <= 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <NoteIcon height={124} width={124} />
+          <SansText style={styles.emptyText}>No sessions yet</SansText>
+        </View>
+      );
+    }
+
+    return (
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.listContainer}>
+          {bookings.map((item: any) => (
+            <SessionHistoryCard key={item._id} item={item} />
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="#816B22"
-              colors={['#816B22']}
-              progressBackgroundColor="#FBF7EB"
-            />
-          }
-        >
-          <AppBar title="Session Logs" />
-
-          <View
-            style={{
-              flex: 1,
-            }}
+        <View style={styles.container}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#816B22"
+                colors={['#816B22']}
+                progressBackgroundColor="#FBF7EB"
+              />
+            }
+            contentContainerStyle={styles.scrollContent}
+            style={{ flex: 1 }}
           >
-            {isBookingLoading ? (
-              <SessionSkeleton />
-            ) : bookings.length <= 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <NoteIcon height={124} width={124} />
+            <AppBar title="Session Logs" />
 
-                <SansText
-                  style={{
-                    marginTop: 16,
-                    textAlign: 'center',
-                  }}
-                >
-                  No sessions yet
-                </SansText>
-              </View>
-            ) : (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View
-                  style={{
-                    paddingVertical: 16,
-                  }}
-                >
-                  {bookings.map((item: any) => (
-                    <SessionHistoryCard key={item._id} item={item} />
-                  ))}
-                </View>
-              </ScrollView>
-            )}
+            <View style={styles.content}>
+              {renderContent()}
+            </View>
+          </ScrollView>
 
-            {/* BUTTON */}
-
+          {/* ✅ Button always at bottom */}
+          <View style={styles.buttonContainer}>
             <ReusableButton
               onPress={() => navigation.navigate('RequestedSessions')}
-              style={{ marginVertical: 16 }}
               title="View Requested Sessions"
             />
           </View>
-        </ScrollView>
+        </View>
       </ScreenWrapper>
     </AnimatedScreen>
   );
@@ -118,23 +111,9 @@ export default SessionHistory;
 
 const SessionSkeleton = () => {
   return (
-    <View
-      style={{
-        paddingVertical: 16,
-        gap: 20,
-      }}
-    >
-      {[1, 2, 3, 4, 5].map(item => (
-        <View
-          key={item}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingVertical: 8,
-          }}
-        >
-          {/* Avatar */}
-
+    <View style={styles.skeletonContainer}>
+      {[1, 2, 3, 4, 5].map((item) => (
+        <View key={item} style={styles.skeletonItem}>
           <SkeletonLoader
             width={52}
             height={52}
@@ -142,36 +121,21 @@ const SessionSkeleton = () => {
             array={[1]}
           />
 
-          <View
-            style={{
-              flex: 1,
-              marginLeft: 12,
-            }}
-          >
-            {/* Name */}
-
+          <View style={styles.skeletonContent}>
             <SkeletonLoader
               width={'55%'}
               height={16}
               borderRadius={8}
               array={[1]}
             />
-
             <View style={{ height: 8 }} />
-
-            {/* Description */}
-
             <SkeletonLoader
               width={'35%'}
               height={12}
               borderRadius={8}
               array={[1]}
             />
-
             <View style={{ height: 8 }} />
-
-            {/* Date */}
-
             <SkeletonLoader
               width={'25%'}
               height={12}
@@ -179,8 +143,6 @@ const SessionSkeleton = () => {
               array={[1]}
             />
           </View>
-
-          {/* Arrow */}
 
           <SkeletonLoader
             width={20}
@@ -193,3 +155,46 @@ const SessionSkeleton = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  content: {
+    flex: 1,
+  },
+  listContainer: {
+    paddingVertical: 16,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyText: {
+    marginTop: 16,
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#8E8E93',
+  },
+  buttonContainer: {
+    paddingHorizontal: 16,
+  },
+  skeletonContainer: {
+    paddingVertical: 16,
+    gap: 20,
+  },
+  skeletonItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  skeletonContent: {
+    flex: 1,
+    marginLeft: 12,
+  },
+});

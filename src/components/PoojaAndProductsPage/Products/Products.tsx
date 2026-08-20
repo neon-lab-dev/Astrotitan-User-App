@@ -54,7 +54,7 @@ const Products = ({ products, isLoading }: any) => {
           }}
         >
           Astro Essentials
-        </Text>
+        </SatoshiText>
 
         <FlatList
           data={isLoading ? [1, 2, 3] : products}

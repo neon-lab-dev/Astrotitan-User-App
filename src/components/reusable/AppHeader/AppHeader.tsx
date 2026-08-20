@@ -6,17 +6,18 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { SansText } from '../Text/SansText';
-import AuthTitle from '../../auth/AuthTitle';
 type Props = {
   showBack?: boolean;
   onPressBack?: () => void;
-  step: number;
+  showStep?: boolean;
+  step?: number;
   totalSteps?: number;
   title?: string;
   description?: string;
@@ -27,6 +28,7 @@ const AppHeader = ({
   onPressBack,
   step,
   totalSteps,
+  showStep=true,
   title,
   description,
 }: Props) => {
@@ -82,23 +84,24 @@ const AppHeader = ({
           </TouchableOpacity>
 
           {/* TEXT */}
-          <SansText style={styles.text}>
-            <SansText style={styles.bold}>Step {step + 1} </SansText> of{' '}
-            {totalSteps}
-          </SansText>
+          {showStep && (
+            <SansText style={styles.text}>
+              <SansText style={styles.bold}>Step {step && step + 1} </SansText>{' '}
+              of {totalSteps}
+            </SansText>
+          )}
         </View>
 
         {/*CONTENT BELOW */}
-        <AuthTitle title={title}>
-          <SansText
-            style={{
-              fontSize: 16,
-              color: '#d5d5d5',
-            }}
-          >
-            {description}
-          </SansText>
-        </AuthTitle>
+        <Text style={styles.title}>{title}</Text>
+        <SansText
+          style={{
+            fontSize: 16,
+            color: '#d5d5d5',
+          }}
+        >
+          {description}
+        </SansText>
       </View>
     </SafeAreaView>
   );
@@ -121,6 +124,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 12,
+  },
+
+  title: {
+    fontFamily: 'Satoshi-Medium',
+    letterSpacing: -0.32,
+    fontSize : 20,
+    color: '#ffffff',
+    marginBottom : 4,
   },
 
   text: {

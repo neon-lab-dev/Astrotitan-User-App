@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Linking,
+  RefreshControl,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,14 +14,14 @@ import { formatDate } from '../../../../utils/validators/dateValidators';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import { SansText } from '../../../../components/reusable/Text/SansText';
 import { useGetSingleConsultationBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
-import AppHeader from '../../../../components/reusable/AppHeader/AppHeader';
-import AuthTitle from '../../../../components/auth/AuthTitle';
 import { useDispatch } from 'react-redux';
 import { setSelectedConsultation } from '../../../../redux/features/consultation/consultationChatSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigation/types';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
+import NoteIcon from '@/assets/icons/navigation/note.svg';
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -51,15 +52,14 @@ const getStatusLabel = (status: string) => {
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const SessionDetails = () => {
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const route = useRoute();
   const navigation = useNavigation<NavigationProp>();
   const dispatch = useDispatch();
   const id = route.params?.id;
 
-  const { data } = useGetSingleConsultationBookingsQuery(id);
+  const { data, refetch } = useGetSingleConsultationBookingsQuery(id);
   const item = data?.data || {};
-
-  console.log(data, 'test');
 
   // Extract data
   const astrologer = item?.astrologer || {};
@@ -115,18 +115,48 @@ const SessionDetails = () => {
     });
   };
 
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+
+    try {
+      setRefreshing(true);
+
+      await Promise.all([refetch().unwrap()]);
+    } catch (error) {
+      console.log('REFRESH ERROR:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
+
+  if (!data) {
+    return (
+      <View style={styles.emptyContainer}>
+        <NoteIcon height={124} width={124} />
+        <SansText style={styles.emptyText}>No sessions yet</SansText>
+      </View>
+    );
+  }
+
   return (
     <AnimatedScreen>
       <ScreenWrapper>
         <View style={styles.container}>
           {/* Header */}
-          <AppHeader showBack={false}>
-            <AuthTitle titleFontSize={17} title="Session Details" />
-          </AppHeader>
+          <AppBar title="Session Details" />
 
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.contentContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#816B22"
+                colors={['#816B22']}
+                progressBackgroundColor="#FBF7EB"
+              />
+            }
           >
             {/* Astrologer Profile Card */}
             <View style={styles.profileCard}>
@@ -461,6 +491,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#8E8E93',
     fontFamily: 'Satoshi-Medium',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyText: {
+    marginTop: 16,
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#8E8E93',
   },
 });
 

@@ -25,7 +25,7 @@ const RequestedFormCompleted = () => {
             variant:"outline",
             onPress: () => {
               navigation.replace(
-                "ChatHistory"
+                "SessionHistory"
               );
             },
           },{

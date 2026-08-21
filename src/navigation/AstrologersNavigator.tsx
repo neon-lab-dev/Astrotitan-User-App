@@ -7,6 +7,7 @@ import RequestedFormCompleted from "../screens/tabs/astrologers/astrologer/Reque
 import AstrologerChatScreen from "../screens/tabs/astrologers/(chat)/AstrologerChatScreen";
 import SessionHistory from "../screens/tabs/astrologers/(chat)/SessionHistory";
 import SessionDetails from "../screens/tabs/astrologers/(chat)/SessionDetails";
+import SubscriptionScreen from "../screens/tabs/profile/subscription/SubscriptionScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,10 @@ export default function AstrologersNavigator() {
       <Stack.Screen
         name="RequestedFormCompleted"
         component={RequestedFormCompleted}
+      />
+      <Stack.Screen
+        name="SubscriptionScreen"
+        component={SubscriptionScreen}
       />
     </Stack.Navigator>
   );

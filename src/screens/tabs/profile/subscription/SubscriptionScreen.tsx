@@ -207,7 +207,7 @@ const SubscriptionScreen = () => {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-         <AppBar title="Subscription Plans" />
+          <AppBar title="Subscription Plans" />
 
           <ScrollView
             contentContainerStyle={{
@@ -253,7 +253,6 @@ const SubscriptionScreen = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-
         <AppBar title="Choose a plan" />
 
         <ScrollView

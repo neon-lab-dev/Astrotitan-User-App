@@ -61,6 +61,7 @@ import LocationLightGray from "@/assets/icons/visual/location-light-gray.svg";
 import RightArrow from "@/assets/icons/visual/right-arrow.svg";
 import EmptyFile from "@/assets/icons/visual/empty-file.svg";
 import File from "@/assets/icons/visual/file.svg";
+import PremiumIcon from "@/assets/icons/visual/premium.svg";
 
 export const ICONS = {
   homeActive: HomeActive,
@@ -105,19 +106,20 @@ export const ICONS = {
   FileVerifiedIcon: FileVerifiedIcon,
   MedalFirstIcon: MedalFirstIcon,
   ValidationIcon: ValidationIcon,
-  HelpIcon:HelpIcon,
-  DocumentSearchIcon:DocumentSearchIcon,
-  UserIcon:UserIcon,
-  SentIcon:SentIcon,
-  AnalyzeKundli:AnalyzeKundli,
-  GenerateKundli:GenerateKundli,
-  CalendarIcon:CalendarIcon,
-  UploadFile:UploadFile,
-  CalendarLightGray:CalendarLightGray,
-  LocationLightGray:LocationLightGray,
-  RightArrow:RightArrow,
-  EmptyFile:EmptyFile,
-  File:File
+  HelpIcon: HelpIcon,
+  DocumentSearchIcon: DocumentSearchIcon,
+  UserIcon: UserIcon,
+  SentIcon: SentIcon,
+  AnalyzeKundli: AnalyzeKundli,
+  GenerateKundli: GenerateKundli,
+  CalendarIcon: CalendarIcon,
+  UploadFile: UploadFile,
+  CalendarLightGray: CalendarLightGray,
+  LocationLightGray: LocationLightGray,
+  RightArrow: RightArrow,
+  EmptyFile: EmptyFile,
+  File: File,
+  PremiumIcon: PremiumIcon
 };
 
 export type IconName = keyof typeof ICONS;

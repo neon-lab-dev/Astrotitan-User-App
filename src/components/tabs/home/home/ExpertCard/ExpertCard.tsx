@@ -30,28 +30,28 @@ const ExpertCard = ({ _id, name, experience, tags, rating, image }: Props) => {
   const navigation = useNavigation<any>();
   const [imageError, setImageError] = useState(false);
 
-  const onPressAstrologer = (user: AstrologerType) => {
-    BottomSheetService.open(
-      <ConsultAstrologerSection
-        astrologer={user}
-        onCancel={BottomSheetService.close}
-        onConsult={() => {
-          BottomSheetService.close();
+  // const onPressAstrologer = (user: AstrologerType) => {
+  //   BottomSheetService.open(
+  //     <ConsultAstrologerSection
+  //       astrologer={user}
+  //       onCancel={BottomSheetService.close}
+  //       onConsult={() => {
+  //         BottomSheetService.close();
 
-          navigation.getParent()?.navigate('AstrologersTab', {
-            screen: 'AstrologerDetailsScreen',
-            params: {
-              id: _id,
-            },
-          });
-        }}
-      />,
-      {
-        height: 400,
-        hasGradient: true,
-      },
-    );
-  };
+  //         navigation.getParent()?.navigate('AstrologersTab', {
+  //           screen: 'AstrologerDetailsScreen',
+  //           params: {
+  //             id: _id,
+  //           },
+  //         });
+  //       }}
+  //     />,
+  //     {
+  //       height: 400,
+  //       hasGradient: true,
+  //     },
+  //   );
+  // };
 
   const getImageSource = () => {
     // If image error occurred, use fallback
@@ -82,10 +82,12 @@ const ExpertCard = ({ _id, name, experience, tags, rating, image }: Props) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        onPressAstrologer({
-          name,
-          image,
-        });
+            navigation.getParent()?.navigate('AstrologersTab', {
+            screen: 'AstrologerDetailsScreen',
+            params: {
+              id: _id,
+            },
+          });
       }}
       style={styles.card}
       activeOpacity={0.9}

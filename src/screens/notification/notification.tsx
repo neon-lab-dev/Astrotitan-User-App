@@ -24,6 +24,8 @@ const NotificationScreen = () => {
   const { data: myNotifications } = useGetMyNotificationsQuery({});
   const [notifications, setNotifications] = useState<any[]>([]);
   const hasNotifications = notifications.length > 0;
+  const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [markAsRead] = useMarkAsReadMutation();
 
   useEffect(() => {
     if (myNotifications?.data) {
@@ -83,6 +85,39 @@ const NotificationScreen = () => {
     };
   }, [user?.account?._id]);
 
+  const filteredNotifications =
+  filter === 'unread'
+    ? notifications.filter(notification => !notification.isRead)
+    : notifications;
+
+  const handleMarkAllAsRead = async () => {
+    const unreadNotifications = notifications.filter(
+      notification => !notification.isRead,
+    );
+
+    if (unreadNotifications.length === 0) {
+      return;
+    }
+
+    try {
+      await Promise.all(
+        unreadNotifications.map(notification =>
+          markAsRead(notification._id).unwrap(),
+        ),
+      );
+
+      // Immediately update UI
+      setNotifications(prev =>
+        prev.map(notification => ({
+          ...notification,
+          isRead: true,
+        })),
+      );
+    } catch (error) {
+      console.log('Failed to mark all notifications as read:', error);
+    }
+  };
+
   const unreadCount = notifications.filter(
     notification => !notification.isRead,
   ).length;
@@ -91,7 +126,46 @@ const NotificationScreen = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenWrapper>
         <AppBar title="Notifications" />
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 8,
+            padding:16,
+            justifyContent:"space-between"
+          }}
+        ><View style={{ flexDirection: 'row',
+            gap: 8 }}>
+          <ReusableButton
+            title="All"
+            onPress={() => setFilter('all')}
+            variant={filter === 'all' ? 'solid' : 'outline'}
+            width="auto"
+            height={38}
+            textSize={13}
+            paddingHorizontal={16}
+          />
 
+          <ReusableButton
+            title={`Unread${unreadCount > 0 ? ` (${unreadCount})` : ''}`}
+            onPress={() => setFilter('unread')}
+            variant={filter === 'unread' ? 'solid' : 'outline'}
+            width="auto"
+            height={38}
+            textSize={13}
+            paddingHorizontal={16}
+          /></View>
+
+            <ReusableButton
+              title="Mark all read"
+              onPress={handleMarkAllAsRead}
+              variant="solid"
+              disabled={unreadCount === 0}
+              width="100%"
+              height={32}
+              textSize={13}
+              paddingHorizontal={16}
+            />
+        </View>
         <View ref={notificationRef} style={{ flex: 1 }}>
           {!hasNotifications ? (
             // EMPTY STATE
@@ -158,7 +232,7 @@ const NotificationScreen = () => {
                   </View>
                 )}
 
-                {notifications.map((item, index) => (
+                {filteredNotifications.map((item, index) => (
                   <NotificationItem key={item?._id || index} item={item} />
                 ))}
               </View>

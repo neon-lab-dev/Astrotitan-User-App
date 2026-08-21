@@ -654,7 +654,7 @@ const PujaDetails = () => {
         {/* BOOK BUTTON */}
         <View style={styles.buttonRow}>
           <ReusableButton
-            title="Consult Now"
+            title="Book Now"
             variant="solid"
             onPress={() => {
               navigation.navigate('ConsultationForm', {

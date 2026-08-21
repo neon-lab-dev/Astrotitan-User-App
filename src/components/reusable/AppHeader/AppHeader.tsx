@@ -86,7 +86,7 @@ const AppHeader = ({
           {/* TEXT */}
           {showStep && (
             <SansText style={styles.text}>
-              <SansText style={styles.bold}>Step {step && step + 1} </SansText>{' '}
+              <SansText style={styles.bold}>    Step {(step ?? 0) + 1} </SansText>{' '}
               of {totalSteps}
             </SansText>
           )}

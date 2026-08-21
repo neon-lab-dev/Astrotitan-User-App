@@ -302,7 +302,6 @@ const RaiseKundliRequest = ({
                 <View style={styles.filesList}>
                   {selectedFiles.map((file, index) => (
                     <View key={index} style={styles.fileItem}>
-                      <Icon name="document-outline" size={20} color="#D4AF37" />
                       <SansText style={styles.fileName} numberOfLines={1}>
                         {file.fileName || `File ${index + 1}`}
                       </SansText>

@@ -165,7 +165,6 @@ const CheckoutScreen = () => {
 
       const { order, razorpayOrder } = orderResponse.data;
       try {
-        setLoading(false);
         const paymentData = await openRazorpayPayment(order, razorpayOrder);
         // Step 3: Verify payment
         await handleVerifyPayment(
@@ -185,7 +184,6 @@ const CheckoutScreen = () => {
             paymentError?.description || 'Something went wrong',
           );
         }
-        setLoading(false);
         setIsPlacingOrder(false);
       }
     } catch (error: any) {

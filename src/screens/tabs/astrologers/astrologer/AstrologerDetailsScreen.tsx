@@ -28,7 +28,6 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const AstrologerDetailsScreen = () => {
   const { data: myProfile } = useGetMeQuery({});
-  console.log(myProfile?.data?.profile?.isPremiumUser);
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const [showPremiumModal, setShowPremiumModal] = useState<boolean>(false);

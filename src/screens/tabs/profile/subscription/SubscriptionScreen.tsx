@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Alert, RefreshControl, ScrollView, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
@@ -29,9 +29,7 @@ export interface SubscriptionPlan {
   price: number;
   duration: string;
   status: string;
-
   features: string[];
-
   highlight?: boolean;
   isCurrent?: boolean;
 }
@@ -47,21 +45,24 @@ export interface Subscription {
   remainingDays?: number;
   razorpaySubscriptionId?: string;
 }
+
 const SubscriptionScreen = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const { data, isLoading, refetch } = useGetMySubscriptionQuery({});
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { data: razorpayKeyData } = useGetRazorpayKeyQuery({});
   const razorpayKey = razorpayKeyData?.key;
   const [createRazorpayOrder] = useCreateRazorpayOrderMutation();
   const [purchaseSubscription] = usePurchaseSubscriptionMutation();
   const [showPlans, setShowPlans] = useState(false);
+
   const openCancelSubscriptionSheet = () => {
     BottomSheetService.open(
       <CancelSubscription
         onClose={() => BottomSheetService.close()}
         onSuccess={() => {
-          refetch(); // Refresh subscription
+          refetch();
           BottomSheetService.close();
         }}
       />,
@@ -86,13 +87,11 @@ const SubscriptionScreen = () => {
   const handlePaymentSuccess = async () => {
     try {
       const response = await purchaseSubscription({}).unwrap();
-
       if (response.success) {
         refetch();
       }
     } catch (error) {
       console.log(error);
-
       Alert.alert(
         'Error',
         'Payment succeeded but subscription activation failed.',
@@ -101,6 +100,7 @@ const SubscriptionScreen = () => {
       setLoading(false);
     }
   };
+
   const openRazorpayPayment = (razorpayOrder: any) => {
     return new Promise((resolve, reject) => {
       const options = {
@@ -111,17 +111,14 @@ const SubscriptionScreen = () => {
         amount: razorpayOrder.amount,
         name: 'Astrotitan',
         order_id: razorpayOrder.id,
-
         prefill: {
           email: user?.email || '',
           contact: user?.phoneNumber || '',
           name: user?.name || '',
         },
-
         theme: {
           color: '#D4AF37',
         },
-
         modal: {
           backdropclose: false,
         },
@@ -136,6 +133,7 @@ const SubscriptionScreen = () => {
         });
     });
   };
+
   const handlePurchase = async () => {
     if (!user) {
       Alert.alert('Login Required', 'Please login to continue.');
@@ -144,22 +142,14 @@ const SubscriptionScreen = () => {
 
     try {
       setLoading(true);
-
-      // STEP 1
       const response = await createRazorpayOrder({
         amount: 250,
       }).unwrap();
-
       const razorpayOrder = response.data;
-
-      // STEP 2
       await openRazorpayPayment(razorpayOrder);
-
-      // STEP 3
       await handlePaymentSuccess();
     } catch (error: any) {
       console.log(error);
-
       if (error?.code === 'PAYMENT_CANCELLED') {
         Alert.alert('Payment Cancelled', 'You cancelled the payment.');
       } else {
@@ -168,10 +158,21 @@ const SubscriptionScreen = () => {
           error?.description || 'Unable to complete payment.',
         );
       }
-
       setLoading(false);
     }
   };
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+    try {
+      setRefreshing(true);
+      await Promise.all([refetch().unwrap()]);
+    } catch (error) {
+      console.log('REFRESH ERROR:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
 
   if (isLoading) {
     return (
@@ -183,16 +184,27 @@ const SubscriptionScreen = () => {
     );
   }
 
+  // Active Subscription
   if (isActive) {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
           <AppBar title="My Plan" />
-
           <ScrollView
             contentContainerStyle={{
               padding: 16,
+              flexGrow: 1,
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#af9a52"
+                colors={['#816B22']}
+                progressBackgroundColor="#FBF7EB"
+              />
+            }
+            showsVerticalScrollIndicator={false}
           >
             <ActiveSubscription
               subscription={subscription}
@@ -203,17 +215,27 @@ const SubscriptionScreen = () => {
       </AnimatedScreen>
     );
   }
+
+  // Cancelled Subscription
   if (isCancelled && !showPlans) {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
           <AppBar title="Subscription Plans" />
-
           <ScrollView
             contentContainerStyle={{
               padding: 16,
               flexGrow: 1,
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#af9a52"
+                colors={['#816B22']}
+                progressBackgroundColor="#FBF7EB"
+              />
+            }
             showsVerticalScrollIndicator={false}
           >
             <CancelledSubscription
@@ -227,17 +249,26 @@ const SubscriptionScreen = () => {
     );
   }
 
+  // Expired Subscription
   if (isExpired && !showPlans) {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
           <AppBar title="Subscription Expired" />
-
           <ScrollView
             contentContainerStyle={{
               padding: 16,
               flexGrow: 1,
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#af9a52"
+                colors={['#816B22']}
+                progressBackgroundColor="#FBF7EB"
+              />
+            }
             showsVerticalScrollIndicator={false}
           >
             <ExpiredSubscription
@@ -250,11 +281,10 @@ const SubscriptionScreen = () => {
     );
   }
 
+  // Show Plans (Default)
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <AppBar title="Choose a plan" />
-
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{
@@ -262,8 +292,19 @@ const SubscriptionScreen = () => {
             paddingTop: 24,
             paddingBottom: 40,
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#af9a52"
+              colors={['#816B22']}
+              progressBackgroundColor="#FBF7EB"
+            />
+          }
           showsVerticalScrollIndicator={false}
         >
+          <AppBar title="Choose a plan" />
+
           <View
             style={{
               gap: 22,

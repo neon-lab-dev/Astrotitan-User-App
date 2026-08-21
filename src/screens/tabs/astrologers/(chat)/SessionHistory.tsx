@@ -1,26 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import NoteIcon from '@/assets/icons/navigation/note.svg';
-
 import React, { useCallback, useState } from 'react';
-
 import { RefreshControl, ScrollView, View, StyleSheet } from 'react-native';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import { SansText } from '../../../../components/reusable/Text/SansText';
-import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../../navigation/types';
-import { useNavigation } from '@react-navigation/native';
 import { useGetMyConsultationBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
 import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
 import SessionHistoryCard from '../../../../components/SessionHistoryPage/SessionHistoryCard/SessionHistoryCard';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
 const SessionHistory = () => {
-  type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-  const navigation = useNavigation<NavigationProp>();
-
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const {
@@ -93,14 +83,6 @@ const SessionHistory = () => {
               {renderContent()}
             </View>
           </ScrollView>
-
-          {/* Button always at bottom */}
-          <View style={styles.buttonContainer}>
-            <ReusableButton
-              onPress={() => navigation.navigate('RequestedSessions')}
-              title="View Requested Sessions"
-            />
-          </View>
         </View>
       </ScreenWrapper>
     </AnimatedScreen>

@@ -106,7 +106,7 @@ const ProfileScreen = () => {
   useFocusEffect(
     useCallback(() => {
       fetchLatestUser();
-    }, []), // ← don't pass fetchLatestUser here
+    }, []),
   );
   return (
     <AnimatedScreen>
@@ -184,7 +184,6 @@ const ProfileScreen = () => {
             {/* PERSONAL */}
             <View>
               {' '}
-              <SectionTitle titleFontSize={16} title="Personal"></SectionTitle>
               <View style={styles.card}>
                 <ProfileItem
                   title="Birth Details"

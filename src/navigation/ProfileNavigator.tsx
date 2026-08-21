@@ -13,7 +13,6 @@ import Queries from '../screens/tabs/profile/query/Queries';
 import OrdersScreen from '../screens/tabs/remedies/orders/OrdersScreen';
 import AstrologerChatScreen from '../screens/tabs/astrologers/(chat)/AstrologerChatScreen';
 import OrdersDetails from '../screens/tabs/remedies/orders/OrdersDetails';
-import RequestedSessions from '../screens/tabs/astrologers/(chat)/RequestedSessions';
 import SessionHistory from '../screens/tabs/astrologers/(chat)/SessionHistory';
 import SessionDetails from '../screens/tabs/astrologers/(chat)/SessionDetails';
 
@@ -51,10 +50,7 @@ export default function ProfileNavigator() {
         component={AstrologerChatScreen}
       />
       <Stack.Screen name="OrdersScreen" component={OrdersScreen} />
-
       <Stack.Screen name="OrdersDetails" component={OrdersDetails} />
-
-      <Stack.Screen name="RequestedSessions" component={RequestedSessions} />
     </Stack.Navigator>
   );
 }

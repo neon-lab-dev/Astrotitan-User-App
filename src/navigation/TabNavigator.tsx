@@ -39,7 +39,6 @@ const hiddenRoutes = [
   "RequestConsultationForm",
   "RequestedFormCompleted",
   "AstrologerChatScreen",
-  "RequestedSessions",
   "NotificationScreen",
   "SessionHistory",
   "PersonalInformation"

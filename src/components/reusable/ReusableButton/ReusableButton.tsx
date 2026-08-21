@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.08,
   },
   icon: {
+    marginTop: 4,
     height: 24,
     width: 24,
   },

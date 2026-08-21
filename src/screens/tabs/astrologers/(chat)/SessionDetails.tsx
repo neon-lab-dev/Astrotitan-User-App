@@ -9,7 +9,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { formatDate } from '../../../../utils/validators/dateValidators';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import { SansText } from '../../../../components/reusable/Text/SansText';
@@ -58,7 +57,8 @@ const SessionDetails = () => {
   const dispatch = useDispatch();
   const id = route.params?.id;
 
-  const { data, refetch } = useGetSingleConsultationBookingsQuery(id);
+  const { data, refetch, isLoading, isFetching, isError } =
+    useGetSingleConsultationBookingsQuery(id);
   const item = data?.data || {};
 
   // Extract data
@@ -88,32 +88,32 @@ const SessionDetails = () => {
   };
 
   const handleChatNow = (booking: any) => {
-    const participant = booking.astrologer;
-    const currentParticipantId = booking.user;
-
-    dispatch(
-      setSelectedConsultation({
-        consultationId: booking._id,
-        currentParticipantId,
-        participant: {
-          _id: participant?.accountId,
-          name: participant?.displayName,
-          firstName: participant?.firstName,
-          lastName: participant?.lastName,
-          profilePicture: participant?.profilePicture || '',
-          accountId: participant?.accountId,
-          role: 'astrologer',
-        },
-      }),
-    );
-
-    navigation.navigate('AstrologerChatScreen', {
-      id: booking._id,
-      profilePicture: participant?.profilePicture,
-      name: participant?.displayName,
-      consultationFor: booking.consultationFor,
-    });
-  };
+      const participant = booking.astrologer;
+      const currentParticipantId = booking.user;
+  
+      dispatch(
+        setSelectedConsultation({
+          consultationId: booking._id,
+          currentParticipantId,
+          participant: {
+            _id: participant?.accountId,
+            name: participant?.displayName,
+            firstName: participant?.firstName,
+            lastName: participant?.lastName,
+            profilePicture: participant?.profilePicture || "",
+            accountId:participant?.accountId,
+            role: "astrologer",
+          },
+        })
+      );
+  
+      navigation.navigate("AstrologerChatScreen", {
+        id: booking._id,
+        profilePicture: participant?.profilePicture,
+        name: participant?.displayName,
+        consultationFor: booking.consultationFor,
+      });
+    };
 
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
@@ -129,7 +129,16 @@ const SessionDetails = () => {
     }
   }, [refreshing, refetch]);
 
-  if (!data) {
+  if (isLoading || isFetching) {
+    return (
+      <View style={styles.emptyContainer}>
+        <NoteIcon height={124} width={124} />
+        <SansText style={styles.emptyText}>Please wait...</SansText>
+      </View>
+    );
+  }
+
+  if (isError) {
     return (
       <View style={styles.emptyContainer}>
         <NoteIcon height={124} width={124} />
@@ -284,7 +293,6 @@ const SessionDetails = () => {
                   style={styles.joinButton}
                   onPress={handleJoinSession}
                 >
-                  <Icon name="videocam-outline" size={20} color="#FFFFFF" />
                   <SatoshiText style={styles.joinButtonText}>
                     Join Session
                   </SatoshiText>
@@ -294,9 +302,8 @@ const SessionDetails = () => {
               {isChat && (
                 <TouchableOpacity
                   style={styles.chatButton}
-                  onPress={handleChatNow}
+                  onPress={() => handleChatNow(item)}
                 >
-                  <Icon name="chatbubble-outline" size={20} color="#FFFFFF" />
                   <SatoshiText style={styles.chatButtonText}>
                     Chat Now
                   </SatoshiText>

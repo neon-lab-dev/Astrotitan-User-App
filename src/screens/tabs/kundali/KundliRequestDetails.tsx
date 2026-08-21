@@ -219,11 +219,13 @@ const KundliRequestDetails = () => {
 
         {/* --- ACTION BUTTON --- */}
         {request.status === 'completed' && request.reportUrl && (
-          <ReusableButton
-            title=" Download Completed Report"
-            variant="solid"
-            onPress={() => Linking.openURL(request.reportUrl!)}
-          />
+          <View style={{ marginTop: 20 }}>
+            <ReusableButton
+              title=" Download Completed Report"
+              variant="solid"
+              onPress={() => Linking.openURL(request.reportUrl!)}
+            />
+          </View>
         )}
 
         <View style={{ height: 40 }} />

@@ -451,7 +451,7 @@ const RequestConsultationForm = () => {
               setValue(text);
               setRequestMessage(text);
             }}
-            placeholder="Tell the astrologer what you would like to discuss or get guidance on."
+            placeholder="Tell the astrologer about your concern."
             placeholderTextColor="#999"
             multiline
             numberOfLines={4}

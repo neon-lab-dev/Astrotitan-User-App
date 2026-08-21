@@ -5,7 +5,6 @@ import AstrologerDetailsScreen from "../screens/tabs/astrologers/astrologer/Astr
 import RequestConsultationForm from "../screens/tabs/astrologers/astrologer/RequestConsultationForm";
 import RequestedFormCompleted from "../screens/tabs/astrologers/astrologer/RequestedFormCompleted";
 import AstrologerChatScreen from "../screens/tabs/astrologers/(chat)/AstrologerChatScreen";
-import RequestedSessions from "../screens/tabs/astrologers/(chat)/RequestedSessions";
 import SessionHistory from "../screens/tabs/astrologers/(chat)/SessionHistory";
 import SessionDetails from "../screens/tabs/astrologers/(chat)/SessionDetails";
 
@@ -49,10 +48,6 @@ export default function AstrologersNavigator() {
       <Stack.Screen
         name="RequestedFormCompleted"
         component={RequestedFormCompleted}
-      />
-      <Stack.Screen
-        name="RequestedSessions"
-        component={RequestedSessions}
       />
     </Stack.Navigator>
   );

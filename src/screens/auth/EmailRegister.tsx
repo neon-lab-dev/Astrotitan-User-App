@@ -22,18 +22,16 @@ export default function EmailRegister() {
     control,
     handleSubmit,
     watch,
-    formState: { isValid },
   } = useForm<RegisterForm>({
     defaultValues: {
       email: '',
       role: 'user',
     },
-    mode: 'onBlur', // 🔥 IMPORTANT
+    mode: 'onBlur',
   });
   const navigation = useNavigation<any>();
 
   const email = watch('email');
-  const isFormFilled = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || '');
   const [signup, { isLoading, error }] = useSignupMutation();
 
   const isGmail = (email: string) => {
@@ -78,7 +76,7 @@ export default function EmailRegister() {
                 control={control}
                 name="email"
                 label="Email Address"
-                variant="text" // 🔥 IMPORTANT
+                variant="text"
                 placeholder="Enter email"
                 rules={{
                   required: 'Email is required',
@@ -129,14 +127,6 @@ export default function EmailRegister() {
               option=" SignIn"
               action={() => navigation.replace('LoginWithPhone')}
             />
-            {isValid && isFormFilled && (
-              <ReusableButton
-                title="Send OTP"
-                variant="solid"
-                loading={isLoading}
-                onPress={handleSubmit(onSubmit)}
-              />
-            )}
             <TermsAndConditions />
           </View>
         </View>

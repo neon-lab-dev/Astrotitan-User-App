@@ -188,10 +188,9 @@ const NotificationScreen = () => {
                     fontSize: 16,
                     color: '#666',
                     textAlign: 'center',
-                    marginTop: 16,
                   }}
                 >
-                  No notifications to show
+                  No notifications yet
                 </SansText>
               </View>
 

@@ -4,7 +4,7 @@ import CancelIcon from '@/assets/icons/actions/cancel.svg';
 import React, { useEffect, useState } from 'react';
 
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { useGetAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
+import { useGetAllAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
 import BottomSheetService from '../../../redux/features/ui/GlobalSheet/BottomSheetService';
 import SortBySection from '../../../components/reusable/BottomSheet/SortBy';
 import FilterSection from '../../../components/reusable/BottomSheet/FilterSection';
@@ -27,6 +27,13 @@ type Filters = {
   ratings: string[];
 };
 
+// Sort options with labels
+const SORT_OPTIONS: Record<string, string> = {
+  relevance: 'Relevance',
+  topRated: 'Top Rated',
+  mostExperienced: 'Most Experienced',
+};
+
 const LIMIT = 10;
 
 const AstrologerScreen = () => {
@@ -43,9 +50,7 @@ const AstrologerScreen = () => {
 
   const navigation = useNavigation<NavigationProp>();
 
-  const { data, isLoading, isFetching, refetch } = useGetAstrologersQuery({
-    isIdentityVerified: true,
-    country: '',
+  const { data, isLoading, isFetching, refetch } = useGetAllAstrologersQuery({
     skip,
     limit: LIMIT,
     areaOfPractice: filters.specialization.join(','),
@@ -57,6 +62,7 @@ const AstrologerScreen = () => {
 
   const meta = data?.data?.meta;
   const hasMore = meta?.hasMore;
+  
   const onRefresh = async () => {
     try {
       setRefreshing(true);
@@ -73,18 +79,22 @@ const AstrologerScreen = () => {
     }
   };
 
-  const removeTag = (tag: string) => {
-    if (tag === sortValue) {
-      setSortValue('relevance');
+  // Get label for sort value
+  const getSortLabel = (value: string): string => {
+    return SORT_OPTIONS[value] || value;
+  };
 
+  const removeTag = (tag: string) => {
+    const isSortTag = Object.values(SORT_OPTIONS).includes(tag);
+    
+    if (isSortTag) {
+      setSortValue('relevance');
       return;
     }
 
     setFilters(prev => ({
       specialization: prev.specialization.filter(item => item !== tag),
-
       language: prev.language.filter(item => item !== tag),
-
       ratings: prev.ratings.filter(item => item !== tag),
     }));
 
@@ -97,10 +107,10 @@ const AstrologerScreen = () => {
     ...filters.ratings,
   ];
 
-  const displayTags =
-    sortValue !== 'relevance'
-      ? [sortValue, ...allSelectedTags]
-      : allSelectedTags;
+  // Display sort label instead of value
+  const displayTags = sortValue !== 'relevance'
+    ? [getSortLabel(sortValue), ...allSelectedTags]
+    : allSelectedTags;
 
   useEffect(() => {
     setSkip(0);
@@ -139,13 +149,11 @@ const AstrologerScreen = () => {
             language: [],
             ratings: [],
           });
-
           setSkip(0);
         }}
       />,
       {
         height: 650,
-
         hasGradient: true,
       },
     );
@@ -224,12 +232,10 @@ const AstrologerScreen = () => {
               </View>
 
               {/* TAGS */}
-
               <View style={styles.tagsRow}>
                 {displayTags.map(tag => (
                   <View key={tag} style={styles.tag}>
                     <SansText>{tag}</SansText>
-
                     <CancelIcon
                       width={14}
                       height={14}
@@ -240,7 +246,6 @@ const AstrologerScreen = () => {
               </View>
 
               {/* COUNT */}
-
               <View style={styles.countRow}>
                 <View style={styles.dot} />
                 <SansText>{meta?.filteredTotal} astrologers available</SansText>
@@ -267,7 +272,7 @@ const AstrologerScreen = () => {
             )
           }
           ListFooterComponent={
-            isLoading || (isFetching && skip !== 0) ? (
+            isLoading || isFetching ? (
               <View style={{ gap: 16 }}>
                 {[1, 2, 3].map(item => (
                   <AstrologerCardSkeleton key={item} />
@@ -299,14 +304,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-
   countRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     marginBottom: 24,
   },
-
   dot: {
     width: 8,
     height: 8,

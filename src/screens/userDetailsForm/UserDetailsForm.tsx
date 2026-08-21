@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import BookIcon from '@/assets/icons/visual/intent/book.svg';
 import BriefcaseIcon from '@/assets/icons/visual/intent/briefcase.svg';
 import HeartIcon from '@/assets/icons/visual/intent/favourite.svg';
@@ -44,7 +45,7 @@ const isValidDate = (date: string) => {
 const questions = [
     {
         key: 'name',
-        initialValue: { firstName: '', lastName: '' }, // ✅
+        initialValue: { firstName: '', lastName: '' },
         text: 'What should we call you?',
         description: "This helps personalize your experience.",
         render: ({ value, setValue }: any) => (
@@ -55,7 +56,7 @@ const questions = [
     },
     {
         key: 'gender',
-        initialValue: '', // ✅
+        initialValue: '',
         text: 'Select your gender',
         description: "This helps us generate more accurate insights.",
         render: ({ value, setValue }: any) => (
@@ -75,7 +76,7 @@ const questions = [
     },
     {
         key: 'birthdate',
-        initialValue: '', // 🔥 THIS WAS MISSING
+        initialValue: '',
         text: 'Select your date of birth',
         description: "Used to calculate your birth chart accurately.",
         render: ({ value, setValue }: any) => (
@@ -121,7 +122,7 @@ const questions = [
     },
     {
         key: 'guidance',
-        initialValue: [], // ✅
+        initialValue: [],
         text: 'What would you like guidance on?',
         description: "Select your primary focus areas.",
         render: ({ value, setValue }: any) => (
@@ -148,7 +149,7 @@ const questions = [
 const MultiStepForm = () => {
     const navigation = useNavigation<any>()
     const step = useSelector((state: RootState) => state.userDetailForm.step);
-    const [completeProfile] = useCompleteProfileMutation();
+    const [completeProfile, {isLoading}] = useCompleteProfileMutation();
     const convertToISO = (date: string) => {
         const [day, month, year] = date.split("/");
         return `${year}-${month}-${day}`;
@@ -192,7 +193,8 @@ const MultiStepForm = () => {
                     questionText={currentQuestion.text}
                     validate={currentQuestion.validate}
                     initialValue={currentQuestion.initialValue}
-                    onFinalSubmit={handleFinalSubmit} // 🔥 PASS THIS
+                    onFinalSubmit={handleFinalSubmit}
+                    loading={isLoading}
                 >
                     {currentQuestion.render}
                 </QuestionScreen>

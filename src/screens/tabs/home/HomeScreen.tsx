@@ -18,7 +18,7 @@ import Kundli from '../../../components/HomePage/Kundli/Kundli';
 import FeaturedAstrologers from '../../../components/HomePage/FeaturedAstrologers/FeaturedAstrologers';
 import RecommendedRemedies from '../../../components/HomePage/RecommendedRemedies/RecommendedRemedies';
 import BlogInsights from '../../../components/HomePage/BlogInsights/BlogInsights';
-import { useGetAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
+import { useGetAllAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
 
 const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -31,7 +31,7 @@ const HomeScreen = () => {
     isLoading: astrologersLoading,
     refetch: refetchAstrologers,
     isFetching: astrologerFetching,
-  } = useGetAstrologersQuery(
+  } = useGetAllAstrologersQuery(
     {
       skip: 0,
       limit: 10,

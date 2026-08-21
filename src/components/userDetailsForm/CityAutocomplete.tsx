@@ -1,37 +1,34 @@
+/* eslint-disable react-native/no-inline-styles */
 // components/CityInput.tsx
-
-import AppInput from '@/components/reusable/InputField/AppInput';
 import React, { useState } from 'react';
 import { View } from 'react-native';
+import AppInput from '../reusable/InputField/AppInput';
 
 const isValidCity = (text: string) => {
-    if (!text) return false;
+  if (!text) return false;
 
-    const trimmed = text.trim();
+  const trimmed = text.trim();
 
-    // basic validation
-    return /^[A-Za-z\s,'-]{2,50}$/.test(trimmed);
+  // basic validation
+  return /^[A-Za-z\s,'-]{2,50}$/.test(trimmed);
 };
 
 const CityInput = ({ value, setValue }: any) => {
-    const [touched, setTouched] = useState(false);
+  const [touched, setTouched] = useState(false);
 
-    const error =
-        touched && !isValidCity(value)
-            ? "Enter a valid city name"
-            : "";
+  const error = touched && !isValidCity(value) ? 'Enter a valid city name' : '';
 
-    return (
-        <View style={{ marginTop: 24 }}>
-            <AppInput
-                value={value || ""}
-                onChangeText={(text) => setValue(text)}
-                onBlur={() => setTouched(true)}
-                placeholder="Enter city (e.g. Pune)"
-                error={error}
-            />
-        </View>
-    );
+  return (
+    <View style={{ marginTop: 24 }}>
+      <AppInput
+        value={value || ''}
+        onChangeText={text => setValue(text)}
+        onBlur={() => setTouched(true)}
+        placeholder="Enter city (e.g. Pune)"
+        error={error}
+      />
+    </View>
+  );
 };
 
 export default CityInput;

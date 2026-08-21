@@ -40,7 +40,7 @@ const NameQuestion = ({ value, setValue }: any) => {
                     setTouched((prev) => ({ ...prev, firstName: true }))
                 }
                 error={errors.firstName}
-                placeholder="Enter first name"
+                placeholder="Enter your first name"
             />
 
             <AppInput
@@ -53,7 +53,7 @@ const NameQuestion = ({ value, setValue }: any) => {
                     setTouched((prev) => ({ ...prev, lastName: true }))
                 }
                 error={errors.lastName}
-                placeholder="Enter last name"
+                placeholder="Enter your last name"
             />
         </View>
     );

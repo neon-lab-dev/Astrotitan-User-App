@@ -3,62 +3,43 @@ import { baseApi } from "../../api/baseApi";
 
 export const astrologerApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAstrologers: builder.query({
-      query: (params) => {
-        const cleanedParams = Object.fromEntries(
-          Object.entries({
-            keyword: params?.keyword,
-            isIdentityVerified: params?.isIdentityVerified,
-            country: params?.country,
-            gender: params?.gender,
-            skip: params?.skip ?? 0,
-            limit: params?.limit ?? 10,
-            areaOfPractice: params?.areaOfPractice,
-            consultLanguages: params?.consultLanguages,
-          }).filter(
-            ([_, value]) =>
-              value !== undefined && value !== null && value !== "",
-          ),
-        );
+    getAllAstrologers: builder.query({
+      query: ({
+        keyword,
+        limit,
+        page,
+        skip,
+        gender,
+        areaOfPractice,
+        consultLanguages,
+        sortBy
+      }: {
+        keyword?: string;
+        limit?: number;
+        page?: number;
+        skip?: number;
+        gender?: string;
+        areaOfPractice?: string;
+        consultLanguages?: string;
+        sortBy?: string;
+      } = {}) => {
+        const params = new URLSearchParams();
+
+        if (keyword) params.append("keyword", keyword);
+        if (typeof limit === "number") params.append("limit", limit.toString());
+        if (typeof page === "number") params.append("page", page.toString());
+        if (typeof skip === "number") params.append("skip", skip.toString());
+        if (gender) params.append("gender", gender);
+        if (areaOfPractice) params.append("areaOfPractice", areaOfPractice);
+        if (consultLanguages) params.append("consultLanguages", consultLanguages);
+        if (sortBy) params.append("sortBy", sortBy);
 
         return {
-          url: `/astrologer`,
+          url: `/astrologer?${params.toString()}`,
           method: "GET",
-          params: cleanedParams,
+          credentials: "include",
         };
       },
-
-      serializeQueryArgs: ({ endpointName, queryArgs }) => {
-        return JSON.stringify({
-          endpointName,
-          keyword: queryArgs?.keyword,
-          country: queryArgs?.country,
-          gender: queryArgs?.gender,
-          areaOfPractice: queryArgs?.areaOfPractice,
-          consultLanguages: queryArgs?.consultLanguages,
-          isIdentityVerified: queryArgs?.isIdentityVerified,
-        });
-      },
-
-      merge: (currentCache, newItems, { arg }) => {
-        if (arg?.skip === 0) {
-          currentCache.data = newItems.data;
-
-          return;
-        }
-        const existingIds = new Set(
-          currentCache.data.map((item: any) => item._id),
-        );
-        const filtered = newItems.data.filter(
-          (item: any) => !existingIds.has(item._id),
-        );
-        currentCache.data = [...currentCache.data, ...filtered];
-      },
-
-      forceRefetch({ currentArg, previousArg }) {
-        return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
-      },
-
       providesTags: ["astrologers"],
     }),
 
@@ -79,7 +60,6 @@ export const astrologerApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetAstrologersQuery,
-  useLazyGetAstrologersQuery,
+  useGetAllAstrologersQuery,
   useGetAstrologerByIdQuery,
 } = astrologerApi;

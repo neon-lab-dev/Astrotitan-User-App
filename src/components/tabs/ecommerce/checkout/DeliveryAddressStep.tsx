@@ -1,11 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
-import { useGetMyAddressesQuery } from "../../../../redux/features/address/addressApi";
-import AddressCardSkeleton from "../../profile/address/AddressCardSkeleton/AddressCardSkeleton";
+import React, { useEffect, useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { useGetMyAddressesQuery } from '../../../../redux/features/address/addressApi';
+import AddressCardSkeleton from '../../profile/address/AddressCardSkeleton/AddressCardSkeleton';
 import LocationIcon from '@/assets/icons/navigation/location.svg';
-import { SansText } from "../../../reusable/Text/SansText";
-import AddressCard from "../../profile/address/AddressCard";
+import { SansText } from '../../../reusable/Text/SansText';
+import AddressCard from '../../profile/address/AddressCard';
+import { NavigationProp } from '../../../shared/AppHeader/AppHeader';
+import { useNavigation } from '@react-navigation/native';
+import ReusableButton from '../../../reusable/ReusableButton/ReusableButton';
 
 type FormType = {
   addressId: string;
@@ -17,9 +20,12 @@ interface Props {
 }
 
 const DeliveryAddressStep = ({ value, setValue }: Props) => {
-  const { data, isLoading, refetch } = useGetMyAddressesQuery({});
+  const navigation = useNavigation<NavigationProp>();
+  const { data, isLoading } = useGetMyAddressesQuery({});
   const addresses = data?.data || [];
-  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+    null,
+  );
 
   // Set default selected address
   useEffect(() => {
@@ -56,7 +62,7 @@ const DeliveryAddressStep = ({ value, setValue }: Props) => {
           paddingBottom: 24,
         }}
       >
-        {[1, 2].map((item) => (
+        {[1, 2].map(item => (
           <AddressCardSkeleton key={item} />
         ))}
       </ScrollView>
@@ -67,22 +73,46 @@ const DeliveryAddressStep = ({ value, setValue }: Props) => {
     return (
       <View style={{ paddingTop: 16, alignItems: 'center' }}>
         <View style={{ alignItems: 'center', paddingVertical: 40 }}>
-          <View style={{
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            backgroundColor: 'rgba(212, 175, 55, 0.08)',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+          <View
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              backgroundColor: 'rgba(212, 175, 55, 0.08)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <LocationIcon width={40} height={40} color="#D4AF37" />
           </View>
-          <SansText style={{ fontSize: 16, color: '#1a1a2e', marginTop: 12, fontFamily: 'Satoshi-Bold' }}>
+          <SansText
+            style={{
+              fontSize: 16,
+              color: '#1a1a2e',
+              marginTop: 12,
+              fontFamily: 'Satoshi-Bold',
+            }}
+          >
             No Address Found
           </SansText>
-          <SansText style={{ fontSize: 14, color: '#8E8E93', textAlign: 'center', marginTop: 4 }}>
+          <SansText
+            style={{
+              fontSize: 14,
+              color: '#8E8E93',
+              textAlign: 'center',
+              marginTop: 4,
+              marginBottom: 18,
+            }}
+          >
             Please add a delivery address to continue
           </SansText>
+
+          <ReusableButton
+            title="Add New Address"
+            onPress={() => {
+              navigation.navigate('AddAddress', { mode: 'add' });
+            }}
+          />
         </View>
       </View>
     );

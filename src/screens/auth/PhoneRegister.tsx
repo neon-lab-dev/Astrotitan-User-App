@@ -152,14 +152,6 @@ export default function PhoneRegister() {
               option=" SignIn"
               action={() => navigation.replace('LoginWithPhone')}
             />
-            {isValid && isFormFilled && (
-              <ReusableButton
-                title="Send OTP"
-                variant="solid"
-                loading={isLoading}
-                onPress={handleSubmit(onSubmit)}
-              />
-            )}
             <TermsAndConditions />
           </View>
         </View>

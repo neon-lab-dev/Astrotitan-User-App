@@ -14,6 +14,7 @@ import ProductReviews from "../screens/tabs/remedies/ecommerce/ProductReview";
 import ConsultationForm from "../screens/tabs/remedies/ecommerce/ConsultationForm";
 import PujaConsultationSuccess from "../screens/tabs/remedies/ecommerce/PujaConsultationSuccess";
 import CheckoutScreen from "../screens/tabs/remedies/ecommerce/CheckoutScreen";
+import AddAddress from './../screens/tabs/profile/address/AddAddress';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +39,10 @@ export default function RemediesNavigator() {
       <Stack.Screen
         name="CheckoutScreen"
         component={CheckoutScreen}
+      />
+      <Stack.Screen
+        name="AddAddress"
+        component={AddAddress}
       />
       <Stack.Screen
         name="PujaDetails"

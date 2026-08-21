@@ -90,7 +90,7 @@ const ProfileScreen = () => {
     } catch (error) {
       console.log('GET ME ERROR:', error);
     }
-  }, []);
+  }, [getMe, dispatch]);
 
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
@@ -106,7 +106,7 @@ const ProfileScreen = () => {
   useFocusEffect(
     useCallback(() => {
       fetchLatestUser();
-    }, []),
+    }, [fetchLatestUser]),
   );
   return (
     <AnimatedScreen>
@@ -148,7 +148,7 @@ const ProfileScreen = () => {
                   }}
                 >
                   <SatoshiText style={styles.name} numberOfLines={1}>
-                    {user?.profile?.fullName || 'User'}
+                    {user?.profile?.firstName} {user?.profile?.lastName}
                   </SatoshiText>
 
                   <SansText style={styles.desc} numberOfLines={2}>
@@ -321,6 +321,8 @@ const styles = StyleSheet.create({
     borderRadius: 42,
     borderColor: '#FBF7EB',
     borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   name: {

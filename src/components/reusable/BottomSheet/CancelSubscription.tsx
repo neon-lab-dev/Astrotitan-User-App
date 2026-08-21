@@ -6,11 +6,8 @@ import {
   TextInput,
   View,
 } from "react-native";
-
 import { Controller, useForm } from "react-hook-form";
-
 import { SansText } from "../../reusable/Text/SansText";
-
 import { useCancelSubscriptionMutation } from "../../../redux/features/subscribtion/subscriptionApi";
 
 type FormData = {
@@ -120,7 +117,7 @@ export default CancelSubscription;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
+    padding: 20,
   },
 
   label: {
@@ -132,7 +129,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 140,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#bebebe",
     borderRadius: 16,
     padding: 16,
     fontSize: 15,

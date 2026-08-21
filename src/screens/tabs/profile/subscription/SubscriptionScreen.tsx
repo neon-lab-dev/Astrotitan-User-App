@@ -1,25 +1,26 @@
-import React, { useState } from "react";
-import { Alert, ScrollView, View } from "react-native";
-import { useSelector } from "react-redux";
-
-import { RootState } from "../../../../redux/store";
-
-import AnimatedScreen from "../../../../components/layout/AnimatedScreen";
-import ScreenWrapper from "../../../../components/layout/ScreenWrapper";
-import AppHeader from "../../../../components/reusable/AppHeader/AppHeader";
-import AuthTitle from "../../../../components/auth/AuthTitle";
-import { SansText } from "../../../../components/reusable/Text/SansText";
-import { SUBSCRIPTION_PLANS } from "../../../../data/plans";
-import SubscriptionCard from "../../../../components/tabs/profile/subscription/SubscriptionCard";
-import { useCreateRazorpayOrderMutation, useGetMySubscriptionQuery, usePurchaseSubscriptionMutation } from "../../../../redux/features/subscribtion/subscriptionApi";
-import ActiveSubscription from "../../../../components/tabs/profile/subscription/ActiveSubscription";
-import CancelledSubscription from "../../../../components/tabs/profile/subscription/CancelledSubscription";
-import ExpiredSubscription from "../../../../components/tabs/profile/subscription/ExpiredSubscription";
-import CancelSubscription from "../../../../components/reusable/BottomSheet/CancelSubscription";
-import BottomSheetService from "../../../../redux/features/ui/GlobalSheet/BottomSheetService";
-import { useGetRazorpayKeyQuery } from "../../../../redux/features/orders/orderApi";
-import RazorpayCheckout from "react-native-razorpay";
-
+/* eslint-disable react-native/no-inline-styles */
+import React, { useState } from 'react';
+import { Alert, ScrollView, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../redux/store';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import { SansText } from '../../../../components/reusable/Text/SansText';
+import { SUBSCRIPTION_PLANS } from '../../../../data/plans';
+import SubscriptionCard from '../../../../components/tabs/profile/subscription/SubscriptionCard';
+import {
+  useCreateRazorpayOrderMutation,
+  useGetMySubscriptionQuery,
+  usePurchaseSubscriptionMutation,
+} from '../../../../redux/features/subscribtion/subscriptionApi';
+import ActiveSubscription from '../../../../components/tabs/profile/subscription/ActiveSubscription';
+import CancelledSubscription from '../../../../components/tabs/profile/subscription/CancelledSubscription';
+import ExpiredSubscription from '../../../../components/tabs/profile/subscription/ExpiredSubscription';
+import CancelSubscription from '../../../../components/reusable/BottomSheet/CancelSubscription';
+import BottomSheetService from '../../../../redux/features/ui/GlobalSheet/BottomSheetService';
+import { useGetRazorpayKeyQuery } from '../../../../redux/features/orders/orderApi';
+import RazorpayCheckout from 'react-native-razorpay';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
 export interface SubscriptionPlan {
   id: string;
@@ -37,41 +38,23 @@ export interface SubscriptionPlan {
 
 export interface Subscription {
   _id: string;
-
-  status: "active" | "cancelled" | "expired";
-
+  status: 'active' | 'cancelled' | 'expired';
   isActive: boolean;
-
   startDate: string;
-
   endDate: string;
-
   cancelDate?: string;
-
   cancelReason?: string;
-
   remainingDays?: number;
-
   razorpaySubscriptionId?: string;
 }
 const SubscriptionScreen = () => {
-  const user = useSelector(
-    (state: RootState) => state.auth.user
-  );
+  const user = useSelector((state: RootState) => state.auth.user);
   const { data, isLoading, refetch } = useGetMySubscriptionQuery({});
   const [loading, setLoading] = useState(false);
-
-  const { data: razorpayKeyData } =
-    useGetRazorpayKeyQuery({});
-
-  const razorpayKey =
-    razorpayKeyData?.key;
-
-  const [createRazorpayOrder] =
-    useCreateRazorpayOrderMutation();
-
-  const [purchaseSubscription] =
-    usePurchaseSubscriptionMutation();
+  const { data: razorpayKeyData } = useGetRazorpayKeyQuery({});
+  const razorpayKey = razorpayKeyData?.key;
+  const [createRazorpayOrder] = useCreateRazorpayOrderMutation();
+  const [purchaseSubscription] = usePurchaseSubscriptionMutation();
   const [showPlans, setShowPlans] = useState(false);
   const openCancelSubscriptionSheet = () => {
     BottomSheetService.open(
@@ -85,131 +68,115 @@ const SubscriptionScreen = () => {
       {
         height: 420,
         hasGradient: true,
-      }
+      },
     );
   };
 
   const subscription = data?.data || {};
 
   const isActive =
-    subscription?.status === "active" && subscription?.isActive === true;
-  const isCancelled = subscription?.status === "cancelled";
+    subscription?.status === 'active' && subscription?.isActive === true;
+  const isCancelled = subscription?.status === 'cancelled';
   const isExpired =
-    subscription?.status === "expired" ||
+    subscription?.status === 'expired' ||
     (subscription?.endDate &&
       new Date(subscription.endDate) < new Date() &&
       !isCancelled);
 
-
-
   const handlePaymentSuccess = async () => {
-  try {
-    const response = await purchaseSubscription({}).unwrap();
+    try {
+      const response = await purchaseSubscription({}).unwrap();
 
-    if (response.success) {
-      refetch();
+      if (response.success) {
+        refetch();
+      }
+    } catch (error) {
+      console.log(error);
+
+      Alert.alert(
+        'Error',
+        'Payment succeeded but subscription activation failed.',
+      );
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.log(error);
-
-    Alert.alert(
-      "Error",
-      "Payment succeeded but subscription activation failed."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+  };
   const openRazorpayPayment = (razorpayOrder: any) => {
-  return new Promise((resolve, reject) => {
-    const options = {
-      description: "Premium Subscription Membership",
-      image: "https://i.ibb.co.com/6JsDTXJh/logo.webp",
-      currency: "INR",
-      key: razorpayKey,
-      amount: razorpayOrder.amount,
-      name: "Astrotitan",
-      order_id: razorpayOrder.id,
+    return new Promise((resolve, reject) => {
+      const options = {
+        description: 'Premium Subscription Membership',
+        image: 'https://i.ibb.co.com/6JsDTXJh/logo.webp',
+        currency: 'INR',
+        key: razorpayKey,
+        amount: razorpayOrder.amount,
+        name: 'Astrotitan',
+        order_id: razorpayOrder.id,
 
-      prefill: {
-        email: user?.email || "",
-        contact: user?.phoneNumber || "",
-        name: user?.name || "",
-      },
+        prefill: {
+          email: user?.email || '',
+          contact: user?.phoneNumber || '',
+          name: user?.name || '',
+        },
 
-      theme: {
-        color: "#D4AF37",
-      },
+        theme: {
+          color: '#D4AF37',
+        },
 
-      modal: {
-        backdropclose: false,
-      },
-    };
+        modal: {
+          backdropclose: false,
+        },
+      };
 
-    RazorpayCheckout.open(options)
-      .then((paymentData) => {
-        resolve(paymentData);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-const handlePurchase = async () => {
-  if (!user) {
-    Alert.alert(
-      "Login Required",
-      "Please login to continue."
-    );
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    // STEP 1
-    const response = await createRazorpayOrder({
-      amount: 250,
-    }).unwrap();
-
-    const razorpayOrder = response.data;
-
-    // STEP 2
-    await openRazorpayPayment(razorpayOrder);
-
-    // STEP 3
-    await handlePaymentSuccess();
-  } catch (error: any) {
-    console.log(error);
-
-    if (error?.code === "PAYMENT_CANCELLED") {
-      Alert.alert(
-        "Payment Cancelled",
-        "You cancelled the payment."
-      );
-    } else {
-      Alert.alert(
-        "Payment Failed",
-        error?.description ||
-          "Unable to complete payment."
-      );
+      RazorpayCheckout.open(options)
+        .then(paymentData => {
+          resolve(paymentData);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  };
+  const handlePurchase = async () => {
+    if (!user) {
+      Alert.alert('Login Required', 'Please login to continue.');
+      return;
     }
 
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+
+      // STEP 1
+      const response = await createRazorpayOrder({
+        amount: 250,
+      }).unwrap();
+
+      const razorpayOrder = response.data;
+
+      // STEP 2
+      await openRazorpayPayment(razorpayOrder);
+
+      // STEP 3
+      await handlePaymentSuccess();
+    } catch (error: any) {
+      console.log(error);
+
+      if (error?.code === 'PAYMENT_CANCELLED') {
+        Alert.alert('Payment Cancelled', 'You cancelled the payment.');
+      } else {
+        Alert.alert(
+          'Payment Failed',
+          error?.description || 'Unable to complete payment.',
+        );
+      }
+
+      setLoading(false);
+    }
+  };
 
   if (isLoading) {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          <AppHeader>
-            <AuthTitle title="Subscriptions">
-              <SansText style={{ fontSize: 16 }}>
-                Loading...
-              </SansText>
-            </AuthTitle>
-          </AppHeader>
           <SansText>Loading...</SansText>
         </ScreenWrapper>
       </AnimatedScreen>
@@ -220,13 +187,7 @@ const handlePurchase = async () => {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          <AppHeader>
-            <AuthTitle title="My Subscription">
-              <SansText style={{ fontSize: 16 }}>
-                You have an active Premium Plus subscription.
-              </SansText>
-            </AuthTitle>
-          </AppHeader>
+          <AppBar title="My Plan" />
 
           <ScrollView
             contentContainerStyle={{
@@ -246,18 +207,12 @@ const handlePurchase = async () => {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          <AppHeader>
-            <AuthTitle title="Subscription Cancelled">
-              <SansText style={{ fontSize: 16 }}>
-                Your Premium Plus subscription has been cancelled.
-              </SansText>
-            </AuthTitle>
-          </AppHeader>
+         <AppBar title="Subscription Plans" />
 
           <ScrollView
             contentContainerStyle={{
               padding: 16,
-              flexGrow: 1
+              flexGrow: 1,
             }}
             showsVerticalScrollIndicator={false}
           >
@@ -271,23 +226,17 @@ const handlePurchase = async () => {
       </AnimatedScreen>
     );
   }
+
   if (isExpired && !showPlans) {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
-          <AppHeader>
-            <AuthTitle title="Subscription Expired">
-              <SansText style={{ fontSize: 16 }}>
-                Your Premium Plus subscription has expired.
-                Renew to continue enjoying premium features.
-              </SansText>
-            </AuthTitle>
-          </AppHeader>
+          <AppBar title="Subscription Expired" />
 
           <ScrollView
             contentContainerStyle={{
               padding: 16,
-              flexGrow: 1
+              flexGrow: 1,
             }}
             showsVerticalScrollIndicator={false}
           >
@@ -300,17 +249,12 @@ const handlePurchase = async () => {
       </AnimatedScreen>
     );
   }
+
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <AppHeader>
-          <AuthTitle title="Choose a plan">
-            <SansText style={{ fontSize: 16 }}>
-              Get uninterrupted access to astrologers and
-              personalized guidance.
-            </SansText>
-          </AuthTitle>
-        </AppHeader>
+
+        <AppBar title="Choose a plan" />
 
         <ScrollView
           style={{ flex: 1 }}
@@ -326,16 +270,13 @@ const handlePurchase = async () => {
               gap: 22,
             }}
           >
-            {SUBSCRIPTION_PLANS.map((plan) => (
+            {SUBSCRIPTION_PLANS.map(plan => (
               <SubscriptionCard
                 key={plan.id}
                 plan={plan}
-                loading={
-                  loading &&
-                  plan.id === "premium"
-                }
+                loading={loading && plan.id === 'premium'}
                 onPress={() => {
-                  if (plan.id === "premium") {
+                  if (plan.id === 'premium') {
                     handlePurchase();
                   }
                 }}

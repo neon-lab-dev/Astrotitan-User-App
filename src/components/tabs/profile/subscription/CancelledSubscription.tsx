@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import Ionicons from "@react-native-vector-icons/ionicons";
 import React from "react";
 import {
@@ -26,7 +27,7 @@ const CancelledSubscription = ({
           <Ionicons
             name="warning-outline"
             size={42}
-            color="#D4AF37"
+            color="#ff2402"
           />
         </View>
 
@@ -71,7 +72,7 @@ const CancelledSubscription = ({
           onPress={onResubscribe}
         >
           <SansText style={styles.buttonText}>
-            Resubscribe Now
+            Purchase Same Plan
           </SansText>
         </Pressable>
       </View>
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FFF8E5",
+    backgroundColor: "#fff0f0",
     marginBottom: 22,
   },
 

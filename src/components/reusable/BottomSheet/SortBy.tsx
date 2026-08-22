@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import SelectableOptions from "../SelectableOptions/SelectableOptions";
-import { SansText } from "../Text/SansText";
-import { SatoshiText } from "../Text/SatoshiText";
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import SelectableOptions from '../SelectableOptions/SelectableOptions';
+import { SansText } from '../Text/SansText';
+import { SatoshiText } from '../Text/SatoshiText';
 
 type Props = {
+  value: string;
   onApply: (value: string) => void;
 };
 
-const SortBySection = ({ onApply }: Props) => {
-  // MUST BE ARRAY because multiple=true
-  const [value, setValue] = useState<string>("relevance");
+const SortBySection = ({ value, onApply }: Props) => {
+  const [selectedValue, setSelectedValue] = useState(value);
 
   return (
     <View style={styles.container}>
@@ -18,19 +18,19 @@ const SortBySection = ({ onApply }: Props) => {
 
       <SelectableOptions
         options={[
-          { label: "Top Rated", value: "topRated" },
-          { label: "Most Experienced", value: "mostExperienced" },
-          { label: "Relevance", value: "relevance" },
+          { label: 'Top Rated', value: 'topRated' },
+          { label: 'Most Experienced', value: 'mostExperienced' },
+          { label: 'Relevance', value: 'relevance' },
         ]}
-        value={value}
+        value={selectedValue}
         onChange={(val: string) => {
-          setValue(val);
-          onApply(val); // FULL VALUE
+          setSelectedValue(val);
+          onApply(val);
         }}
       />
 
       <SansText style={styles.footer}>
-        Sorting won&apos;t affect availability
+        Sorting won't affect availability
       </SansText>
     </View>
   );
@@ -43,17 +43,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     gap: 20,
-    paddingBottom:56
+    paddingBottom: 56,
   },
 
   title: {
     fontSize: 21,
-    fontFamily: "Satoshi-Bold",
+    fontFamily: 'Satoshi-Bold',
   },
 
   footer: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 12,
-    color: "#666",
+    color: '#666',
   },
 });

@@ -109,6 +109,7 @@ const AstrologerScreen = () => {
   const onSortBy = () => {
     BottomSheetService.open(
       <SortBySection
+        value={sortValue}
         onApply={val => {
           setSortValue(val);
           setSkip(0);
@@ -156,7 +157,7 @@ const AstrologerScreen = () => {
         <AppBar
           title="Astrologers"
           children={
-             <IconButton
+            <IconButton
               Icon={ChatIcon}
               iconColor="#0D0D0D"
               onPress={() => {

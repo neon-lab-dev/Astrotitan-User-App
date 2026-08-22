@@ -6,7 +6,7 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
+  TouchableOpacity, 
   View,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -108,7 +108,7 @@ const AstrologerDetailsScreen =
                       uri:
                         astrologer.profilePicture,
                     }
-                    : require("@/assets/images/dummy/experts/expert1.png")
+                    : require("@/assets/images/dummy/experts/expert3.png")
                 }
                 style={
                   styles.image

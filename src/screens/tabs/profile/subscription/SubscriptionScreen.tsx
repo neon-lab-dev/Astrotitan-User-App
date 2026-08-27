@@ -285,6 +285,7 @@ const SubscriptionScreen = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
+        <AppBar title="Choose a Plan" />
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{
@@ -303,8 +304,6 @@ const SubscriptionScreen = () => {
           }
           showsVerticalScrollIndicator={false}
         >
-          <AppBar title="Choose a plan" />
-
           <View
             style={{
               gap: 22,

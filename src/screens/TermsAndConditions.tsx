@@ -13,7 +13,10 @@ const TermsAndConditions = () => {
     <AnimatedScreen>
       <SafeAreaView style={{ flex: 1 }}>
         <ScreenWrapper>
-          <AppBar title="Terms & Conditions" />
+          <AppBar
+            title="Terms & Conditions"
+            isNotificationIconVisible={false}
+          />
 
           <ScrollView
             style={{ flex: 1 }}

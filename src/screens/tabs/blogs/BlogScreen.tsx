@@ -21,14 +21,48 @@ import AppBar from '../../../components/reusable/AppBar/AppBar';
 
 // Sample categories - Replace with your actual categories from API
 const BLOG_CATEGORIES = [
+  // New categories
   { id: 'All', label: 'All' },
-  { id: 'Astrology', label: 'Astrology' },
-  { id: 'Horoscope', label: 'Horoscope' },
-  { id: 'Kundli', label: 'Kundli' },
-  { id: 'Remedies', label: 'Remedies' },
-  { id: 'Planets', label: 'Planets' },
-  { id: 'Zodiac', label: 'Zodiac' },
-  { id: 'Mantras', label: 'Mantras' },
+  { id: 'astrology', label: 'Astrology' },
+  { id: 'horoscope', label: 'Horoscope' },
+  { id: 'kundli', label: 'Kundli' },
+  { id: 'remedies', label: 'Remedies' },
+  { id: 'planets', label: 'Planets' },
+  { id: 'zodiac', label: 'Zodiac' },
+  { id: 'mantras', label: 'Mantras' },
+
+  // Existing ones
+  { id: 'wealth-finance', label: 'Wealth & Finance' },
+  { id: 'education', label: 'Education' },
+  { id: 'marriage', label: 'Marriage' },
+  { id: 'health-wellness', label: 'Health & Wellness' },
+  { id: 'career-growth', label: 'Career Growth' },
+  { id: 'love-relationship', label: 'Love & Relationship' },
+
+  // Astrology Categories
+  { id: 'vedic-astrology', label: 'Vedic Astrology' },
+  { id: 'birth-chart-analysis', label: 'Birth Chart Analysis' },
+  { id: 'kundli-matching', label: 'Kundli Matching' },
+  { id: 'remedies-rituals', label: 'Remedies & Rituals' },
+  { id: 'gemstone-recommendations', label: 'Gemstone Recommendations' },
+  { id: 'muhurat-auspicious-timing', label: 'Muhurat & Auspicious Timing' },
+  { id: 'planetary-transits', label: 'Planetary Transits' },
+  { id: 'dosha-analysis', label: 'Dosha Analysis' },
+  { id: 'karma-past-life', label: 'Karma & Past Life' },
+  { id: 'spiritual-growth', label: 'Spiritual Growth' },
+  { id: 'meditation-mindfulness', label: 'Meditation & Mindfulness' },
+  { id: 'feng-shui-vastu', label: 'Feng Shui & Vastu' },
+  { id: 'dream-interpretation', label: 'Dream Interpretation' },
+  { id: 'tarot-reading', label: 'Tarot Reading' },
+  { id: 'numerology', label: 'Numerology' },
+  { id: 'palmistry', label: 'Palmistry' },
+  { id: 'gemology', label: 'Gemology' },
+  { id: 'children-parenting', label: 'Children & Parenting' },
+  { id: 'property-real-estate', label: 'Property & Real Estate' },
+  { id: 'business-entrepreneurship', label: 'Business & Entrepreneurship' },
+  { id: 'travel-foreign-settlements', label: 'Travel & Foreign Settlements' },
+  { id: 'legal-astrology', label: 'Legal Astrology' },
+  { id: 'astro-psychology', label: 'Astro Psychology' },
 ];
 
 const BlogScreen = () => {
@@ -148,6 +182,8 @@ const BlogScreen = () => {
                 <BlogCard
                   key={blog._id}
                   title={blog?.title || 'Untitled Blog'}
+                  category={blog?.category}
+                  blogType={blog?.blogType}
                   thumbnail={{
                     uri: blog?.thumbnail,
                   }}

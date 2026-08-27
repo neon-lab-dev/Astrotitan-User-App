@@ -215,7 +215,7 @@ const PersonalInformation = () => {
                       ? {
                           uri: profile.profilePicture,
                         }
-                      : require('@/assets/images/dummy/experts/expert1.png')
+                      : require('@/assets/images/user-profile-placeholder.png')
                   }
                   style={styles.image}
                   resizeMode="cover"

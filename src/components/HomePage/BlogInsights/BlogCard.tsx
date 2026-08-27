@@ -14,7 +14,7 @@ const { width } = Dimensions.get('window');
 type Props = {
   title: string;
   category?: string;
-  blogType?: 'article' | 'video' | 'podcast' | 'guide';
+  blogType?: any;
   thumbnail: any;
   onPress?: () => void;
   date?: string;
@@ -23,7 +23,7 @@ type Props = {
 const BlogCard = ({
   title,
   category,
-  blogType = 'article',
+  blogType,
   thumbnail,
   onPress,
   date,

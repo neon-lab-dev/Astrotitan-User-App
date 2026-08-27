@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -27,7 +27,8 @@ import PremiumRequiredModal from '../../../../components/AstrologersPage/Premium
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const AstrologerDetailsScreen = () => {
-  const { data: myProfile } = useGetMeQuery({});
+  const { data: myProfile, refetch: refetchProfile } = useGetMeQuery({});
+  console.log(myProfile, 'PPP');
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const [showPremiumModal, setShowPremiumModal] = useState<boolean>(false);
@@ -47,10 +48,21 @@ const AstrologerDetailsScreen = () => {
       setRefreshing(true);
 
       await refetch();
+      await refetchProfile();
     } finally {
       setRefreshing(false);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await refetchProfile();
+      // You can add more async operations here
+    };
+
+    fetchData();
+  }, []);
+  
   if (isLoading && !previewAstrologer) {
     return <AstrologerDetailSkeleton />;
   }

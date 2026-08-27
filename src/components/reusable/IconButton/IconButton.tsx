@@ -18,8 +18,8 @@ type Props = {
 
 const IconButton = ({
   Icon,
-  size = 30,
-  iconSize = 18,
+  size = 36,
+  iconSize = 20,
   bgColor = '#F5F5F5',
   iconColor = '#000',
   onPress,

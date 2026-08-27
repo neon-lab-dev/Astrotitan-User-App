@@ -111,7 +111,7 @@ const ProfileScreen = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <AppBar title="Profile" />
+        <AppBar title="My Profile" />
 
         <ScrollView
           refreshControl={
@@ -134,7 +134,7 @@ const ProfileScreen = () => {
                     ? {
                         uri: user.profile.profilePicture,
                       }
-                    : require('@/assets/images/dummy/experts/expert3.png')
+                    : require('@/assets/images/user-profile-placeholder.png')
                 }
                 style={styles.avatar}
               />

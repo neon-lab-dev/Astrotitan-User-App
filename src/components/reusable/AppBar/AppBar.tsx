@@ -18,7 +18,6 @@ import { SatoshiText } from '../Text/SatoshiText';
 import { IconName } from '../../../assets/svg';
 import IconButton from '../IconButton/IconButton';
 import { useGetMyNotificationsQuery } from '../../../redux/features/notification/notificationApi';
-import { NavigationProp } from '../../shared/AppHeader/AppHeader';
 
 type Props = {
   showBack?: boolean;
@@ -34,6 +33,7 @@ type Props = {
   rightIconSize?: number;
   onPressRightIcon?: () => void;
   children?: React.ReactNode;
+  isNotificationIconVisible?: boolean;
 };
 
 const AppBar = ({
@@ -45,9 +45,10 @@ const AppBar = ({
   backgroundColor = '#715700',
   showBorder = true,
   borderColor = '#E6D18B',
+  isNotificationIconVisible = true,
   children,
 }: Props) => {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<any>();
 
   const { data: myNotifications } = useGetMyNotificationsQuery({});
   const unreadCount = myNotifications?.data?.filter(
@@ -132,8 +133,11 @@ const AppBar = ({
           </View>
         ) : null}
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        {
+          isNotificationIconVisible && 
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <IconButton
+            size={35}
             Icon={NotificationIcon}
             iconColor="#0D0D0D"
             onPress={() => {
@@ -144,6 +148,7 @@ const AppBar = ({
           />
           {children && <View>{children}</View>}
         </View>
+        }
       </View>
     </SafeAreaView>
   );
@@ -176,8 +181,8 @@ const styles = StyleSheet.create({
   // LEFT / RIGHT ICON BUTTON
   // --------------------------------
   iconButton: {
-    width: 40,
-    height: 40,
+    width: 20,
+    height: 20,
 
     borderRadius: 20,
 

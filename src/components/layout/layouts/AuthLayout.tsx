@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ScreenWrapper from "../ScreenWrapper";
@@ -10,7 +11,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     <ScreenWrapper>
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAwareScrollView
-          contentContainerStyle={{ flexGrow: 1 }} // 🔥 IMPORTANT
+          contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           enableOnAndroid={true}

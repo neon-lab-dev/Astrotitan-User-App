@@ -48,7 +48,7 @@ const AppHeader = () => {
 
         <SatoshiText
           style={{
-            fontSize: 16,
+            fontSize: 18,
             color: '#0D0D0D',
             fontFamily: 'Satoshi-Bold',
           }}

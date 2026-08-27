@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   heroContainer: {
-    marginTop: 12,
+    marginTop: 0,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
     overflow: "hidden",

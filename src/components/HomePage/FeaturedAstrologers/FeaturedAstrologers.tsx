@@ -74,7 +74,7 @@ const FeaturedAstrologers: React.FC<TFeaturedAstrologersProps> = ({
                 experience={item?.experience || '0'}
                 description={item?.bio || 'Experienced astrologer'}
                 tags={item?.areaOfPractice || []}
-                rating={item?.rating || 4.5}
+                rating={item?.rating || 0}
                 image={{
                   uri: item?.profilePicture,
                 }}

@@ -2,16 +2,10 @@
 import StarIcon from '@/assets/icons/visual/star.svg';
 import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import BottomSheetService from '../../../../../redux/features/ui/GlobalSheet/BottomSheetService';
-import ConsultAstrologerSection from '../../../../reusable/BottomSheet/ConsultAstrologerSection';
 import { useNavigation } from '@react-navigation/native';
 import { SansText } from '../../../../reusable/Text/SansText';
 import { SatoshiText } from '../../../../reusable/Text/SatoshiText';
 
-type AstrologerType = {
-  name: string;
-  image: any;
-};
 
 type Props = {
   _id: string;

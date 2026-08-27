@@ -123,7 +123,7 @@ export default function EmailLogin() {
           <View style={{ gap: 24 }}>
             <AuthSecondaryNavigation
               question="New User?"
-              option=" SignIn"
+              option=" Sign Up"
               action={() => navigation.replace('RegisterWithPhone')}
             />
             <TermsAndConditions />

@@ -1,15 +1,12 @@
-
 import { StatusBar, useColorScheme } from 'react-native';
-import {
-  SafeAreaProvider,
-} from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RootNavigator from './navigation/RootNavigator';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import ScreenWrapper from './components/layout/ScreenWrapper';
 // import GlobalBottomSheet from './components/reusable/GlobalBottomSheet/GlobalBottomSheet';
 // import GlobalModal from './components/reusable/GlobalModal/GlobalModal';
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import GlobalModal from './components/reusable/GlobalModal/GlobalModal';
 import GlobalBottomSheet from './components/reusable/GlobalBottomSheet/GlobalBottomSheet';
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,19 +14,20 @@ import { useEffect, useState } from 'react';
 import { loadAuth } from './utils/loadAuth';
 import { NotificationManager } from './components/NotificationManager';
 import { DevResetPanel } from './components/dev/DevResetPanel';
+import ZoomProvider from './providers/ZoomProvider';
 // import { DevResetPanel } from './components/dev/DevResetPanel';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-   const [appReady, setAppReady] = useState(false);
-   useEffect(() => {
+  const [appReady, setAppReady] = useState(false);
+  useEffect(() => {
     async function prepareApp() {
       try {
         /* LOAD AUTH */
 
         await loadAuth();
       } catch (error) {
-        console.log("APP INIT ERROR:", error);
+        console.log('APP INIT ERROR:', error);
       } finally {
         setAppReady(true);
       }
@@ -38,23 +36,25 @@ function App() {
     prepareApp();
   }, []);
 
-
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={"#EDDEAD"} />
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={'#EDDEAD'}
+      />
       <AppContent />
     </SafeAreaProvider>
   );
 }
 
 function AppContent() {
-
   return (
     <Provider store={store}>
-     <GestureHandlerRootView style={{ flex: 1 }}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         {/* <SafeAreaProvider> */}
+        <ZoomProvider>
           <NavigationContainer>
-            <NotificationManager/>
+            <NotificationManager />
             <ScreenWrapper>
               <RootNavigator />
             </ScreenWrapper>
@@ -62,11 +62,11 @@ function AppContent() {
             <GlobalModal />
             {/* <DevResetPanel/>  */}
           </NavigationContainer>
+        </ZoomProvider>
         {/* </SafeAreaProvider> */}
       </GestureHandlerRootView>
     </Provider>
   );
 }
-
 
 export default App;

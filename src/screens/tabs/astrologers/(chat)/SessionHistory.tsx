@@ -5,10 +5,10 @@ import { RefreshControl, ScrollView, View, StyleSheet } from 'react-native';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import { SansText } from '../../../../components/reusable/Text/SansText';
-import { useGetMyConsultationBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
 import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
 import SessionHistoryCard from '../../../../components/SessionHistoryPage/SessionHistoryCard/SessionHistoryCard';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
+import { useGetMyConsultationRequestsBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
 
 const SessionHistory = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -17,7 +17,7 @@ const SessionHistory = () => {
     data: consultationBookings,
     isLoading: isBookingLoading,
     refetch,
-  } = useGetMyConsultationBookingsQuery({});
+  } = useGetMyConsultationRequestsBookingsQuery({});
   const bookings = consultationBookings?.data?.data || [];
 
   const onRefresh = useCallback(async () => {
@@ -79,9 +79,7 @@ const SessionHistory = () => {
           >
             <AppBar title="Session Logs" />
 
-            <View style={styles.content}>
-              {renderContent()}
-            </View>
+            <View style={styles.content}>{renderContent()}</View>
           </ScrollView>
         </View>
       </ScreenWrapper>
@@ -94,7 +92,7 @@ export default SessionHistory;
 const SessionSkeleton = () => {
   return (
     <View style={styles.skeletonContainer}>
-      {[1, 2, 3, 4, 5].map((item) => (
+      {[1, 2, 3, 4, 5].map(item => (
         <View key={item} style={styles.skeletonItem}>
           <SkeletonLoader
             width={52}
@@ -165,7 +163,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 16,
-    paddingBottom:16
+    paddingBottom: 16,
   },
   skeletonContainer: {
     paddingVertical: 16,

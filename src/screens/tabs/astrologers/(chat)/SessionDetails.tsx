@@ -89,32 +89,39 @@ const SessionDetails = () => {
   };
 
   const handleChatNow = (booking: any) => {
-      const participant = booking.astrologer;
-      const currentParticipantId = booking.user;
-  
-      dispatch(
-        setSelectedConsultation({
-          consultationId: booking._id,
-          currentParticipantId,
-          participant: {
-            _id: participant?.accountId,
-            name: participant?.displayName,
-            firstName: participant?.firstName,
-            lastName: participant?.lastName,
-            profilePicture: participant?.profilePicture || "",
-            accountId:participant?.accountId,
-            role: "astrologer",
-          },
-        })
-      );
-  
-      navigation.navigate("AstrologerChatScreen", {
-        id: booking._id,
-        profilePicture: participant?.profilePicture,
-        name: participant?.displayName,
-        consultationFor: booking.consultationFor,
-      });
-    };
+    const participant = booking.astrologer;
+    const currentParticipantId = booking.user;
+
+    dispatch(
+      setSelectedConsultation({
+        consultationId: booking._id,
+        currentParticipantId,
+        participant: {
+          _id: participant?.accountId,
+          name: participant?.displayName,
+          firstName: participant?.firstName,
+          lastName: participant?.lastName,
+          profilePicture: participant?.profilePicture || '',
+          accountId: participant?.accountId,
+          role: 'astrologer',
+        },
+      }),
+    );
+
+    navigation.navigate('AstrologerChatScreen', {
+      id: booking._id,
+      profilePicture: participant?.profilePicture,
+      name: participant?.displayName,
+      consultationFor: booking.consultationFor,
+    });
+  };
+
+  const handleJoinConsultation = () => {
+    navigation.navigate('ConsultationCallScreen', {
+      consultationId: id,
+      otherParticipantName: astrologer.displayName,
+    });
+  };
 
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
@@ -205,6 +212,10 @@ const SessionDetails = () => {
                 </SansText>
               </View>
             </View>
+
+            <TouchableOpacity onPress={handleJoinConsultation} style={styles.chatButton}>
+              <SansText style={styles.linkText}>join</SansText>
+            </TouchableOpacity>
 
             {/* Session Details */}
             <View style={styles.section}>

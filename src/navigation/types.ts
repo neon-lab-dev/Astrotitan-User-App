@@ -76,6 +76,10 @@ export type RootStackParamList = {
   RaiseQuerySuccess: {
     slug: String;
   };
+  ConsultationCallScreen: {
+    consultationId: String;
+    otherParticipantName: String;
+  };
   BirthDetails: undefined;
   ProfileScreen: undefined;
   PersonalInformation: undefined;

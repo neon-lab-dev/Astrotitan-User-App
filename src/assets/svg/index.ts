@@ -62,6 +62,11 @@ import RightArrow from "@/assets/icons/visual/right-arrow.svg";
 import EmptyFile from "@/assets/icons/visual/empty-file.svg";
 import File from "@/assets/icons/visual/file.svg";
 import PremiumIcon from "@/assets/icons/visual/premium.svg";
+import PhoneDown from "@/assets/icons/actions/phone-down.svg";
+import MuteWhite from "@/assets/icons/actions/mute-white.svg";
+import MuteRed from "@/assets/icons/actions/mute-red.svg";
+import VideoCallRed from "@/assets/icons/actions/video-call-red.svg";
+import VideoCallWhite from "@/assets/icons/actions/video-call-white.svg";
 
 export const ICONS = {
   homeActive: HomeActive,
@@ -119,7 +124,12 @@ export const ICONS = {
   RightArrow: RightArrow,
   EmptyFile: EmptyFile,
   File: File,
-  PremiumIcon: PremiumIcon
+  PremiumIcon: PremiumIcon,
+  PhoneDown: PhoneDown,
+  MuteWhite: MuteWhite,
+  MuteRed: MuteRed,
+  VideoCallRed: VideoCallRed,
+  VideoCallWhite: VideoCallWhite
 };
 
 export type IconName = keyof typeof ICONS;

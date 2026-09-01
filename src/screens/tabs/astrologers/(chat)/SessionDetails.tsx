@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -22,32 +22,11 @@ import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 import NoteIcon from '@/assets/icons/navigation/note.svg';
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'pending':
-      return '#D4AF37';
-    case 'scheduled':
-      return '#2196F3';
-    case 'ended':
-      return '#4CAF50';
-    default:
-      return '#8E8E93';
-  }
-};
-
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case 'pending':
-      return 'Pending';
-    case 'scheduled':
-      return 'Scheduled';
-    case 'ended':
-      return 'Completed';
-    default:
-      return status || 'Unknown';
-  }
-};
+import BottomSheetService from '../../../../redux/features/ui/GlobalSheet/BottomSheetService';
+import RateAstrologer from '../../../../components/SessionDetailsPage/RateAstrologer/RateAstrologer';
+import { getConsultationStatusColor } from '../../../../utils/getConsultationStatusColor';
+import { getConsultationStatusLabel } from '../../../../utils/getConsultationStatusLabel';
+import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -57,6 +36,7 @@ const SessionDetails = () => {
   const navigation = useNavigation<NavigationProp>();
   const dispatch = useDispatch();
   const id = route.params?.id;
+  const isReviewMode = route.params?.isReviewMode || false;
 
   const { data, refetch, isLoading, isFetching, isError } =
     useGetSingleConsultationBookingsQuery(id);
@@ -69,7 +49,7 @@ const SessionDetails = () => {
   const bookedSlot = item?.bookedSlot || {};
 
   const isCall = item?.method === 'call';
-  const isScheduled = item?.status === 'scheduled';
+  const isAccepted = item?.status === 'accepted';
   const isChat = item?.method === 'chat';
 
   // Get meeting date from slotId, and time from bookedSlotId
@@ -81,12 +61,6 @@ const SessionDetails = () => {
   const formattedMeetingDate = meetingDate
     ? formatDate(meetingDate)
     : 'Not scheduled';
-
-  const handleJoinSession = () => {
-    if (meeting?.link) {
-      Linking.openURL(meeting.link);
-    }
-  };
 
   const handleChatNow = (booking: any) => {
     const participant = booking.astrologer;
@@ -120,8 +94,29 @@ const SessionDetails = () => {
     navigation.navigate('ConsultationCallScreen', {
       consultationId: id,
       otherParticipantName: astrologer.displayName,
+      otherParticipantProfilePicture: astrologer.profilePicture,
+      astrologerId: astrologer._id,
     });
   };
+
+  const hasOpenedReviewRef = useRef(false);
+
+  useEffect(() => {
+    if (isReviewMode && !hasOpenedReviewRef.current) {
+      hasOpenedReviewRef.current = true;
+
+      BottomSheetService.open(
+        <RateAstrologer
+          consultationId={id}
+          onClose={BottomSheetService.close}
+        />,
+        {
+          height: 400,
+          hasGradient: true,
+        },
+      );
+    }
+  }, [isReviewMode, id]);
 
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
@@ -199,23 +194,21 @@ const SessionDetails = () => {
                 <View
                   style={[
                     styles.statusDot,
-                    { backgroundColor: getStatusColor(item?.status) },
+                    {
+                      backgroundColor: getConsultationStatusColor(item?.status),
+                    },
                   ]}
                 />
                 <SansText
                   style={[
                     styles.statusText,
-                    { color: getStatusColor(item?.status) },
+                    { color: getConsultationStatusColor(item?.status) },
                   ]}
                 >
-                  {getStatusLabel(item?.status)}
+                  {getConsultationStatusLabel(item?.status)}
                 </SansText>
               </View>
             </View>
-
-            <TouchableOpacity onPress={handleJoinConsultation} style={styles.chatButton}>
-              <SansText style={styles.linkText}>join</SansText>
-            </TouchableOpacity>
 
             {/* Session Details */}
             <View style={styles.section}>
@@ -300,32 +293,26 @@ const SessionDetails = () => {
 
             {/* Action Buttons */}
             <View style={styles.actionContainer}>
-              {isCall && isScheduled && meeting?.link && (
-                <TouchableOpacity
-                  style={styles.joinButton}
-                  onPress={handleJoinSession}
-                >
-                  <SatoshiText style={styles.joinButtonText}>
-                    Join Session
-                  </SatoshiText>
-                </TouchableOpacity>
+              {isCall && isAccepted && (
+                <ReusableButton
+                  title="Join Session"
+                  onPress={handleJoinConsultation}
+                  variant="solid"
+                />
               )}
 
-              {isChat && (
-                <TouchableOpacity
-                  style={styles.chatButton}
+              {isChat && isAccepted && (
+                <ReusableButton
+                  title="Chat Now"
                   onPress={() => handleChatNow(item)}
-                >
-                  <SatoshiText style={styles.chatButtonText}>
-                    Chat Now
-                  </SatoshiText>
-                </TouchableOpacity>
+                  variant="solid"
+                />
               )}
 
-              {isCall && !isScheduled && (
+              {!isAccepted && (
                 <View style={styles.notScheduledContainer}>
                   <SansText style={styles.notScheduledText}>
-                    This session is not scheduled yet
+                    Please wait for the astrologer to confirm the session.
                   </SansText>
                 </View>
               )}
@@ -467,40 +454,13 @@ const styles = StyleSheet.create({
   actionContainer: {
     marginTop: 8,
   },
-  joinButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4CAF50',
-    paddingVertical: 14,
-    borderRadius: 12,
-    gap: 10,
-  },
-  joinButtonText: {
-    fontSize: 16,
-    fontFamily: 'Satoshi-Bold',
-    color: '#FFFFFF',
-  },
-  chatButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#D4AF37',
-    paddingVertical: 14,
-    borderRadius: 12,
-    gap: 10,
-  },
-  chatButtonText: {
-    fontSize: 16,
-    fontFamily: 'Satoshi-Bold',
-    color: '#FFFFFF',
-  },
   notScheduledContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F8F8F8',
     paddingVertical: 14,
+    paddingHorizontal: 20,
     borderRadius: 12,
     gap: 10,
     borderWidth: 1,
@@ -508,8 +468,9 @@ const styles = StyleSheet.create({
   },
   notScheduledText: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: '#900202',
     fontFamily: 'Satoshi-Medium',
+    textAlign: 'center',
   },
   emptyContainer: {
     flex: 1,

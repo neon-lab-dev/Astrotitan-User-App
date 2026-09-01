@@ -6,19 +6,7 @@ import { SatoshiText } from '../../reusable/Text/SatoshiText';
 import { formatDate } from '../../../utils/validators/dateValidators';
 import { ICONS } from '../../../assets/svg';
 import { useNavigation } from '@react-navigation/native';
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'pending':
-      return '#D4AF37';
-    case 'scheduled':
-      return '#2196F3';
-    case 'ended':
-      return '#4CAF50';
-    default:
-      return '#8E8E93';
-  }
-};
+import { getConsultationStatusColor } from '../../../utils/getConsultationStatusColor';
 
 const SessionHistoryCard = ({ item } : any) => {
     const navigation = useNavigation<any>();
@@ -48,13 +36,13 @@ const SessionHistoryCard = ({ item } : any) => {
             <View
               style={[
                 styles.statusDot,
-                { backgroundColor: getStatusColor(item.status) },
+                { backgroundColor: getConsultationStatusColor(item.status) },
               ]}
             />
             <SansText
               style={[
                 styles.statusText,
-                { color: getStatusColor(item.status) },
+                { color: getConsultationStatusColor(item.status) },
               ]}
             >
               {item.status}

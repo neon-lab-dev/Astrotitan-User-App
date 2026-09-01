@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -17,16 +18,22 @@ import CallControls from '../../../components/CallControls';
 import WaitingForParticipant from './WaitingForParticipant';
 
 import { useRoute } from '@react-navigation/native';
+
 import {
   useEndConsultationSessionMutation,
   useLazyJoinConsultationQuery,
   useStartConsultationMutation,
 } from '../../../redux/features/consultation/consultationApi';
+
 import useCallPermissions from '../../../hooks/useCallPermissions';
+
+import LinearGradient from 'react-native-linear-gradient';
+import useCallTimer from '../../../hooks/useCallTimer';
 
 interface ConsultationCallRouteParams {
   consultationId: string;
   otherParticipantName: string;
+  otherParticipantProfilePicture?: any;
   userRole: 'user' | 'astrologer';
 }
 
@@ -36,6 +43,7 @@ const ConsultationCallScreen = ({ navigation }: any) => {
   const {
     consultationId,
     otherParticipantName,
+    otherParticipantProfilePicture,
     userRole = 'user',
   } = route.params as ConsultationCallRouteParams;
 
@@ -58,6 +66,7 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     isInSession,
     isMuted,
     isVideoOn,
+    remoteVideoStates,
     error,
     joinSession,
     leaveSession,
@@ -67,6 +76,8 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     switchCamera,
   } = useZoomCall();
 
+  const { requestPermissions } = useCallPermissions();
+
   const remoteUser = useMemo(() => {
     if (!mySelf) {
       return users[0];
@@ -75,9 +86,13 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     return users.find(user => user.userId !== mySelf.userId);
   }, [mySelf, users]);
 
-  const {
-    requestPermissions,
-} = useCallPermissions();
+  const isCallActive = isInSession && Boolean(remoteUser);
+
+  const { formattedTime } = useCallTimer(isCallActive);
+
+  const isRemoteVideoOn = remoteUser
+    ? Boolean(remoteVideoStates[remoteUser.userId])
+    : false;
 
   useEffect(() => {
     let mounted = true;
@@ -102,37 +117,33 @@ const ConsultationCallScreen = ({ navigation }: any) => {
 
         const result = await getJoinConsultation(consultationId).unwrap();
 
-        console.log('[Consultation] ✅ Join API response:', result);
+        console.log('[Consultation] ✅ Join API response:', {
+          provider: result?.provider,
+          sessionName: result?.sessionName,
+          hasToken: Boolean(result?.token),
+          userName: result?.userName,
+          role: result?.role,
+        });
 
         if (!mounted) {
-          console.log('[Consultation] Component unmounted after API response');
-
           return;
         }
 
         if (!result) {
-          throw new Error('Join API returned empty response');
+          throw new Error('Join API returned empty response.');
         }
 
         if (!result.sessionName) {
-          throw new Error('sessionName is missing from join API response');
+          throw new Error('sessionName is missing from join API response.');
         }
 
         if (!result.token) {
-          throw new Error('Zoom token is missing from join API response');
+          throw new Error('Zoom token is missing from join API response.');
         }
 
         if (!result.userName) {
-          throw new Error('userName is missing from join API response');
+          throw new Error('userName is missing from join API response.');
         }
-
-        console.log('[Consultation] Zoom data:', {
-          sessionName: result.sessionName,
-          hasToken: Boolean(result.token),
-          hasPassword: Boolean(result.sessionPassword),
-          userName: result.userName,
-          role: result.role,
-        });
 
         console.log('[Consultation] Calling joinSession()...');
 
@@ -142,9 +153,9 @@ const ConsultationCallScreen = ({ navigation }: any) => {
           userName: result.userName,
         });
 
-        console.log('[Consultation] joinSession() completed');
+        console.log('[Consultation] joinSession() completed.');
       } catch (err) {
-        console.error('[Consultation] ❌ Connection errorss:', err);
+        console.error('[Consultation] ❌ Connection error:', err);
 
         console.error('[Consultation] Error details:', {
           message: err instanceof Error ? err.message : String(err),
@@ -192,14 +203,19 @@ const ConsultationCallScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     if (error) {
-      Alert.alert('Call Error', error);
+      console.error('[Consultation] Zoom SDK error:', error);
     }
   }, [error]);
+
+  const isAstrologerJoined = Boolean(remoteUser);
 
   const handleLeave = async () => {
     try {
       await leaveSession();
-      navigation.goBack();
+
+      navigation.navigate('SessionDetails', {
+        isReviewMode: isAstrologerJoined ? true : false,
+      });
     } catch (err) {
       console.error('Leave call error:', err);
     }
@@ -252,6 +268,8 @@ const ConsultationCallScreen = ({ navigation }: any) => {
         <Text style={styles.loadingText}>
           {isEnding
             ? 'Ending consultation...'
+            : isStarting
+            ? 'Starting consultation...'
             : 'Connecting to consultation...'}
         </Text>
       </SafeAreaView>
@@ -286,26 +304,62 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000000" />
 
+      <LinearGradient
+        colors={['rgba(212, 175, 55, 0.15)', 'transparent']}
+        start={{
+          x: 0.5,
+          y: 0.5,
+        }}
+        end={{
+          x: 0.5,
+          y: 1,
+        }}
+        style={styles.glowEffect}
+      />
+
       <View style={styles.videoContainer}>
-        {remoteUser ? (
+        {!remoteUser ? (
+          <WaitingForParticipant participantName={otherParticipantName} />
+        ) : isRemoteVideoOn ? (
           <ZoomView
             userId={remoteUser.userId}
             fullScreen
             style={styles.remoteVideo}
           />
         ) : (
-          <WaitingForParticipant participantName={otherParticipantName} />
+          <View style={styles.profileContainer}>
+            <View style={styles.profileCircleWrapper}>
+              {otherParticipantProfilePicture ? (
+                <Image
+                  source={{
+                    uri: otherParticipantProfilePicture,
+                  }}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <View style={styles.placeholderCircle}>
+                  <Text style={styles.placeholderText}>
+                    {otherParticipantName?.charAt(0).toUpperCase() || '?'}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            <Text style={styles.profileName}>{otherParticipantName}</Text>
+          </View>
         )}
       </View>
 
-      {mySelf && (
+      {mySelf && isVideoOn && (
         <View style={styles.selfVideo}>
           <ZoomView userId={mySelf.userId} style={styles.selfVideoView} />
         </View>
       )}
 
       <View style={styles.topBar}>
-        <Text style={styles.title}>Astrology Consultation</Text>
+        <View style={styles.nameRow}>
+          <Text style={styles.name}>{formattedTime}</Text>
+        </View>
 
         <View style={styles.statusBadge}>
           <View style={styles.liveDot} />
@@ -336,6 +390,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
 
+  glowEffect: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: '100%',
+  },
+
   videoContainer: {
     flex: 1,
     backgroundColor: '#111111',
@@ -343,6 +404,49 @@ const styles = StyleSheet.create({
 
   remoteVideo: {
     flex: 1,
+  },
+
+  profileContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  profileCircleWrapper: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+  },
+
+  profileImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  placeholderCircle: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  placeholderText: {
+    fontSize: 70,
+    color: 'rgba(255,255,255,0.7)',
+    fontWeight: '600',
+  },
+
+  profileName: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
   },
 
   selfVideo: {
@@ -371,7 +475,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  title: {
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+
+  name: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',

@@ -79,6 +79,7 @@ export type RootStackParamList = {
   ConsultationCallScreen: {
     consultationId: String;
     otherParticipantName: String;
+    otherParticipantProfilePicture?: any;
   };
   BirthDetails: undefined;
   ProfileScreen: undefined;
@@ -90,6 +91,7 @@ export type RootStackParamList = {
   SessionHistory: undefined;
   SessionDetails: {
     id: string;
+    isReviewMode?: boolean;
   };
   OrdersScreen: undefined;
   PujaConsultationSuccess: undefined;

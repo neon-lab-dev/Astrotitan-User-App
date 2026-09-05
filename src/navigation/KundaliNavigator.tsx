@@ -2,6 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import KundliScreen from "../screens/tabs/kundali/KundliScreen";
 import KundliRequestDetails from "../screens/tabs/kundali/KundliRequestDetails";
+import KundliRequestSuccess from "../screens/tabs/kundali/KundliRequestSuccess";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,10 @@ export default function KundaliNavigator() {
       <Stack.Screen
         name="KundliRequestDetails"
         component={KundliRequestDetails}
+      />
+      <Stack.Screen
+        name="KundliRequestSuccess"
+        component={KundliRequestSuccess}
       />
 
     </Stack.Navigator>

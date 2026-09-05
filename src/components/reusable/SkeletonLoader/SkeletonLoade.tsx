@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 
 import { JSX, useEffect, useRef } from "react";
 import { Animated, View } from "react-native";

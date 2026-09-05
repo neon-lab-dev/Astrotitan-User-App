@@ -42,6 +42,7 @@ export type RootStackParamList = {
   KundliRequestDetails: {
     id: string;
   };
+  KundliRequestSuccess : undefined;
   PujaDetails: {
     id: string;
   };

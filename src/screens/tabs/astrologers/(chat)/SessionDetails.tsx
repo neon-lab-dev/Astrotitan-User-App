@@ -25,6 +25,7 @@ import { getConsultationStatusColor } from '../../../../utils/getConsultationSta
 import { getConsultationStatusLabel } from '../../../../utils/getConsultationStatusLabel';
 import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
 import { formatDate } from './../../../../utils/formatDate';
+import SessionDetailsSkeleton from '../../../../components/SessionDetailsPage/SessionDetailsSkeleton/SessionDetailsSkeleton';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -124,15 +125,6 @@ const SessionDetails = () => {
     }
   }, [refreshing, refetch]);
 
-  if (isLoading || isFetching) {
-    return (
-      <View style={styles.emptyContainer}>
-        <NoteIcon height={124} width={124} />
-        <SansText style={styles.emptyText}>Please wait...</SansText>
-      </View>
-    );
-  }
-
   if (isError) {
     return (
       <View style={styles.emptyContainer}>
@@ -145,159 +137,174 @@ const SessionDetails = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <View style={styles.container}>
-          {/* Header */}
-          <AppBar title="Session Details" />
+        {isLoading || isFetching ? (
+          <View style={styles.container}>
+            {/* Header */}
+            <AppBar title="Session Details" />
+            
+            {/* Skeleton Loader for Body */}
+            <SessionDetailsSkeleton />
+          </View>
+        ) : (
+          <View style={styles.container}>
+            {/* Header */}
+            <AppBar title="Session Details" />
 
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.contentContainer}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                tintColor="#816B22"
-                colors={['#816B22']}
-                progressBackgroundColor="#FBF7EB"
-              />
-            }
-          >
-            {/* Astrologer Profile Card */}
-            <View style={styles.profileCard}>
-              <Image
-                source={{ uri: astrologer?.profilePicture }}
-                style={styles.profileImage}
-              />
-              <View style={styles.profileInfo}>
-                <SatoshiText style={styles.astrologerName}>
-                  {astrologer?.displayName || 'Astrologer'}
-                </SatoshiText>
-                <SansText style={styles.astrologerSpecialty}>
-                  {astrologer?.experience} Years Experience
-                </SansText>
-              </View>
-            </View>
-
-            {/* Status Badge */}
-            <View style={styles.statusContainer}>
-              <View
-                style={[styles.statusBadge, { backgroundColor: '#ffffff' }]}
-              >
-                <View
-                  style={[
-                    styles.statusDot,
-                    {
-                      backgroundColor: getConsultationStatusColor(item?.status),
-                    },
-                  ]}
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.contentContainer}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor="#816B22"
+                  colors={['#816B22']}
+                  progressBackgroundColor="#FBF7EB"
                 />
-                <SansText
-                  style={[
-                    styles.statusText,
-                    { color: getConsultationStatusColor(item?.status) },
-                  ]}
-                >
-                  {getConsultationStatusLabel(item?.status)}
-                </SansText>
-              </View>
-            </View>
-
-            {/* Session Details */}
-            <View style={styles.section}>
-              <SatoshiText style={styles.sectionTitle}>
-                Session Details
-              </SatoshiText>
-
-              <View style={styles.detailItem}>
-                <SansText style={styles.detailLabel}>Purpose</SansText>
-                <SansText
-                  style={[styles.detailValue, { textTransform: 'capitalize' }]}
-                >
-                  {item?.consultationFor || 'N/A'}
-                </SansText>
-              </View>
-
-              <View style={styles.detailItem}>
-                <SansText style={styles.detailLabel}>Type</SansText>
-                <SansText style={styles.detailValue}>
-                  {item?.method === 'call' ? 'Call' : 'Chat'}
-                </SansText>
-              </View>
-
-              {isCall && (
-                <>
-                  <View style={styles.detailItem}>
-                    <SansText style={styles.detailLabel}>Date</SansText>
-                    <SansText style={styles.detailValue}>
-                      {formatDate(meetingDate)}
-                    </SansText>
-                  </View>
-
-                  {startTime && endTime && (
-                    <View style={styles.detailItem}>
-                      <SansText style={styles.detailLabel}>Time</SansText>
-                      <SansText style={styles.detailValue}>
-                        {startTime} - {endTime}
-                      </SansText>
-                    </View>
-                  )}
-                </>
-              )}
-
-              {item?.requestMessage && (
-                <View style={styles.requestMessageContainer}>
-                  <SansText style={styles.requestMessageLabel}>
-                    Request Message
-                  </SansText>
-                  <SansText style={styles.requestMessage}>
-                    {item.requestMessage}
+              }
+            >
+              {/* Astrologer Profile Card */}
+              <View style={styles.profileCard}>
+                <Image
+                  source={{ uri: astrologer?.profilePicture }}
+                  style={styles.profileImage}
+                />
+                <View style={styles.profileInfo}>
+                  <SatoshiText style={styles.astrologerName}>
+                    {astrologer?.displayName || 'Astrologer'}
+                  </SatoshiText>
+                  <SansText style={styles.astrologerSpecialty}>
+                    {astrologer?.experience} Years Experience
                   </SansText>
                 </View>
-              )}
-            </View>
+              </View>
 
-            {/* Recommendations */}
-            {item?.recommendations && (
+              {/* Status Badge */}
+              <View style={styles.statusContainer}>
+                <View
+                  style={[styles.statusBadge, { backgroundColor: '#ffffff' }]}
+                >
+                  <View
+                    style={[
+                      styles.statusDot,
+                      {
+                        backgroundColor: getConsultationStatusColor(
+                          item?.status,
+                        ),
+                      },
+                    ]}
+                  />
+                  <SansText
+                    style={[
+                      styles.statusText,
+                      { color: getConsultationStatusColor(item?.status) },
+                    ]}
+                  >
+                    {getConsultationStatusLabel(item?.status)}
+                  </SansText>
+                </View>
+              </View>
+
+              {/* Session Details */}
               <View style={styles.section}>
                 <SatoshiText style={styles.sectionTitle}>
-                  Recommendations
+                  Session Details
                 </SatoshiText>
-                <View style={styles.recommendationsContainer}>
-                  <SansText style={styles.recommendationsText}>
-                    {item.recommendations}
+
+                <View style={styles.detailItem}>
+                  <SansText style={styles.detailLabel}>Purpose</SansText>
+                  <SansText
+                    style={[
+                      styles.detailValue,
+                      { textTransform: 'capitalize' },
+                    ]}
+                  >
+                    {item?.consultationFor || 'N/A'}
                   </SansText>
                 </View>
+
+                <View style={styles.detailItem}>
+                  <SansText style={styles.detailLabel}>Type</SansText>
+                  <SansText style={styles.detailValue}>
+                    {item?.method === 'call' ? 'Call' : 'Chat'}
+                  </SansText>
+                </View>
+
+                {isCall && (
+                  <>
+                    <View style={styles.detailItem}>
+                      <SansText style={styles.detailLabel}>Date</SansText>
+                      <SansText style={styles.detailValue}>
+                        {formatDate(meetingDate)}
+                      </SansText>
+                    </View>
+
+                    {startTime && endTime && (
+                      <View style={styles.detailItem}>
+                        <SansText style={styles.detailLabel}>Time</SansText>
+                        <SansText style={styles.detailValue}>
+                          {startTime} - {endTime}
+                        </SansText>
+                      </View>
+                    )}
+                  </>
+                )}
+
+                {item?.requestMessage && (
+                  <View style={styles.requestMessageContainer}>
+                    <SansText style={styles.requestMessageLabel}>
+                      Request Message
+                    </SansText>
+                    <SansText style={styles.requestMessage}>
+                      {item.requestMessage}
+                    </SansText>
+                  </View>
+                )}
               </View>
-            )}
 
-            {/* Action Buttons */}
-            <View style={styles.actionContainer}>
-              {isCall && isAccepted && (
-                <ReusableButton
-                  title="Join Session"
-                  onPress={handleJoinConsultation}
-                  variant="solid"
-                />
-              )}
-
-              {isChat && isAccepted && (
-                <ReusableButton
-                  title="Chat Now"
-                  onPress={() => handleChatNow(item)}
-                  variant="solid"
-                />
-              )}
-
-              {!isAccepted && (
-                <View style={styles.notScheduledContainer}>
-                  <SansText style={styles.notScheduledText}>
-                    Please wait for the astrologer to confirm the session.
-                  </SansText>
+              {/* Recommendations */}
+              {item?.recommendations && (
+                <View style={styles.section}>
+                  <SatoshiText style={styles.sectionTitle}>
+                    Recommendations
+                  </SatoshiText>
+                  <View style={styles.recommendationsContainer}>
+                    <SansText style={styles.recommendationsText}>
+                      {item.recommendations}
+                    </SansText>
+                  </View>
                 </View>
               )}
-            </View>
-          </ScrollView>
-        </View>
+
+              {/* Action Buttons */}
+              <View style={styles.actionContainer}>
+                {isCall && isAccepted && (
+                  <ReusableButton
+                    title="Join Session"
+                    onPress={handleJoinConsultation}
+                    variant="solid"
+                  />
+                )}
+
+                {isChat && isAccepted && (
+                  <ReusableButton
+                    title="Chat Now"
+                    onPress={() => handleChatNow(item)}
+                    variant="solid"
+                  />
+                )}
+
+                {!isAccepted && (
+                  <View style={styles.notScheduledContainer}>
+                    <SansText style={styles.notScheduledText}>
+                      Please wait for the astrologer to confirm the session.
+                    </SansText>
+                  </View>
+                )}
+              </View>
+            </ScrollView>
+          </View>
+        )}
       </ScreenWrapper>
     </AnimatedScreen>
   );

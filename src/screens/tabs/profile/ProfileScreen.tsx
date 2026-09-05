@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IconName, ICONS } from '../../../assets/svg';
 import { SansText } from '../../../components/reusable/Text/SansText';
 import {
-  useDeleteAccountMutation,
   useLazyGetMeQuery,
 } from '../../../redux/features/auth/authApi';
 import { RootState } from '../../../redux/store';
@@ -39,8 +38,7 @@ const ProfileScreen = () => {
 
   const navigation = useNavigation<NavigationProp>();
   const user = useSelector((state: RootState) => state.auth.user);
-  const [deleteAccount, { isLoading: isDeleteAccountLoading }] =
-    useDeleteAccountMutation({});
+ 
   const [refreshing, setRefreshing] = useState(false);
   const resetAuth = async () => {
     await Storage.removeProfileCompleted();
@@ -69,10 +67,6 @@ const ProfileScreen = () => {
     BottomSheetService.open(
       <DeleteAccountSection
         onCancel={BottomSheetService.close}
-        onDelete={() => {
-          deleteAccount;
-        }}
-        isLoading={isDeleteAccountLoading}
       />,
       {
         height: 400,

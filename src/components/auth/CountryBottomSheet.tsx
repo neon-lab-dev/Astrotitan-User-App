@@ -6,11 +6,14 @@ import {
   View,
   Text,
   TextInput,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SatoshiText } from '../reusable/Text/SatoshiText';
 import { SansText } from '../reusable/Text/SansText';
-import BottomSheetService from '../../redux/features/ui/GlobalSheet/BottomSheetService';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const countries = [
   { name: 'Afghanistan', code: 'AF', callingCode: '93', flag: '🇦🇫' },
@@ -35,7 +38,12 @@ const countries = [
   { name: 'Benin', code: 'BJ', callingCode: '229', flag: '🇧🇯' },
   { name: 'Bhutan', code: 'BT', callingCode: '975', flag: '🇧🇹' },
   { name: 'Bolivia', code: 'BO', callingCode: '591', flag: '🇧🇴' },
-  { name: 'Bosnia and Herzegovina', code: 'BA', callingCode: '387', flag: '🇧🇦' },
+  {
+    name: 'Bosnia and Herzegovina',
+    code: 'BA',
+    callingCode: '387',
+    flag: '🇧🇦',
+  },
   { name: 'Botswana', code: 'BW', callingCode: '267', flag: '🇧🇼' },
   { name: 'Brazil', code: 'BR', callingCode: '55', flag: '🇧🇷' },
   { name: 'Brunei', code: 'BN', callingCode: '673', flag: '🇧🇳' },
@@ -47,14 +55,29 @@ const countries = [
   { name: 'Cambodia', code: 'KH', callingCode: '855', flag: '🇰🇭' },
   { name: 'Cameroon', code: 'CM', callingCode: '237', flag: '🇨🇲' },
   { name: 'Canada', code: 'CA', callingCode: '1', flag: '🇨🇦' },
-  { name: 'Central African Republic', code: 'CF', callingCode: '236', flag: '🇨🇫' },
+  {
+    name: 'Central African Republic',
+    code: 'CF',
+    callingCode: '236',
+    flag: '🇨🇫',
+  },
   { name: 'Chad', code: 'TD', callingCode: '235', flag: '🇹🇩' },
   { name: 'Chile', code: 'CL', callingCode: '56', flag: '🇨🇱' },
   { name: 'China', code: 'CN', callingCode: '86', flag: '🇨🇳' },
   { name: 'Colombia', code: 'CO', callingCode: '57', flag: '🇨🇴' },
   { name: 'Comoros', code: 'KM', callingCode: '269', flag: '🇰🇲' },
-  { name: 'Congo, Democratic Republic of the', code: 'CD', callingCode: '243', flag: '🇨🇩' },
-  { name: 'Congo, Republic of the', code: 'CG', callingCode: '242', flag: '🇨🇬' },
+  {
+    name: 'Congo, Democratic Republic of the',
+    code: 'CD',
+    callingCode: '243',
+    flag: '🇨🇩',
+  },
+  {
+    name: 'Congo, Republic of the',
+    code: 'CG',
+    callingCode: '242',
+    flag: '🇨🇬',
+  },
   { name: 'Costa Rica', code: 'CR', callingCode: '506', flag: '🇨🇷' },
   { name: 'Croatia', code: 'HR', callingCode: '385', flag: '🇭🇷' },
   { name: 'Cuba', code: 'CU', callingCode: '53', flag: '🇨🇺' },
@@ -174,7 +197,12 @@ const countries = [
   { name: 'Russia', code: 'RU', callingCode: '7', flag: '🇷🇺' },
   { name: 'Rwanda', code: 'RW', callingCode: '250', flag: '🇷🇼' },
 
-  { name: 'Saint Kitts and Nevis', code: 'KN', callingCode: '1-869', flag: '🇰🇳' },
+  {
+    name: 'Saint Kitts and Nevis',
+    code: 'KN',
+    callingCode: '1-869',
+    flag: '🇰🇳',
+  },
   { name: 'Saint Lucia', code: 'LC', callingCode: '1-758', flag: '🇱🇨' },
   {
     name: 'Saint Vincent and the Grenadines',
@@ -237,29 +265,22 @@ const countries = [
   { name: 'Zimbabwe', code: 'ZW', callingCode: '263', flag: '🇿🇼' },
 ];
 
-interface CountryBottomSheetProps {
-  selectedCountry: {
-    name: string;
-    code: string;
-    callingCode: string;
-    flag: string;
-  };
-  onSelectCountry: (country: any) => void;
-}
-
 const CountryBottomSheet = ({
+  visible,
+  onClose,
   selectedCountry,
   onSelectCountry,
-}: CountryBottomSheetProps) => {
+}: any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCountries, setFilteredCountries] = useState(countries);
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
     if (text.trim()) {
-      const filtered = countries.filter((country) =>
-        country.name.toLowerCase().includes(text.toLowerCase()) ||
-        country.callingCode.includes(text)
+      const filtered = countries.filter(
+        country =>
+          country.name.toLowerCase().includes(text.toLowerCase()) ||
+          country.callingCode.includes(text),
       );
       setFilteredCountries(filtered);
     } else {
@@ -269,7 +290,7 @@ const CountryBottomSheet = ({
 
   const handleSelect = (country: any) => {
     onSelectCountry(country);
-    BottomSheetService.close();
+    onClose();
   };
 
   const renderCountry = ({ item }: { item: any }) => (
@@ -297,60 +318,74 @@ const CountryBottomSheet = ({
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <SatoshiText style={styles.headerTitle}>Select Country</SatoshiText>
-        <TouchableOpacity
-          onPress={BottomSheetService.close}
-          style={styles.closeButton}
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent={false}
+      onRequestClose={onClose}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <Ionicons name="close" size={24} color="#1A1A1A" />
-        </TouchableOpacity>
-      </View>
+          <View style={styles.header}>
+            <SatoshiText style={styles.headerTitle}>Select Country</SatoshiText>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Ionicons name="close" size={24} color="#1A1A1A" />
+            </TouchableOpacity>
+          </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#999999" />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search country..."
-          placeholderTextColor="#999999"
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => handleSearch('')}>
-            <Ionicons name="close-circle" size={20} color="#999999" />
-          </TouchableOpacity>
-        )}
-      </View>
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="#999999" />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search country..."
+              placeholderTextColor="#999999"
+              value={searchQuery}
+              onChangeText={handleSearch}
+              autoCorrect={false}
+              autoFocus={true}
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => handleSearch('')}>
+                <Ionicons name="close-circle" size={20} color="#999999" />
+              </TouchableOpacity>
+            )}
+          </View>
 
-      <FlatList
-        data={filteredCountries}
-        keyExtractor={(item) => item.code}
-        renderItem={renderCountry}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      />
-    </View>
+          <FlatList
+            data={filteredCountries}
+            keyExtractor={item => item.code}
+            renderItem={renderCountry}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            style={styles.list}
+          />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingTop: 16,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
@@ -379,6 +414,9 @@ const styles = StyleSheet.create({
     color: '#1A1A1A',
     fontFamily: 'GeneralSans-Regular',
     padding: 0,
+  },
+  list: {
+    flex: 1,
   },
   listContent: {
     paddingHorizontal: 20,
@@ -429,3 +467,6 @@ const styles = StyleSheet.create({
 });
 
 export default CountryBottomSheet;
+
+
+

@@ -1,11 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useState } from 'react';
-import { Alert, RefreshControl, ScrollView, View } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
-import { SansText } from '../../../../components/reusable/Text/SansText';
 import { SUBSCRIPTION_PLANS } from '../../../../data/plans';
 import SubscriptionCard from '../../../../components/tabs/profile/subscription/SubscriptionCard';
 import {
@@ -21,6 +20,7 @@ import BottomSheetService from '../../../../redux/features/ui/GlobalSheet/Bottom
 import { useGetRazorpayKeyQuery } from '../../../../redux/features/orders/orderApi';
 import RazorpayCheckout from 'react-native-razorpay';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
+import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
 
 export interface SubscriptionPlan {
   id: string;
@@ -45,6 +45,152 @@ export interface Subscription {
   remainingDays?: number;
   razorpaySubscriptionId?: string;
 }
+const SubscriptionSkeleton = () => {
+  return (
+    <View style={styles.skeletonContainer}>
+      {/* Active Subscription Card Skeleton */}
+      <View style={styles.skeletonCard}>
+        <View style={styles.skeletonHeaderRow}>
+          <SkeletonLoader
+            width={100}
+            height={16}
+            borderRadius={8}
+            array={[1]}
+          />
+          <SkeletonLoader
+            width={80}
+            height={32}
+            borderRadius={16}
+            array={[1]}
+          />
+        </View>
+
+        <View style={styles.skeletonTextBlock}>
+          <SkeletonLoader
+            width="80%"
+            height={14}
+            borderRadius={8}
+            array={[1]}
+          />
+          <SkeletonLoader
+            width="60%"
+            height={12}
+            borderRadius={8}
+            array={[1]}
+          />
+        </View>
+
+        <View style={styles.skeletonDivider} />
+
+        <View style={styles.skeletonTextBlock}>
+          <SkeletonLoader
+            width="50%"
+            height={12}
+            borderRadius={8}
+            array={[1]}
+          />
+          <SkeletonLoader
+            width="70%"
+            height={12}
+            borderRadius={8}
+            array={[1]}
+          />
+          <SkeletonLoader
+            width="40%"
+            height={12}
+            borderRadius={8}
+            array={[1]}
+          />
+        </View>
+
+        <View style={styles.skeletonButton}>
+          <SkeletonLoader
+            width="100%"
+            height={48}
+            borderRadius={24}
+            array={[1]}
+          />
+        </View>
+      </View>
+
+      {/* Subscription Plans Skeleton */}
+      <View style={styles.skeletonSectionHeader}>
+        <SkeletonLoader width={150} height={20} borderRadius={8} array={[1]} />
+      </View>
+
+      {/* Plan Cards Skeleton */}
+      {[1, 2].map(item => (
+        <View key={item} style={styles.skeletonPlanCard}>
+          <View style={styles.skeletonPlanHeader}>
+            <SkeletonLoader
+              width={80}
+              height={16}
+              borderRadius={8}
+              array={[1]}
+            />
+            <SkeletonLoader
+              width={60}
+              height={14}
+              borderRadius={8}
+              array={[1]}
+            />
+          </View>
+
+          <View style={styles.skeletonPriceRow}>
+            <SkeletonLoader
+              width={100}
+              height={28}
+              borderRadius={8}
+              array={[1]}
+            />
+            <SkeletonLoader
+              width={50}
+              height={14}
+              borderRadius={8}
+              array={[1]}
+            />
+          </View>
+
+          <View style={styles.skeletonFeatures}>
+            <SkeletonLoader
+              width="90%"
+              height={12}
+              borderRadius={8}
+              array={[1]}
+            />
+            <SkeletonLoader
+              width="80%"
+              height={12}
+              borderRadius={8}
+              array={[1]}
+            />
+            <SkeletonLoader
+              width="85%"
+              height={12}
+              borderRadius={8}
+              array={[1]}
+            />
+            <SkeletonLoader
+              width="70%"
+              height={12}
+              borderRadius={8}
+              array={[1]}
+            />
+          </View>
+
+          <View style={styles.skeletonButton}>
+            <SkeletonLoader
+              width="100%"
+              height={44}
+              borderRadius={22}
+              array={[1]}
+            />
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+};
 
 const SubscriptionScreen = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -174,13 +320,9 @@ const SubscriptionScreen = () => {
     }
   }, [refreshing, refetch]);
 
-  if (isLoading) {
+  if (!isLoading) {
     return (
-      <AnimatedScreen>
-        <ScreenWrapper>
-          <SansText>Loading...</SansText>
-        </ScreenWrapper>
-      </AnimatedScreen>
+      <SubscriptionSkeleton />
     );
   }
 
@@ -327,5 +469,82 @@ const SubscriptionScreen = () => {
     </AnimatedScreen>
   );
 };
+
+const styles = StyleSheet.create({
+  // ================= SKELETON STYLES =================
+  skeletonContainer: {
+    flex: 1,
+    padding: 16,
+  },
+
+  skeletonCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+
+  skeletonHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+
+  skeletonTextBlock: {
+    gap: 8,
+    marginBottom: 12,
+  },
+
+  skeletonDivider: {
+    height: 1,
+    backgroundColor: '#F0F0F0',
+    marginVertical: 16,
+  },
+
+  skeletonButton: {
+    marginTop: 16,
+  },
+
+  skeletonSectionHeader: {
+    marginBottom: 16,
+  },
+
+  skeletonPlanCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+
+  skeletonPlanHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+
+  skeletonPriceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+
+  skeletonFeatures: {
+    gap: 8,
+    marginBottom: 16,
+  },
+});
 
 export default SubscriptionScreen;

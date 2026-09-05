@@ -103,6 +103,7 @@ const BlogScreen = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
+        <AppBar title="Blogs and Articles" />
         <ScrollView
           style={styles.container}
           showsVerticalScrollIndicator={false}
@@ -117,7 +118,6 @@ const BlogScreen = () => {
           }
           contentContainerStyle={styles.scrollContent}
         >
-          <AppBar title="Blogs and Articles" />
 
           {/* Scrollable Category Tabs */}
           <View style={styles.categoryContainer}>

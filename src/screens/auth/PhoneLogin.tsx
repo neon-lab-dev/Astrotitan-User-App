@@ -120,6 +120,7 @@ export default function PhoneLogin() {
           setError(null);
           BottomSheetService.close();
         },
+        onClose: () => BottomSheetService.close(),
       }),
       {
         height: '85%',

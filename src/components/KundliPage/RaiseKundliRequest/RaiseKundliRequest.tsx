@@ -184,12 +184,7 @@ const RaiseKundliRequest = ({
       const response = await sendKundliRequest(formData).unwrap();
 
       if (response.success) {
-        navigation.navigate('KundliRequestDetails', { id: response?.data?._id });
-        Alert.alert(
-          'Request Submitted',
-          "Your kundli request has been submitted successfully. You will be notified once it's processed.",
-          [{ text: 'OK', onPress: () => setActiveTab('requests') }],
-        );
+        navigation.navigate('KundliRequestSuccess');
       }
     } catch (error: any) {
       Alert.alert(

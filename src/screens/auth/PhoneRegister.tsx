@@ -121,6 +121,7 @@ export default function PhoneRegister() {
           setError(null);
           BottomSheetService.close();
         },
+        onClose: () => BottomSheetService.close(),
       }),
       {
         height: '85%',

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 // src/navigation/TabNavigator.tsx
 
 import React from 'react';
@@ -43,6 +44,9 @@ const hiddenRoutes = [
   'SessionHistory',
   'PersonalInformation',
   'ConsultationCallScreen',
+  'KundliRequestSuccess',
+  'SessionDetails',
+  'BlogScreen',
 ];
 
 function shouldHideTabBar(route: any) {

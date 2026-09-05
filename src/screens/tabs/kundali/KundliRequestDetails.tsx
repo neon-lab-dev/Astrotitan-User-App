@@ -17,6 +17,8 @@ import { SatoshiText } from '../../../components/reusable/Text/SatoshiText';
 import { useGetSingleKundliRequestQuery } from '../../../redux/features/kundliRequest/kundliRequestApi';
 import ReusableButton from '../../../components/reusable/ReusableButton/ReusableButton';
 import { getKundliTypeLabel } from './../../../components/KundliPage/AllKundliRequests/KundliRequestCard';
+import AnimatedScreen from '../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../components/layout/ScreenWrapper';
 
 const STATUS_COLORS: any = {
   completed: { bg: '#E8F5E9', text: '#2E7D32', dot: '#4CAF50' },
@@ -64,172 +66,189 @@ const KundliRequestDetails = () => {
       : 'N/A';
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+    <AnimatedScreen>
+      <ScreenWrapper>
+        <SafeAreaView style={styles.mainContainer}>
+          <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      {/* --- SLIM PROFESSIONAL HEADER --- */}
-      <View style={styles.header}>
-        <View style={styles.navBar}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <SansText style={styles.backIcon}>←</SansText>
-            <SansText style={styles.backLabel}>Back</SansText>
-          </TouchableOpacity>
-          <View
-            style={[styles.statusPill, { backgroundColor: statusStyle.bg }]}
-          >
-            <View
-              style={[styles.statusDot, { backgroundColor: statusStyle.dot }]}
-            />
-            <SansText style={[styles.statusText, { color: statusStyle.text }]}>
-              {request.status?.toUpperCase()}
-            </SansText>
-          </View>
-        </View>
-
-        <View style={styles.headerTitleArea}>
-          <SatoshiText style={styles.headerId}>
-            Request #{request._id?.slice(-8).toUpperCase()}
-          </SatoshiText>
-          <SansText style={styles.headerSub}>
-            {request.requestType === 'generateKundli'
-              ? 'Detailed Kundli Generation'
-              : 'Expert Kundli Analysis'}
-          </SansText>
-        </View>
-      </View>
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#816B22"
-            colors={['#816B22']}
-            progressBackgroundColor="#FBF7EB"
-          />
-        }
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* --- SECTION: SUMMARY METRICS --- */}
-        <View style={styles.metaRow}>
-          <MetaItem
-            label="Requested On"
-            value={formatDate(request.createdAt)}
-          />
-          <MetaItem
-            label="Kundli Type"
-            value={getKundliTypeLabel(request.kundliType)}
-          />
-        </View>
-
-        <View style={styles.lineDivider} />
-
-        {/* --- SECTION: SUBJECT DETAILS --- */}
-        <SatoshiText style={styles.sectionHeading}>
-          Personal Details
-        </SatoshiText>
-        <View style={styles.grid}>
-          <GridItem label="Full Name" value={request.userName} />
-          <GridItem label="Gender" value={request.userGender} />
-          <GridItem
-            label="Date of Birth"
-            value={formatDate(request.dateOfBirth)}
-          />
-          <GridItem label="Time of Birth" value={request.timeOfBirth} />
-          <GridItem label="Birth Place" value={request.placeOfBirth} span={2} />
-        </View>
-
-        <View style={styles.lineDivider} />
-
-        {/* --- SECTION: CONTACT --- */}
-        <SatoshiText style={styles.sectionHeading}>Contact Details</SatoshiText>
-        <View style={styles.grid}>
-          <GridItem label="Phone Number" value={request.userPhoneNumber} />
-        </View>
-
-        {/* --- SECTION: NOTES --- */}
-        {request.userNotes && (
-          <View style={styles.notesContainer}>
-            <SatoshiText style={styles.notesLabel}>Concern</SatoshiText>
-            <SansText style={styles.notesText}>{request.userNotes}</SansText>
-          </View>
-        )}
-
-        {/* --- SECTION: ATTACHMENTS --- */}
-        {request.existingKundliFiles?.length > 0 && (
-          <View style={styles.attachmentSection}>
-            <SatoshiText style={styles.sectionHeading}>
-              Reference Documents
-            </SatoshiText>
-            {request.existingKundliFiles.map((url: string, i: number) => (
+          {/* --- SLIM PROFESSIONAL HEADER --- */}
+          <View style={styles.header}>
+            <View style={styles.navBar}>
               <TouchableOpacity
-                key={i}
-                style={styles.fileLink}
-                onPress={() => Linking.openURL(url)}
+                onPress={() => navigation.goBack()}
+                style={styles.backButton}
               >
-                <SansText style={styles.fileLinkText}>
-                  View Document {i + 1} ↗
-                </SansText>
+                <SansText style={styles.backIcon}>←</SansText>
+                <SansText style={styles.backLabel}>Back</SansText>
               </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {/* --- SECTION: ASSIGNED EXPERT --- */}
-        {request?.astrologerId && (
-          <TouchableOpacity
-            style={styles.expertSection}
-            onPress={() =>
-              navigation.navigate('AstrologerProfile', {
-                id: request?.astrologerId?._id,
-              })
-            }
-            activeOpacity={0.6}
-          >
-            <View style={styles.expertAvatar}>
-              {request?.astrologerId?.profilePicture ? (
-                <Image
-                  source={{ uri: request?.astrologerId?.profilePicture }}
-                  style={styles.expertAvatarImage}
+              <View
+                style={[styles.statusPill, { backgroundColor: statusStyle.bg }]}
+              >
+                <View
+                  style={[
+                    styles.statusDot,
+                    { backgroundColor: statusStyle.dot },
+                  ]}
                 />
-              ) : (
-                <SansText style={styles.avatarLetter}>
-                  {request?.astrologerId?.displayName
-                    ?.charAt(0)
-                    ?.toUpperCase() || 'A'}
+                <SansText
+                  style={[styles.statusText, { color: statusStyle.text }]}
+                >
+                  {request.status?.toUpperCase()}
                 </SansText>
-              )}
+              </View>
             </View>
-            <View style={{ flex: 1 }}>
-              <SansText style={styles.expertLabel}>
-                Consulting Specialist
-              </SansText>
-              <SatoshiText style={styles.expertName}>
-                {request?.astrologerId?.displayName}
+
+            <View style={styles.headerTitleArea}>
+              <SatoshiText style={styles.headerId}>
+                Request #{request._id?.slice(-8).toUpperCase()}
               </SatoshiText>
+              <SansText style={styles.headerSub}>
+                {request.requestType === 'generateKundli'
+                  ? 'Detailed Kundli Generation'
+                  : 'Expert Kundli Analysis'}
+              </SansText>
             </View>
-            <SansText style={styles.arrow}>❯</SansText>
-          </TouchableOpacity>
-        )}
-
-        {/* --- ACTION BUTTON --- */}
-        {request.status === 'completed' && request.reportUrl && (
-          <View style={{ marginTop: 20 }}>
-            <ReusableButton
-              title=" Download Completed Report"
-              variant="solid"
-              onPress={() => Linking.openURL(request.reportUrl!)}
-            />
           </View>
-        )}
 
-        <View style={{ height: 40 }} />
-      </ScrollView>
-    </SafeAreaView>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#816B22"
+                colors={['#816B22']}
+                progressBackgroundColor="#FBF7EB"
+              />
+            }
+            contentContainerStyle={styles.scrollContent}
+          >
+            {/* --- SECTION: SUMMARY METRICS --- */}
+            <View style={styles.metaRow}>
+              <MetaItem
+                label="Requested On"
+                value={formatDate(request.createdAt)}
+              />
+              <MetaItem
+                label="Kundli Type"
+                value={getKundliTypeLabel(request.kundliType)}
+              />
+            </View>
+
+            <View style={styles.lineDivider} />
+
+            {/* --- SECTION: SUBJECT DETAILS --- */}
+            <SatoshiText style={styles.sectionHeading}>
+              Personal Details
+            </SatoshiText>
+            <View style={styles.grid}>
+              <GridItem label="Full Name" value={request.userName} />
+              <GridItem label="Gender" value={request.userGender} />
+              <GridItem
+                label="Date of Birth"
+                value={formatDate(request.dateOfBirth)}
+              />
+              <GridItem label="Time of Birth" value={request.timeOfBirth} />
+              <GridItem
+                label="Birth Place"
+                value={request.placeOfBirth}
+                span={2}
+              />
+            </View>
+
+            <View style={styles.lineDivider} />
+
+            {/* --- SECTION: CONTACT --- */}
+            <SatoshiText style={styles.sectionHeading}>
+              Contact Details
+            </SatoshiText>
+            <View style={styles.grid}>
+              <GridItem label="Phone Number" value={request.userPhoneNumber} />
+            </View>
+
+            {/* --- SECTION: NOTES --- */}
+            {request.userNotes && (
+              <View style={styles.notesContainer}>
+                <SatoshiText style={styles.notesLabel}>Concern</SatoshiText>
+                <SansText style={styles.notesText}>
+                  {request.userNotes}
+                </SansText>
+              </View>
+            )}
+
+            {/* --- SECTION: ATTACHMENTS --- */}
+            {request.existingKundliFiles?.length > 0 && (
+              <View style={styles.attachmentSection}>
+                <SatoshiText style={styles.sectionHeading}>
+                  Reference Documents
+                </SatoshiText>
+                {request.existingKundliFiles.map((url: string, i: number) => (
+                  <TouchableOpacity
+                    key={i}
+                    style={styles.fileLink}
+                    onPress={() => Linking.openURL(url)}
+                  >
+                    <SansText style={styles.fileLinkText}>
+                      View Document {i + 1} ↗
+                    </SansText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            {/* --- SECTION: ASSIGNED EXPERT --- */}
+            {request?.astrologerId && (
+              <TouchableOpacity
+                style={styles.expertSection}
+                onPress={() =>
+                  navigation.navigate('AstrologerProfile', {
+                    id: request?.astrologerId?._id,
+                  })
+                }
+                activeOpacity={0.6}
+              >
+                <View style={styles.expertAvatar}>
+                  {request?.astrologerId?.profilePicture ? (
+                    <Image
+                      source={{ uri: request?.astrologerId?.profilePicture }}
+                      style={styles.expertAvatarImage}
+                    />
+                  ) : (
+                    <SansText style={styles.avatarLetter}>
+                      {request?.astrologerId?.displayName
+                        ?.charAt(0)
+                        ?.toUpperCase() || 'A'}
+                    </SansText>
+                  )}
+                </View>
+                <View style={{ flex: 1 }}>
+                  <SansText style={styles.expertLabel}>
+                    Consulting Specialist
+                  </SansText>
+                  <SatoshiText style={styles.expertName}>
+                    {request?.astrologerId?.displayName}
+                  </SatoshiText>
+                </View>
+                <SansText style={styles.arrow}>❯</SansText>
+              </TouchableOpacity>
+            )}
+
+            {/* --- ACTION BUTTON --- */}
+            {request.status === 'completed' && request.reportUrl && (
+              <View style={{ marginTop: 20 }}>
+                <ReusableButton
+                  title=" Download Completed Report"
+                  variant="solid"
+                  onPress={() => Linking.openURL(request.reportUrl!)}
+                />
+              </View>
+            )}
+
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </SafeAreaView>
+      </ScreenWrapper>
+    </AnimatedScreen>
   );
 };
 
@@ -264,16 +283,16 @@ const GridItem = ({
 );
 
 const styles = StyleSheet.create({
-  mainContainer: { flex: 1, backgroundColor: '#FFFFFF' },
+  mainContainer: { flex: 1 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 
   // Clean Header
   header: {
-    backgroundColor: '#EDDEAD',
+    backgroundColor: '#715700',
     paddingHorizontal: 20,
     paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#F2F2F2',
+    borderBottomColor: '#E6D18B',
   },
   navBar: {
     flexDirection: 'row',
@@ -288,15 +307,15 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     fontSize: 22,
-    color: '#1A1A1A',
+    color: '#ffff',
     marginRight: 5,
     marginBottom: 10,
   },
-  backLabel: { fontSize: 16, color: '#1A1A1A' },
+  backLabel: { fontSize: 16, color: '#ffff' },
 
   headerTitleArea: { marginTop: 15 },
-  headerId: { fontSize: 18, color: '#1A1A1A', fontWeight: '800' },
-  headerSub: { fontSize: 14, color: '#616162', marginTop: 4 },
+  headerId: { fontSize: 18, color: '#ffff', fontWeight: '800' },
+  headerSub: { fontSize: 14, color: '#c3c3c3', marginTop: 4 },
 
   statusPill: {
     flexDirection: 'row',
@@ -320,7 +339,7 @@ const styles = StyleSheet.create({
   },
   metaValue: { fontSize: 15, color: '#1A1A1A', fontWeight: '600' },
 
-  lineDivider: { height: 1, backgroundColor: '#F5F5F5', marginVertical: 25 },
+  lineDivider: { height: 1, backgroundColor: '#cbcbcb', marginVertical: 25 },
 
   sectionHeading: {
     fontSize: 12,
@@ -337,7 +356,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   gridItem: { marginBottom: 18 },
-  gridLabel: { fontSize: 12, color: '#A0A0A0', marginBottom: 2 },
+  gridLabel: { fontSize: 12, color: '#6b6b6b', marginBottom: 2 },
   gridValue: {
     fontSize: 15,
     color: '#1A1A1A',

@@ -22,11 +22,7 @@ type LoginForm = {
 };
 
 export default function PhoneLogin() {
-  const {
-    control,
-    handleSubmit,
-    watch,
-  } = useForm<LoginForm>({
+  const { control, handleSubmit, watch } = useForm<LoginForm>({
     defaultValues: {
       phone: '',
     },
@@ -67,14 +63,14 @@ export default function PhoneLogin() {
       // Show dummy loader for 2 seconds
       setIsLoading(true);
       setError(null);
-      
+
       setTimeout(() => {
         setIsLoading(false);
         setError(
-          'There is an error sending OTP to your mobile number. Please try with your email address.'
+          'There is an error sending OTP to your mobile number. Please try with your email address.',
         );
       }, 2000);
-      
+
       return;
     }
 
@@ -82,7 +78,7 @@ export default function PhoneLogin() {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const payload = {
         email: '',
         phoneNumber: data.phone,
@@ -117,6 +113,9 @@ export default function PhoneLogin() {
             callingCode: selected.callingCode,
             flag: selected.flag,
           });
+          if (selected.code !== 'IN') {
+            navigation.navigate('LoginWithEmail');
+          }
           // Clear error when country changes
           setError(null);
           BottomSheetService.close();
@@ -159,7 +158,7 @@ export default function PhoneLogin() {
                 rules={{
                   required: 'Mobile number cannot be empty!',
                   minLength: {
-                    value: 10,
+                    value: 4,
                     message: 'Enter valid number',
                   },
                 }}
@@ -199,7 +198,7 @@ export default function PhoneLogin() {
               </Text>
             </TouchableOpacity>
           </View>
-          
+
           <View style={{ gap: 24 }}>
             <AuthSecondaryNavigation
               question="New User?"

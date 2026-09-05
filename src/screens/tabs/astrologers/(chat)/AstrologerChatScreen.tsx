@@ -40,7 +40,8 @@ const AstrologerChatScreen = () => {
   } = route.params || {};
 
   const dispatch = useDispatch();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   // Refs
   const inputRef = useRef<TextInput>(null);
@@ -67,7 +68,7 @@ const AstrologerChatScreen = () => {
 
   const { data, isLoading, isFetching } = useGetConsultationMessagesQuery(
     consultationId,
-    { skip: !consultationId }
+    { skip: !consultationId },
   );
 
   const [markMessagesAsRead] = useMarkConsultationMessagesReadMutation();
@@ -100,7 +101,12 @@ const AstrologerChatScreen = () => {
       markConsultationMessagesRead(consultationId);
       markMessagesAsRead(consultationId).catch(console.error);
     }
-  }, [consultationId, isConnected, markConsultationMessagesRead, markMessagesAsRead]);
+  }, [
+    consultationId,
+    isConnected,
+    markConsultationMessagesRead,
+    markMessagesAsRead,
+  ]);
 
   // Socket listeners
   useEffect(() => {
@@ -122,7 +128,7 @@ const AstrologerChatScreen = () => {
             tempId: confirmation.tempId,
             realId: confirmation._id,
             createdAt: confirmation.createdAt,
-          })
+          }),
         );
       }
     };
@@ -138,12 +144,20 @@ const AstrologerChatScreen = () => {
 
   // Handlers
   const handleSendMessage = () => {
-    if (!message.trim() || !consultationId || !participant || !currentUser || !isConnected) {
+    if (
+      !message.trim() ||
+      !consultationId ||
+      !participant ||
+      !currentUser ||
+      !isConnected
+    ) {
       console.warn('⚠️ Cannot send message');
       return;
     }
 
-    const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    const tempId = `temp-${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 6)}`;
 
     const messageData = {
       _id: tempId,
@@ -163,7 +177,7 @@ const AstrologerChatScreen = () => {
         isRead: false,
         status: 'sent',
         createdAt: new Date().toISOString(),
-      })
+      }),
     );
 
     // Send via socket
@@ -176,11 +190,11 @@ const AstrologerChatScreen = () => {
 
   const handleEndSession = async () => {
     try {
-      const response = await endConsultationSession(consultationId).unwrap();
-      if (response?.success) {
-        dispatch(clearSelectedConsultation());
-        navigation.navigate('AstrologerScreen');
-      }
+      dispatch(clearSelectedConsultation());
+      navigation.navigate('SessionDetails', {
+        id: consultationId,
+        isReviewMode: true,
+      });
     } catch (err: any) {
       console.log(err);
     }
@@ -188,7 +202,8 @@ const AstrologerChatScreen = () => {
 
   // Render message
   const renderMessage = ({ item }: { item: any }) => {
-    const senderId = typeof item.sender === 'string' ? item.sender : item.sender?._id;
+    const senderId =
+      typeof item.sender === 'string' ? item.sender : item.sender?._id;
     const isOwn = senderId === currentUser?.account?._id;
 
     return <ChatMessage item={item} isOwn={isOwn} />;
@@ -211,14 +226,14 @@ const AstrologerChatScreen = () => {
           profilePicture={profilePicture}
           name={name}
           consultationFor={consultationFor}
-          onEndSession={handleEndSession}
+          handleEndSession={handleEndSession}
           isLoading={endSessionLoading}
         />
 
         {/* Messages */}
         <FlatList
           data={messages}
-          keyExtractor={(item) => item?._id}
+          keyExtractor={item => item?._id}
           renderItem={renderMessage}
           contentContainerStyle={styles.chatContainer}
           showsVerticalScrollIndicator={false}

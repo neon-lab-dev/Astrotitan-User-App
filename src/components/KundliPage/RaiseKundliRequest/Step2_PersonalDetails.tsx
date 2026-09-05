@@ -41,7 +41,7 @@ const Step2_PersonalDetails = ({ control, isAnalyzeMode = false }: Props) => {
           rules={{
             required: 'Phone number is required',
             minLength: {
-              value: 10,
+              value: 4,
               message: 'Enter a valid phone number',
             },
           }}

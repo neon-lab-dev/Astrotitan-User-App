@@ -22,7 +22,7 @@ const pujaApi = baseApi.injectEndpoints({
         if (keyword) params.append("keyword", keyword);
         if (typeof limit === "number") params.append("limit", limit.toString());
         if (typeof skip === "number") params.append("skip", skip.toString());
-        if (category) params.append("category", category);
+        if (category && category !== "All") params.append("category", category);
         if (intent) params.append("intent", intent);
 
         return {

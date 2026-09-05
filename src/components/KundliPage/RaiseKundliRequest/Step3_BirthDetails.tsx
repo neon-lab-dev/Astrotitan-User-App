@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -54,6 +54,19 @@ const Step3_BirthDetails = ({ control, watch, setValue }: Props) => {
 
   const dateOfBirth = watch('dateOfBirth');
   const userGender = watch('userGender');
+  const timeOfBirth = watch('timeOfBirth');
+
+  // ✅ FIX: Sync local state with form value when timeOfBirth is set programmatically
+  useEffect(() => {
+    if (timeOfBirth) {
+      const match = timeOfBirth.match(/^(\d{1,2}):(\d{2})\s(AM|PM)$/i);
+      if (match) {
+        setSelectedHour(match[1].padStart(2, '0'));
+        setSelectedMinute(match[2]);
+        setSelectedPeriod(match[3].toUpperCase());
+      }
+    }
+  }, [timeOfBirth]);
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);

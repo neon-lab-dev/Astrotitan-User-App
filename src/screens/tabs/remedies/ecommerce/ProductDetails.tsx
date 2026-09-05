@@ -55,7 +55,7 @@ const ProductDetails = () => {
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
- const cartCount = cartItems.length;
+  const cartCount = cartItems.length;
 
   const [whoExpanded, setWhoExpanded] = useState(true);
 
@@ -396,25 +396,27 @@ const ProductDetails = () => {
               )}
 
               {/* RELATED */}
-              <View style={styles.reviewSection}>
-                <ContentSection title="Pairs Well With" titleFontSize={18} />
+              {relatedProducts && relatedProducts.length > 0 && (
+                <View style={styles.reviewSection}>
+                  <ContentSection title="Pairs Well With" titleFontSize={18} />
 
-                <FlatList
-                  scrollEnabled={false}
-                  data={relatedProducts}
-                  numColumns={2}
-                  keyExtractor={item => item._id}
-                  columnWrapperStyle={{
-                    justifyContent: 'space-between',
-                  }}
-                  contentContainerStyle={{
-                    paddingTop: 20,
-                    paddingBottom: 40,
-                    rowGap: 12,
-                  }}
-                  renderItem={({ item }) => <ProductCard item={item} />}
-                />
-              </View>
+                  <FlatList
+                    scrollEnabled={false}
+                    data={relatedProducts}
+                    numColumns={2}
+                    keyExtractor={item => item._id}
+                    columnWrapperStyle={{
+                      justifyContent: 'space-between',
+                    }}
+                    contentContainerStyle={{
+                      paddingTop: 20,
+                      paddingBottom: 40,
+                      rowGap: 12,
+                    }}
+                    renderItem={({ item }) => <ProductCard item={item} />}
+                  />
+                </View>
+              )}
             </View>
           </ScrollView>
         </ScrollView>

@@ -71,7 +71,7 @@ export default function EmailLogin() {
             <AuthTitle title="Welcome Back " children="Enter your email address to continue" />
 
             <View style={{ marginTop: 26, marginBottom: 24 }}>
-              {/* PASSWORD */}
+              {/* Email */}
               <FormInput
                 control={control}
                 name="email"

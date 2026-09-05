@@ -20,7 +20,7 @@ const OrderSuccessful = () => {
   const hasRun = useRef(false);
 
   //  Get order status
-  const { data: orderData, isLoading: isOrderLoading } = useGetOrderStatusQuery(
+  const { data: orderData} = useGetOrderStatusQuery(
     orderId,
     { skip: !orderId },
   );

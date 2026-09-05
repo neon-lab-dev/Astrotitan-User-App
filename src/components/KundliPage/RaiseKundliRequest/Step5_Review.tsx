@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SatoshiText } from '../../reusable/Text/SatoshiText';
 import { SansText } from '../../reusable/Text/SansText';
 import { KundliFormData } from './types';
+import { getKundliTypeLabel } from '../AllKundliRequests/KundliRequestCard';
 
 type Props = {
   data: KundliFormData;
@@ -52,7 +53,7 @@ const Step5_Review = ({ data, selectedFiles }: Props) => {
     },
     {
       title: 'Kundli Type',
-      value: data.kundliType?.replace(/([A-Z])/g, ' $1').trim(),
+      value: getKundliTypeLabel(data.kundliType),
     },
   ];
 
@@ -147,6 +148,7 @@ const styles = StyleSheet.create({
     color: '#1a1a2e',
     fontFamily: 'Satoshi-Medium',
     maxWidth: '50%',
+    textTransform: 'capitalize',
   },
   notesContainer: {
     marginTop: 16,

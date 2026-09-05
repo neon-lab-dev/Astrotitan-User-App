@@ -5,12 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  TouchableOpacity,
-  Linking,
   RefreshControl,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { formatDate } from '../../../../utils/validators/dateValidators';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import { SansText } from '../../../../components/reusable/Text/SansText';
 import { useGetSingleConsultationBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
@@ -27,6 +24,7 @@ import RateAstrologer from '../../../../components/SessionDetailsPage/RateAstrol
 import { getConsultationStatusColor } from '../../../../utils/getConsultationStatusColor';
 import { getConsultationStatusLabel } from '../../../../utils/getConsultationStatusLabel';
 import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
+import { formatDate } from './../../../../utils/formatDate';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -44,7 +42,6 @@ const SessionDetails = () => {
 
   // Extract data
   const astrologer = item?.astrologer || {};
-  const meeting = item?.meeting || {};
   const slotData = item?.slotId || {};
   const bookedSlot = item?.bookedSlot || {};
 
@@ -56,11 +53,6 @@ const SessionDetails = () => {
   const meetingDate = slotData?.date;
   const startTime = bookedSlot?.startTime || '';
   const endTime = bookedSlot?.endTime || '';
-
-  // Format meeting date
-  const formattedMeetingDate = meetingDate
-    ? formatDate(meetingDate)
-    : 'Not scheduled';
 
   const handleChatNow = (booking: any) => {
     const participant = booking.astrologer;
@@ -218,7 +210,9 @@ const SessionDetails = () => {
 
               <View style={styles.detailItem}>
                 <SansText style={styles.detailLabel}>Purpose</SansText>
-                <SansText style={styles.detailValue}>
+                <SansText
+                  style={[styles.detailValue, { textTransform: 'capitalize' }]}
+                >
                   {item?.consultationFor || 'N/A'}
                 </SansText>
               </View>
@@ -235,7 +229,7 @@ const SessionDetails = () => {
                   <View style={styles.detailItem}>
                     <SansText style={styles.detailLabel}>Date</SansText>
                     <SansText style={styles.detailValue}>
-                      {formattedMeetingDate}
+                      {formatDate(meetingDate)}
                     </SansText>
                   </View>
 
@@ -245,21 +239,6 @@ const SessionDetails = () => {
                       <SansText style={styles.detailValue}>
                         {startTime} - {endTime}
                       </SansText>
-                    </View>
-                  )}
-
-                  {meeting?.link && (
-                    <View style={styles.detailItem}>
-                      <SansText style={styles.detailLabel}>
-                        Meeting Link
-                      </SansText>
-                      <TouchableOpacity
-                        onPress={() => Linking.openURL(meeting.link)}
-                      >
-                        <SansText style={styles.linkText}>
-                          {meeting.link}
-                        </SansText>
-                      </TouchableOpacity>
                     </View>
                   )}
                 </>

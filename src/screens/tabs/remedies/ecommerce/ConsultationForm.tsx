@@ -125,11 +125,7 @@ const ConsultationForm = () => {
               rules={{
                 required: 'Mobile number cannot be empty!',
                 minLength: {
-                  value: 10,
-                  message: 'Enter valid number',
-                },
-                maxLength: {
-                  value: 10,
+                  value: 4,
                   message: 'Enter valid number',
                 },
               }}

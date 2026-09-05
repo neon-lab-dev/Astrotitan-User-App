@@ -8,7 +8,7 @@ const ChatHeader = ({
   profilePicture,
   name,
   handleEndSession,
-  endSessionLading,
+  isLoading,
 }: any) => {
   return (
     <View style={styles.header}>
@@ -24,7 +24,7 @@ const ChatHeader = ({
       </View>
 
       <ReusableButton
-        loading={endSessionLading}
+        loading={isLoading}
         width={110}
         height={40}
         textSize={12}
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     color: '#555',
     marginTop: 2,
     marginLeft: 5,
+    textTransform: 'capitalize',
   },
 
   endButton: {

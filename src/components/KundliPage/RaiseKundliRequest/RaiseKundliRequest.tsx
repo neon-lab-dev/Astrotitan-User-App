@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,16 +17,18 @@ import { KundliFormData } from './types';
 import { useSendKundliRequestMutation } from '../../../redux/features/kundliRequest/kundliRequestApi';
 import AnimatedScreen from '../../layout/AnimatedScreen';
 import ReusableButton from '../../reusable/ReusableButton/ReusableButton';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { SansText } from '../../reusable/Text/SansText';
 import { SatoshiText } from '../../reusable/Text/SatoshiText';
 import { ICONS } from '../../../assets/svg';
+import { useGetMeQuery } from '../../../redux/features/auth/authApi';
+import { useNavigation } from '@react-navigation/native';
 
 const RaiseKundliRequest = ({
   setActiveTab,
 }: {
   setActiveTab: (tab: 'requests' | 'new') => void;
 }) => {
+  const navigation = useNavigation<any>();
   const [sendKundliRequest, { isLoading }] = useSendKundliRequestMutation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
@@ -52,6 +54,33 @@ const RaiseKundliRequest = ({
     },
     mode: 'onChange',
   });
+
+
+  const {data} = useGetMeQuery({});
+ 
+  // Setting default values
+  useEffect(() => {
+  if (!data?.data) return;
+  const profileData = data?.data?.profile || {};
+  
+  if (profileData) {
+    setValue('userName', profileData.fullName);
+    
+    if (profileData.dateOfBirth) {
+      const date = new Date(profileData.dateOfBirth);
+      setValue('dateOfBirth', date);
+    }
+    
+    setValue('timeOfBirth', profileData.timeOfBirth);
+    setValue('placeOfBirth', profileData.placeOfBirth);
+    setValue('userGender', profileData.gender);
+    
+    // Try to set phone number if available
+    if (profileData.accountId?.phoneNumber) {
+      setValue('userPhoneNumber', profileData.accountId.phoneNumber);
+    }
+  }
+}, [data?.data, setValue]);
 
   const formData = watch();
   const requestType = formData.requestType;
@@ -155,6 +184,7 @@ const RaiseKundliRequest = ({
       const response = await sendKundliRequest(formData).unwrap();
 
       if (response.success) {
+        navigation.navigate('KundliRequestDetails', { id: response?.data?._id });
         Alert.alert(
           'Request Submitted',
           "Your kundli request has been submitted successfully. You will be notified once it's processed.",

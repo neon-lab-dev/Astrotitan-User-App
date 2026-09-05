@@ -114,6 +114,9 @@ export default function PhoneRegister() {
             callingCode: selected.callingCode,
             flag: selected.flag,
           });
+          if (selected.code !== 'IN') {
+            navigation.navigate('RegisterWithEmail');
+          }
           // Clear error when country changes
           setError(null);
           BottomSheetService.close();
@@ -156,7 +159,7 @@ export default function PhoneRegister() {
                 rules={{
                   required: 'Mobile number cannot be empty!',
                   minLength: {
-                    value: 10,
+                    value: 4,
                     message: 'Enter valid number',
                   },
                 }}
@@ -200,7 +203,7 @@ export default function PhoneRegister() {
           <View style={{ gap: 24 }}>
             <AuthSecondaryNavigation
               question="Old User?"
-              option=" SignIn"
+              option=" Login"
               action={() => navigation.replace('LoginWithPhone')}
             />
             <TermsAndConditions />

@@ -73,7 +73,6 @@ const CheckoutScreen = () => {
   const currentStep = checkoutSteps[step];
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [isPlacingOrder, setIsPlacingOrder] = useState<boolean>(false);
   const { data: razorpayKeyData } = useGetRazorpayKeyQuery({});
   const razorpayKey = razorpayKeyData?.key;
   const [createProductOrder] = useCreateProductOrderMutation();
@@ -137,7 +136,6 @@ const CheckoutScreen = () => {
     }
 
     setLoading(true);
-    setIsPlacingOrder(true);
 
     try {
       // Prepare order items
@@ -184,13 +182,11 @@ const CheckoutScreen = () => {
             paymentError?.description || 'Something went wrong',
           );
         }
-        setIsPlacingOrder(false);
       }
     } catch (error: any) {
       console.error('❌ Order creation error:', error);
       Alert.alert('Error', error?.message || 'Failed to place order');
       setLoading(false);
-      setIsPlacingOrder(false);
     }
   };
 
@@ -217,8 +213,6 @@ const CheckoutScreen = () => {
 
         // Navigate to success screen
         navigation.replace('OrderSuccessful', { slug: orderId });
-
-        Alert.alert('Success', 'Payment verified successfully!');
       } else {
         Alert.alert('Error', 'Payment verification failed');
         // navigation.navigate('PaymentFailed');
@@ -229,7 +223,6 @@ const CheckoutScreen = () => {
       // navigation.navigate('PaymentFailed');
     } finally {
       setLoading(false);
-      setIsPlacingOrder(false);
     }
   };
 

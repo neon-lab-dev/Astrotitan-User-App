@@ -1,11 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useState } from 'react';
-import { Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
-import { SUBSCRIPTION_PLANS } from '../../../../data/plans';
 import SubscriptionCard from '../../../../components/tabs/profile/subscription/SubscriptionCard';
 import {
   useCreateRazorpayOrderMutation,
@@ -21,17 +26,17 @@ import { useGetRazorpayKeyQuery } from '../../../../redux/features/orders/orderA
 import RazorpayCheckout from 'react-native-razorpay';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
+import { useGetAllSubscriptionPlansQuery } from '../../../../redux/features/subscriptionPlan/subscriptionPlanApi';
 
 export interface SubscriptionPlan {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   price: number;
-  duration: string;
-  status: string;
+  duration: number;
+  numberOfConsultations: string;
   features: string[];
-  highlight?: boolean;
-  isCurrent?: boolean;
+  isActive: boolean;
 }
 
 export interface Subscription {
@@ -193,6 +198,10 @@ const SubscriptionSkeleton = () => {
 };
 
 const SubscriptionScreen = () => {
+  const { data: plans, isLoading: isPlansLoading } = useGetAllSubscriptionPlansQuery({});
+  const subscriptionPlans = plans?.data?.data || [];
+  console.log(subscriptionPlans);
+
   const user = useSelector((state: RootState) => state.auth.user);
   const { data, isLoading, refetch } = useGetMySubscriptionQuery({});
   const [loading, setLoading] = useState(false);
@@ -202,6 +211,8 @@ const SubscriptionScreen = () => {
   const [createRazorpayOrder] = useCreateRazorpayOrderMutation();
   const [purchaseSubscription] = usePurchaseSubscriptionMutation();
   const [showPlans, setShowPlans] = useState(false);
+
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const openCancelSubscriptionSheet = () => {
     BottomSheetService.open(
@@ -232,7 +243,10 @@ const SubscriptionScreen = () => {
 
   const handlePaymentSuccess = async () => {
     try {
-      const response = await purchaseSubscription({}).unwrap();
+      const payload = {
+        subscriptionPlanId : selectedPlanId
+      }
+      const response = await purchaseSubscription(payload).unwrap();
       if (response.success) {
         refetch();
       }
@@ -320,10 +334,8 @@ const SubscriptionScreen = () => {
     }
   }, [refreshing, refetch]);
 
-  if (!isLoading) {
-    return (
-      <SubscriptionSkeleton />
-    );
+  if (isPlansLoading || isLoading) {
+    return <SubscriptionSkeleton />;
   }
 
   // Active Subscription
@@ -451,15 +463,14 @@ const SubscriptionScreen = () => {
               gap: 22,
             }}
           >
-            {SUBSCRIPTION_PLANS.map(plan => (
+            {subscriptionPlans?.map((plan: SubscriptionPlan) => (
               <SubscriptionCard
-                key={plan.id}
+                key={plan._id}
                 plan={plan}
-                loading={loading && plan.id === 'premium'}
+                loading={isPlansLoading || loading}
                 onPress={() => {
-                  if (plan.id === 'premium') {
-                    handlePurchase();
-                  }
+                  setSelectedPlanId(plan?._id);
+                  handlePurchase();
                 }}
               />
             ))}

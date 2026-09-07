@@ -2,14 +2,20 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { SansText } from '../../../reusable/Text/SansText';
-import { SUBSCRIPTION_PLANS } from '../../../../data/plans';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-
 interface Props {
   subscription: any;
   onCancel: () => void;
 }
+
+const COLORS = {
+  primary: '#D4AF37',
+  background: '#FFFFFF',
+  border: '#ECECEC',
+  text: '#171717',
+  subtitle: '#7A7A7A',
+  green: '#30C85A',
+};
 
 const ActiveSubscription = ({ subscription, onCancel }: Props) => {
   return (
@@ -25,10 +31,6 @@ const ActiveSubscription = ({ subscription, onCancel }: Props) => {
       {/* Header */}
 
       <View style={styles.header}>
-        <View style={styles.icon}>
-          <FontAwesome6 name="crown" solid color="#D4AF37" size={22} />
-        </View>
-
         <View style={{ flex: 1 }}>
           <SansText style={styles.title}>Premium Plus</SansText>
 
@@ -61,7 +63,7 @@ const ActiveSubscription = ({ subscription, onCancel }: Props) => {
 
       {/* Features */}
 
-      <View style={{ marginTop: 25 }}>
+      {/* <View style={{ marginTop: 25 }}>
         {SUBSCRIPTION_PLANS[1].features.map((item, index) => (
           <View key={index} style={styles.featureRow}>
             <Ionicons name="checkmark-circle" color="#D4AF37" size={20} />
@@ -69,10 +71,33 @@ const ActiveSubscription = ({ subscription, onCancel }: Props) => {
             <SansText style={styles.featureText}>{item}</SansText>
           </View>
         ))}
+      </View> */}
+
+      <View style={styles.featureRow}>
+        <Ionicons name="checkmark-circle" size={20} color={COLORS.primary} />
+
+        <SansText style={styles.featureText}>
+          {subscription?.subscriptionPlanId?.numberOfConsultations} Consultation
+          {subscription?.subscriptionPlanId?.numberOfConsultations !== '1' &&
+            's'}
+          /month
+        </SansText>
       </View>
+      {subscription?.subscriptionPlanId?.features.map(
+        (item: string, index: number) => (
+          <View key={index} style={styles.featureRow}>
+            <Ionicons
+              name="checkmark-circle"
+              size={20}
+              color={COLORS.primary}
+            />
+
+            <SansText style={styles.featureText}>{item}</SansText>
+          </View>
+        ),
+      )}
 
       {/* Cancel */}
-
       <Pressable style={styles.cancelButton} onPress={onCancel}>
         <Ionicons name="close-circle-outline" size={18} color="#DC2626" />
 
@@ -177,7 +202,7 @@ const styles = StyleSheet.create({
 
   featureRow: {
     flexDirection: 'row',
-    marginBottom: 16,
+    marginTop: 16,
     alignItems: 'center',
   },
 

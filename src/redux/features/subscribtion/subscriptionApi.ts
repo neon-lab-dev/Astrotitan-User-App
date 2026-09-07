@@ -22,9 +22,10 @@ const subscriptionApi = baseApi.injectEndpoints({
     }),
 
     purchaseSubscription: builder.mutation({
-      query: () => ({
+      query: (data) => ({
         url: "/subscription/create",
         method: "POST",
+        body: data,
         credentials: "include",
       }),
       invalidatesTags: ["subscription"],

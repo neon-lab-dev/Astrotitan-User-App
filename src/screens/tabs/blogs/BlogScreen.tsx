@@ -126,7 +126,7 @@ const BlogScreen = () => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.categoryScrollContent}
             >
-              {BLOG_CATEGORIES.map(category => {
+              {BLOG_CATEGORIES?.map(category => {
                 const isSelected = selectedCategory === category.id;
                 return (
                   <TouchableOpacity

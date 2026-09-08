@@ -19,8 +19,10 @@ import FeaturedAstrologers from '../../../components/HomePage/FeaturedAstrologer
 import RecommendedRemedies from '../../../components/HomePage/RecommendedRemedies/RecommendedRemedies';
 import BlogInsights from '../../../components/HomePage/BlogInsights/BlogInsights';
 import { useGetAllAstrologersQuery } from '../../../redux/features/astrologer/astrologerApi';
+import { useBackHandler } from '../../../hooks/useBackHandler';
 
 const HomeScreen = () => {
+  useBackHandler(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [getMe] = useLazyGetMeQuery();
   const dispatch = useDispatch();

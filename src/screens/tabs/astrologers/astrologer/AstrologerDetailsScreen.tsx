@@ -28,7 +28,6 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const AstrologerDetailsScreen = () => {
   const { data: myProfile, refetch: refetchProfile } = useGetMeQuery({});
-  console.log(myProfile, 'PPP');
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const [showPremiumModal, setShowPremiumModal] = useState<boolean>(false);
@@ -54,14 +53,19 @@ const AstrologerDetailsScreen = () => {
     }
   };
 
+  // Refetch profile whenever the screen is focused
   useEffect(() => {
-    const fetchData = async () => {
-      await refetchProfile();
-      // You can add more async operations here
-    };
+    const unsubscribe = navigation.addListener('focus', () => {
+      refetchProfile();
+    });
 
-    fetchData();
-  }, []);
+    return unsubscribe;
+  }, [navigation, refetchProfile]);
+
+  // Refetch profile on initial mount
+  useEffect(() => {
+    refetchProfile();
+  }, [refetchProfile]);
   
   if (isLoading && !previewAstrologer) {
     return <AstrologerDetailSkeleton />;
@@ -256,7 +260,7 @@ const AstrologerDetailsScreen = () => {
                 setShowPremiumModal(true);
                 return;
               } else {
-                navigation.navigate('RequestConsultationForm', { id: id });
+                navigation.navigate('RequestConsultationForm', { id: id ?? id });
               }
             }}
             title="Consult now"

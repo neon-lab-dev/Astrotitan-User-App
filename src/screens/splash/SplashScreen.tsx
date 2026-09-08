@@ -22,24 +22,19 @@ const SplashScreen = () => {
   const [getMe] = useLazyGetMeQuery();
   const hasInitialized = useRef(false);
 
-  useEffect(() => {
-    // Start animations
-    opacity.value = withTiming(1, { duration: 500 });
-    scale.value = withTiming(1, { duration: 500 });
+useEffect(() => {
+  opacity.value = withTiming(1, { duration: 500 });
+  scale.value = withTiming(1, { duration: 500 });
 
-    // Initialize app after a small delay
-    const timer = setTimeout(() => {
-      if (!hasInitialized.current) {
-        hasInitialized.current = true;
-        initializeApp();
-      }
-    }, 500);
+  if (!hasInitialized.current) {
+    hasInitialized.current = true;
+    initializeApp();
+  }
 
-    return () => {
-      clearTimeout(timer);
-      hasInitialized.current = true;
-    };
-  }, []);
+  return () => {
+    hasInitialized.current = true;
+  };
+}, []);
 
   const initializeApp = async () => {
     try {

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RootNavigator from './navigation/RootNavigator';
@@ -10,8 +11,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import GlobalModal from './components/reusable/GlobalModal/GlobalModal';
 import GlobalBottomSheet from './components/reusable/GlobalBottomSheet/GlobalBottomSheet';
 import { NavigationContainer } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import { loadAuth } from './utils/loadAuth';
 import { NotificationManager } from './components/NotificationManager';
 import { DevResetPanel } from './components/dev/DevResetPanel';
 import ZoomProvider from './providers/ZoomProvider';
@@ -19,22 +18,6 @@ import ZoomProvider from './providers/ZoomProvider';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [appReady, setAppReady] = useState(false);
-  useEffect(() => {
-    async function prepareApp() {
-      try {
-        /* LOAD AUTH */
-
-        await loadAuth();
-      } catch (error) {
-        console.log('APP INIT ERROR:', error);
-      } finally {
-        setAppReady(true);
-      }
-    }
-
-    prepareApp();
-  }, []);
 
   return (
     <SafeAreaProvider>

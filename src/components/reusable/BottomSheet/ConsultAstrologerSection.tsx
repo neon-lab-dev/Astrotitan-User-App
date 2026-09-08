@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { Image, StyleSheet, View } from "react-native";
 import ReusableButton from "../ReusableButton/ReusableButton";
 import { SatoshiText } from "../Text/SatoshiText";

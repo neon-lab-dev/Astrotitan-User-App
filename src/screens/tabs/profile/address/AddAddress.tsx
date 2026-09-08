@@ -128,7 +128,7 @@ const AddAddress = () => {
         await addAddress(data).unwrap();
       }
 
-      navigation.replace('AddressScreen');
+      navigation.navigate('AddressScreen');
     } catch (err) {
       console.log('ADDRESS ERROR:', err);
     }

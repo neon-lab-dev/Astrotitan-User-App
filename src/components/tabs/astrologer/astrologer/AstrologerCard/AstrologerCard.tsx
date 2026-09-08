@@ -63,7 +63,7 @@ export const AstrologerCard = ({ item }: any) => {
               setShowPremiumModal(true);
               return;
             } else {
-              navigation.navigate('RequestConsultationForm', { id: item._id });
+              navigation.navigate('RequestConsultationForm', { id: item?._id });
             }
           }}
           title="Consult now"

@@ -19,7 +19,7 @@ const Poojas = ({
 }: any) => {
   const navigation = useNavigation<NavigationProp>();
   /* CATEGORIES */
-  const { data: categories, isLoading: isCategoryLoading } =
+  const { data: categories, isLoading: isCategoryLoading, isFetching: isCategoryFetching } =
     useGetAllCategoriesByAreaNameQuery('Puja');
 
   // Check if there are no poojas and not loading
@@ -37,7 +37,7 @@ const Poojas = ({
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           allCategories={categories?.data || []}
-          isLoading={isCategoryLoading}
+          isLoading={isCategoryLoading || isCategoryFetching}
         />
       </View>
 

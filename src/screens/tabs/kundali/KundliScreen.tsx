@@ -63,6 +63,7 @@ const KundliScreen = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
+        <AppBar title="Kundli" />
         <ScrollView
           style={styles.container}
           showsVerticalScrollIndicator={false}
@@ -77,8 +78,6 @@ const KundliScreen = () => {
           }
           contentContainerStyle={styles.scrollContent}
         >
-          <AppBar title="Kundli" />
-
           {/* Tabs */}
           <Tabs
             tabs={tabs}

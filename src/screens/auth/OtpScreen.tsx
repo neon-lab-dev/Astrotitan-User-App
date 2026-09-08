@@ -30,7 +30,7 @@ export default function OtpScreen() {
   >('default');
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState('');
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(120); // 2 minutes
   const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -151,7 +151,7 @@ export default function OtpScreen() {
         await resendSignupOtp(payload).unwrap();
       }
 
-      setTimer(30);
+      setTimer(120)
       setCanResend(false);
       setStatus('default');
       setOtpArray(['', '', '', '']);

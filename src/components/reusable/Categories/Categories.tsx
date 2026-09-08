@@ -9,7 +9,7 @@ const Categories = ({
   setSelectedCategory,
   selectedCategory,
   allCategories,
-  isLoading = false,
+  isLoading
 }: any) => {
   const formattedCategories = [{ category: 'All' }, ...(allCategories || [])];
 

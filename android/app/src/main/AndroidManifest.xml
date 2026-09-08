@@ -28,7 +28,8 @@
         <!-- Optional: Set notification color -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/notification_color" />
+            android:resource="@color/notification_color"
+            tools:replace="android:resource" />
             
 
         <!-- MainActivity ONLY -->

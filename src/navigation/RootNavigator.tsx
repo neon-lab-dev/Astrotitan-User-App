@@ -16,6 +16,7 @@ import ProfileCompleted from "../screens/auth/ProfileCompleted";
 import MultiStepForm from "../screens/userDetailsForm/UserDetailsForm";
 import TabNavigator from "./TabNavigator";
 import NotificationScreen from "../screens/notification/notification";
+import AddressScreen from "../screens/tabs/profile/address/AddressScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -83,6 +84,10 @@ export default function RootNavigator() {
       <Stack.Screen
         name="NotificationScreen"
         component={NotificationScreen}
+      />
+      <Stack.Screen
+        name="AddressScreen"
+        component={AddressScreen}
       />
     </Stack.Navigator>
   );

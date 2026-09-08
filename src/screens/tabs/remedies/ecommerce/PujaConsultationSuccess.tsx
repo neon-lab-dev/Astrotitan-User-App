@@ -14,7 +14,7 @@ const PujaConsultationSuccess = () => {
       description="We have received your request and our expert will reach out to you soon."
       buttons={[
         {
-          title: "Back To Pooja's",
+          title: "Explore Remedies",
           variant: 'solid',
           onPress: () => {
             navigation.getParent()?.reset({

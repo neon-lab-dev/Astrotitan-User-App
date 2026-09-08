@@ -42,20 +42,33 @@ const KundliRequestDetails = () => {
     setRefreshing(false);
   }, [refetch]);
 
-  if (isLoading)
-    return (
-      <View style={styles.center}>
-        <SansText>Loading...</SansText>
-      </View>
-    );
-  if (!request)
-    return (
-      <View style={styles.center}>
-        <SansText>Request not found.</SansText>
-      </View>
-    );
 
-  const statusStyle = STATUS_COLORS[request.status] || STATUS_COLORS.pending;
+
+  if (isLoading) {
+    return (
+      <AnimatedScreen>
+        <ScreenWrapper>
+          <View style={styles.loaderContainer}>
+            <SansText style={styles.loadingText}>Loading...</SansText>
+          </View>
+        </ScreenWrapper>
+      </AnimatedScreen>
+    );
+  }
+
+  if (!request) {
+    return (
+      <AnimatedScreen>
+        <ScreenWrapper>
+          <View style={styles.center}>
+            <SansText>Request not found.</SansText>
+          </View>
+        </ScreenWrapper>
+      </AnimatedScreen>
+    );
+  }
+
+    const statusStyle = STATUS_COLORS[request?.status] || STATUS_COLORS?.pending;
   const formatDate = (d?: string) =>
     d
       ? new Date(d).toLocaleDateString('en-IN', {
@@ -433,6 +446,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButtonText: { color: '#FFF', fontSize: 15, fontWeight: 'bold' },
+
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#8E8E93',
+  },
 });
 
 export default KundliRequestDetails;

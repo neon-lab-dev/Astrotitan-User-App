@@ -7,9 +7,10 @@ import { formatDate } from '../../../utils/validators/dateValidators';
 import { ICONS } from '../../../assets/svg';
 import { useNavigation } from '@react-navigation/native';
 import { getConsultationStatusColor } from '../../../utils/getConsultationStatusColor';
+import { getConsultationStatusLabel } from '../../../utils/getConsultationStatusLabel';
 
-const SessionHistoryCard = ({ item } : any) => {
-    const navigation = useNavigation<any>();
+const SessionHistoryCard = ({ item }: any) => {
+  const navigation = useNavigation<any>();
   const IconComponent = ICONS.RightArrow;
   return (
     // onPress={onPress}
@@ -22,7 +23,13 @@ const SessionHistoryCard = ({ item } : any) => {
     >
       {/* Left Section - Image */}
       <Image
-        source={{ uri: item?.astrologer?.profilePicture }}
+        source={
+          item?.astrologer?.profilePicture
+            ? {
+                uri: item?.astrologer?.profilePicture,
+              }
+            : require('@/assets/images/user-profile-placeholder.png')
+        }
         style={styles.profilePicture}
       />
 
@@ -45,7 +52,7 @@ const SessionHistoryCard = ({ item } : any) => {
                 { color: getConsultationStatusColor(item.status) },
               ]}
             >
-              {item.status}
+              {getConsultationStatusLabel(item?.status)}
             </SansText>
           </View>
         </View>

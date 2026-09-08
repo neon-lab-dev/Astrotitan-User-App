@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   BackHandler,
   SafeAreaView,
@@ -18,6 +18,9 @@ import { SatoshiText } from '../Text/SatoshiText';
 import { IconName } from '../../../assets/svg';
 import IconButton from '../IconButton/IconButton';
 import { useGetMyNotificationsQuery } from '../../../redux/features/notification/notificationApi';
+import { connectSocket, disconnectSocket } from '../../../socket/socket';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../../redux/features/auth/authSlice';
 
 type Props = {
   showBack?: boolean;
@@ -49,11 +52,74 @@ const AppBar = ({
   children,
 }: Props) => {
   const navigation = useNavigation<any>();
-
+const user = useSelector(selectUser) as any;
+  const [notifications, setNotifications] = useState<any[]>([]);
   const { data: myNotifications } = useGetMyNotificationsQuery({});
-  const unreadCount = myNotifications?.data?.filter(
-    (notification: any) => !notification.isRead,
+
+    useEffect(() => {
+      if (myNotifications?.data) {
+        const sorted = [...myNotifications.data].sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+        setNotifications(sorted);
+      }
+    }, [myNotifications?.data]);
+  
+    // --- Socket for live notifications ---
+    useEffect(() => {
+      if (!user?.account?._id) {
+        console.log('⚠️ No user, skipping socket connection');
+        return;
+      }
+  
+      // console.log("🔌 Connecting socket for user:", user?.account?._id);
+  
+      const socket = connectSocket(user?.account?._id);
+      // console.log("📡 Socket instance:", socket);
+      // console.log("📡 Socket connected:", socket?.connected);
+  
+      if (!socket) {
+        console.error('❌ Failed to create socket');
+        return;
+      }
+  
+      const onConnect = () => {
+        console.log('🔌 Socket connected:', socket.id);
+      };
+  
+      const onNotification = (data: any) => {
+        // console.log("🔔 New notification:", data);
+        setNotifications(prev => [data, ...prev]);
+      };
+  
+      const onOnlineUsers = (users: string[]) => {
+        console.log('👥 Online users:', users);
+      };
+  
+      socket.on('connect', onConnect);
+      socket.on('new-notification', onNotification);
+      socket.on('onlineUsers', onOnlineUsers);
+  
+      if (socket.connected) {
+        console.log('Socket already connected:', socket.id);
+      }
+  
+      return () => {
+        // console.log("🧹 Cleaning up socket listeners");
+        socket.off('connect', onConnect);
+        socket.off('new-notification', onNotification);
+        socket.off('onlineUsers', onOnlineUsers);
+        disconnectSocket();
+      };
+    }, [user?.account?._id]);
+
+
+  const unreadCount = notifications.filter(
+    notification => !notification.isRead,
   ).length;
+
+
   const handleBack = useCallback(() => {
     if (onPressBack) {
       onPressBack();

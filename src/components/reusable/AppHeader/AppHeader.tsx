@@ -78,7 +78,6 @@ const AppHeader = ({
                 navigation.goBack();
               }
             }}
-            style={{ padding: 8 }}
           >
             <Ionicons name="arrow-back" size={24} color="#fcfcfc" />
           </TouchableOpacity>
@@ -124,6 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 12,
+    marginBottom: 8,
   },
 
   title: {

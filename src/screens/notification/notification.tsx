@@ -1,10 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef, useState } from 'react';
-import { Image, ScrollView, View, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Image,
+  ScrollView,
+  View,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenWrapper from '../../components/layout/ScreenWrapper';
 import { SansText } from '../../components/reusable/Text/SansText';
-import { useNavigation } from '@react-navigation/native';
 import ReusableButton from '../../components/reusable/ReusableButton/ReusableButton';
 import { SatoshiText } from '../../components/reusable/Text/SatoshiText';
 import { selectUser } from './../../redux/features/auth/authSlice';
@@ -18,14 +23,43 @@ import { formatMessageDate } from '../../utils/validators/dateValidators';
 import AppBar from '../../components/reusable/AppBar/AppBar';
 
 const NotificationScreen = () => {
-  const navigation = useNavigation<any>();
   const user = useSelector(selectUser) as any;
   const notificationRef = useRef<HTMLDivElement | null>(null);
-  const { data: myNotifications } = useGetMyNotificationsQuery({});
+  const { data: myNotifications, refetch } = useGetMyNotificationsQuery(
+  {},
+  { refetchOnMountOrArgChange: true }
+);
   const [notifications, setNotifications] = useState<any[]>([]);
   const hasNotifications = notifications.length > 0;
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const [markAsRead] = useMarkAsReadMutation();
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  useEffect(() => {
+  const loadNotifications = async () => {
+    try {
+      await refetch();
+    } catch (err) {
+      console.error('Failed to refetch notifications:', err);
+    }
+  };
+
+  loadNotifications();
+}, [refetch]);
+
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+
+    try {
+      setRefreshing(true);
+
+      await Promise.all([refetch().unwrap()]);
+    } catch (error) {
+      console.log('REFRESH ERROR:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
 
   useEffect(() => {
     if (myNotifications?.data) {
@@ -86,9 +120,9 @@ const NotificationScreen = () => {
   }, [user?.account?._id]);
 
   const filteredNotifications =
-  filter === 'unread'
-    ? notifications.filter(notification => !notification.isRead)
-    : notifications;
+    filter === 'unread'
+      ? notifications.filter(notification => !notification.isRead)
+      : notifications;
 
   const handleMarkAllAsRead = async () => {
     const unreadNotifications = notifications.filter(
@@ -126,34 +160,48 @@ const NotificationScreen = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <ScreenWrapper>
         <AppBar title="Notifications" />
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 8,
-            padding:16,
-            justifyContent:"space-between"
-          }}
-        ><View style={{ flexDirection: 'row',
-            gap: 8 }}>
-          <ReusableButton
-            title="All"
-            onPress={() => setFilter('all')}
-            variant={filter === 'all' ? 'solid' : 'outline'}
-            width="auto"
-            height={38}
-            textSize={13}
-            paddingHorizontal={16}
-          />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#816B22"
+              colors={['#816B22']}
+              progressBackgroundColor="#FBF7EB"
+            />
+          }
+          contentContainerStyle={{ paddingVertical: 8 }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 8,
+              padding: 16,
+              justifyContent: 'space-between',
+            }}
+          >
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <ReusableButton
+                title="All"
+                onPress={() => setFilter('all')}
+                variant={filter === 'all' ? 'solid' : 'outline'}
+                width="auto"
+                height={38}
+                textSize={13}
+                paddingHorizontal={16}
+              />
 
-          <ReusableButton
-            title={`Unread${unreadCount > 0 ? ` (${unreadCount})` : ''}`}
-            onPress={() => setFilter('unread')}
-            variant={filter === 'unread' ? 'solid' : 'outline'}
-            width="auto"
-            height={38}
-            textSize={13}
-            paddingHorizontal={16}
-          /></View>
+              <ReusableButton
+                title={`Unread${unreadCount > 0 ? ` (${unreadCount})` : ''}`}
+                onPress={() => setFilter('unread')}
+                variant={filter === 'unread' ? 'solid' : 'outline'}
+                width="auto"
+                height={38}
+                textSize={13}
+                paddingHorizontal={16}
+              />
+            </View>
 
             <ReusableButton
               title="Mark all read"
@@ -165,49 +213,36 @@ const NotificationScreen = () => {
               textSize={13}
               paddingHorizontal={16}
             />
-        </View>
-        <View ref={notificationRef} style={{ flex: 1 }}>
-          {!hasNotifications ? (
-            // EMPTY STATE
-            <View style={{ flex: 1 }}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingHorizontal: 24,
-                }}
-              >
-                <Image
-                  source={require('@/assets/images/bell-icon.png')}
-                  style={{ width: 224, height: 224 }}
-                  resizeMode="contain"
-                />
-                <SansText
+          </View>
+          <View ref={notificationRef} style={{ flex: 1 }}>
+            {!hasNotifications ? (
+              // EMPTY STATE
+              <View style={{ flex: 1, marginTop:30 }}>
+                <View
                   style={{
-                    fontSize: 16,
-                    color: '#666',
-                    textAlign: 'center',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 24,
                   }}
                 >
-                  No notifications yet
-                </SansText>
+                  <Image
+                    source={require('@/assets/images/bell-icon.png')}
+                    style={{ width: 224, height: 180 }}
+                    resizeMode="contain"
+                  />
+                  <SansText
+                    style={{
+                      fontSize: 16,
+                      color: '#666',
+                      textAlign: 'center',
+                    }}
+                  >
+                    No notifications yet
+                  </SansText>
+                </View>
               </View>
-
-              <View style={{ paddingHorizontal: 16, paddingBottom: 32 }}>
-                <ReusableButton
-                  title="Go To Home"
-                  onPress={() => navigation.replace('HomeScreen')}
-                  width="100%"
-                />
-              </View>
-            </View>
-          ) : (
-            // LIST STATE
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingVertical: 8 }}
-            >
+            ) : (
               <View style={{ paddingHorizontal: 16 }}>
                 {/* Unread Count Header */}
                 {unreadCount > 0 && (
@@ -235,9 +270,9 @@ const NotificationScreen = () => {
                   <NotificationItem key={item?._id || index} item={item} />
                 ))}
               </View>
-            </ScrollView>
-          )}
-        </View>
+            )}
+          </View>
+        </ScrollView>
       </ScreenWrapper>
     </SafeAreaView>
   );

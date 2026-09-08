@@ -7,7 +7,11 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import {
+  useRoute,
+  useNavigation,
+  useFocusEffect,
+} from '@react-navigation/native';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import { SansText } from '../../../../components/reusable/Text/SansText';
 import { useGetSingleConsultationBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
@@ -26,6 +30,7 @@ import { getConsultationStatusLabel } from '../../../../utils/getConsultationSta
 import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
 import { formatDate } from './../../../../utils/formatDate';
 import SessionDetailsSkeleton from '../../../../components/SessionDetailsPage/SessionDetailsSkeleton/SessionDetailsSkeleton';
+import SessionNotes from '../../../../components/SessionDetailsPage/SessionNotes/SessionNotes';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -35,7 +40,7 @@ const SessionDetails = () => {
   const navigation = useNavigation<NavigationProp>();
   const dispatch = useDispatch();
   const id = route.params?.id;
-  const isReviewMode = route.params?.isReviewMode || false;
+  const isReviewMode = route.params?.isReviewMode || true;
 
   const { data, refetch, isLoading, isFetching, isError } =
     useGetSingleConsultationBookingsQuery(id);
@@ -88,7 +93,7 @@ const SessionDetails = () => {
       consultationId: id,
       otherParticipantName: astrologer.displayName,
       otherParticipantProfilePicture: astrologer.profilePicture,
-      astrologerId: astrologer._id,
+      // astrologerId: astrologer._id,
     });
   };
 
@@ -104,7 +109,7 @@ const SessionDetails = () => {
           onClose={BottomSheetService.close}
         />,
         {
-          height: 400,
+          height: '60%',
           hasGradient: true,
         },
       );
@@ -125,12 +130,30 @@ const SessionDetails = () => {
     }
   }, [refreshing, refetch]);
 
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribe = navigation.addListener('beforeRemove', e => {
+        // Prevent default back behavior
+        e.preventDefault();
+        unsubscribe();
+        navigation.navigate('SessionHistory' as never);
+      });
+
+      return unsubscribe;
+    }, [navigation]),
+  );
+
   if (isError) {
     return (
-      <View style={styles.emptyContainer}>
-        <NoteIcon height={124} width={124} />
-        <SansText style={styles.emptyText}>No sessions yet</SansText>
-      </View>
+      <AnimatedScreen>
+        <ScreenWrapper>
+          <AppBar title="Session Details" />
+          <View style={styles.emptyContainer}>
+            <NoteIcon height={124} width={124} />
+            <SansText style={styles.emptyText}>No session data found.</SansText>
+          </View>
+        </ScreenWrapper>
+      </AnimatedScreen>
     );
   }
 
@@ -140,8 +163,11 @@ const SessionDetails = () => {
         {isLoading || isFetching ? (
           <View style={styles.container}>
             {/* Header */}
-            <AppBar title="Session Details" />
-            
+            <AppBar
+              title="Session Details"
+              onPressBack={() => navigation.navigate('SessionHistory')}
+            />
+
             {/* Skeleton Loader for Body */}
             <SessionDetailsSkeleton />
           </View>
@@ -166,7 +192,11 @@ const SessionDetails = () => {
               {/* Astrologer Profile Card */}
               <View style={styles.profileCard}>
                 <Image
-                  source={{ uri: astrologer?.profilePicture }}
+                  source={
+                    astrologer?.profilePicture
+                      ? { uri: astrologer?.profilePicture }
+                      : require('@/assets/images/user-profile-placeholder.png')
+                  }
                   style={styles.profileImage}
                 />
                 <View style={styles.profileInfo}>
@@ -263,7 +293,7 @@ const SessionDetails = () => {
               </View>
 
               {/* Recommendations */}
-              {item?.recommendations && (
+              {/* {item?.recommendations && (
                 <View style={styles.section}>
                   <SatoshiText style={styles.sectionTitle}>
                     Recommendations
@@ -274,6 +304,11 @@ const SessionDetails = () => {
                     </SansText>
                   </View>
                 </View>
+              )} */}
+
+              {/* Session Notes */}
+              {item?.recommendations && (
+                <SessionNotes recommendations={item?.recommendations} />
               )}
 
               {/* Action Buttons */}
@@ -294,7 +329,7 @@ const SessionDetails = () => {
                   />
                 )}
 
-                {!isAccepted && (
+                {item?.status === 'pending' && (
                   <View style={styles.notScheduledContainer}>
                     <SansText style={styles.notScheduledText}>
                       Please wait for the astrologer to confirm the session.

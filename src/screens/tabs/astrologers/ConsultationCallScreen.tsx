@@ -20,7 +20,6 @@ import WaitingForParticipant from './WaitingForParticipant';
 import { useRoute } from '@react-navigation/native';
 
 import {
-  useEndConsultationSessionMutation,
   useLazyJoinConsultationQuery,
   useStartConsultationMutation,
 } from '../../../redux/features/consultation/consultationApi';
@@ -53,8 +52,8 @@ const ConsultationCallScreen = ({ navigation }: any) => {
   const [startConsultation, { isLoading: isStarting }] =
     useStartConsultationMutation();
 
-  const [endConsultation, { isLoading: isEnding }] =
-    useEndConsultationSessionMutation();
+  // const [endConsultation, { isLoading: isEnding }] =
+  //   useEndConsultationSessionMutation();
 
   const [hasStarted, setHasStarted] = useState(false);
 
@@ -211,9 +210,11 @@ const ConsultationCallScreen = ({ navigation }: any) => {
 
   const handleLeave = async () => {
     try {
-      await leaveSession();
+      await endSession();
+      // await leaveSession();
 
       navigation.navigate('SessionDetails', {
+        id: consultationId,
         isReviewMode: isAstrologerJoined ? true : false,
       });
     } catch (err) {
@@ -221,42 +222,42 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     }
   };
 
-  const handleEnd = () => {
-    Alert.alert(
-      'End Consultation',
-      'Are you sure you want to end this consultation?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'End',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await endConsultation(consultationId).unwrap();
+  // const handleEnd = () => {
+  //   Alert.alert(
+  //     'End Consultation',
+  //     'Are you sure you want to end this consultation?',
+  //     [
+  //       {
+  //         text: 'Cancel',
+  //         style: 'cancel',
+  //       },
+  //       {
+  //         text: 'End',
+  //         style: 'destructive',
+  //         onPress: async () => {
+  //           try {
+  //             await endConsultation(consultationId).unwrap();
 
-              await endSession();
+  //             await endSession();
 
-              navigation.goBack();
-            } catch (err) {
-              console.error('End consultation error:', err);
+  //             navigation.goBack();
+  //           } catch (err) {
+  //             console.error('End consultation error:', err);
 
-              Alert.alert(
-                'Error',
-                err instanceof Error
-                  ? err.message
-                  : 'Unable to end consultation.',
-              );
-            }
-          },
-        },
-      ],
-    );
-  };
+  //             Alert.alert(
+  //               'Error',
+  //               err instanceof Error
+  //                 ? err.message
+  //                 : 'Unable to end consultation.',
+  //             );
+  //           }
+  //         },
+  //       },
+  //     ],
+  //   );
+  // };
 
-  const isLoading = isJoinLoading || isStarting || isEnding;
+  const isLoading = isJoinLoading || isStarting;
 
   if (isLoading) {
     return (
@@ -266,9 +267,7 @@ const ConsultationCallScreen = ({ navigation }: any) => {
         <ActivityIndicator size="large" />
 
         <Text style={styles.loadingText}>
-          {isEnding
-            ? 'Ending consultation...'
-            : isStarting
+          {isStarting
             ? 'Starting consultation...'
             : 'Connecting to consultation...'}
         </Text>
@@ -377,7 +376,7 @@ const ConsultationCallScreen = ({ navigation }: any) => {
         onToggleVideo={toggleVideo}
         onSwitchCamera={switchCamera}
         onLeave={handleLeave}
-        onEnd={handleEnd}
+        // onEnd={handleEnd}
         isAstrologer={userRole === 'astrologer'}
       />
     </SafeAreaView>

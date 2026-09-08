@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
 import {
   Alert,
@@ -7,6 +8,9 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
 import { useAddReviewMutation } from '../../../redux/features/consultation/consultationApi';
 
@@ -41,73 +45,83 @@ const RateAstrologer = ({
         onClose();
       }
     } catch (error) {
-      console.log(error);
+      console.log(error, 'TT');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Share your experience</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{ flex: 1 }}
+    >
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>Share your experience</Text>
 
-      {/* Star Rating */}
-      <View style={styles.ratingContainer}>
-        {[1, 2, 3, 4, 5].map(star => (
-          <TouchableOpacity
-            key={star}
-            onPress={() => setRating(star)}
-            style={styles.starButton}
-          >
-            <Text
-              style={[
-                styles.starIcon,
-                star <= rating ? styles.starActive : styles.starInactive,
-              ]}
+          {/* Star Rating */}
+          <View style={styles.ratingContainer}>
+            {[1, 2, 3, 4, 5].map(star => (
+              <TouchableOpacity
+                key={star}
+                onPress={() => setRating(star)}
+                style={styles.starButton}
+              >
+                <Text
+                  style={[
+                    styles.starIcon,
+                    star <= rating ? styles.starActive : styles.starInactive,
+                  ]}
+                >
+                  ★
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Text style={styles.ratingText}>
+            {rating > 0 ? `${rating} out of 5` : 'Tap a star to rate'}
+          </Text>
+
+          {/* Review Text Area */}
+          <TextInput
+            style={styles.reviewInput}
+            placeholder="Write your review..."
+            placeholderTextColor="#999999"
+            multiline
+            numberOfLines={5}
+            value={review}
+            onChangeText={setReview}
+            textAlignVertical="top"
+          />
+
+          {/* Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={onClose}
+              disabled={isSubmitting}
             >
-              ★
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
 
-      <Text style={styles.ratingText}>
-        {rating > 0 ? `${rating} out of 5` : 'Tap a star to rate'}
-      </Text>
-
-      {/* Review Text Area */}
-      <TextInput
-        style={styles.reviewInput}
-        placeholder="Write your review..."
-        placeholderTextColor="#999999"
-        multiline
-        numberOfLines={5}
-        value={review}
-        onChangeText={setReview}
-        textAlignVertical="top"
-      />
-
-      {/* Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.cancelButton]}
-          onPress={onClose}
-          disabled={isSubmitting}
-        >
-          <Text style={styles.cancelButtonText}>Cancel</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.submitButton]}
-          onPress={handleSubmit}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : (
-            <Text style={styles.submitButtonText}>Submit</Text>
-          )}
-        </TouchableOpacity>
-      </View>
-    </View>
+            <TouchableOpacity
+              style={[styles.button, styles.submitButton]}
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                <Text style={styles.submitButtonText}>Submit</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -92,7 +92,9 @@ export type RootStackParamList = {
   SessionHistory: undefined;
   SessionDetails: {
     id: string;
-    isReviewMode?: boolean;
+  };
+  RateAstrologer: {
+    consultationId: string;
   };
   OrdersScreen: undefined;
   PujaConsultationSuccess: undefined;

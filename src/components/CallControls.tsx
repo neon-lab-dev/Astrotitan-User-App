@@ -10,7 +10,7 @@ interface CallControlsProps {
   onSwitchCamera: () => void;
   onLeave: () => void;
   // onEnd: () => void;
-  isAstrologer: boolean;
+  // isAstrologer: boolean;
 }
 
 const CallControls = ({

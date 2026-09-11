@@ -42,11 +42,14 @@ export default ChatHeader;
 
 const styles = StyleSheet.create({
   header: {
+    backgroundColor: '#715700',
     paddingHorizontal: 16,
     paddingVertical: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#d8d3c9',
   },
 
   profileSection: {
@@ -64,13 +67,13 @@ const styles = StyleSheet.create({
 
   name: {
     fontSize: 16,
-    fontFamily: 'Satoshi-Medium',
-    color: '#222',
+    fontFamily: 'Satoshi-Bold',
+    color: '#ffffff',
   },
 
   subtitle: {
     fontSize: 12,
-    color: '#555',
+    color: '#eaeaea',
     marginTop: 2,
     marginLeft: 5,
     textTransform: 'capitalize',

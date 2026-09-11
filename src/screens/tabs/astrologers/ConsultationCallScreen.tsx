@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-
 import {
   ActivityIndicator,
   Alert,
@@ -10,22 +9,17 @@ import {
   Text,
   View,
 } from 'react-native';
-
 import { ZoomView } from '@zoom/react-native-videosdk';
-
 import useZoomCall from '../../../hooks/useZoomCall';
 import CallControls from '../../../components/CallControls';
 import WaitingForParticipant from './WaitingForParticipant';
 
 import { useRoute } from '@react-navigation/native';
-
 import {
   useLazyJoinConsultationQuery,
   useStartConsultationMutation,
 } from '../../../redux/features/consultation/consultationApi';
-
 import useCallPermissions from '../../../hooks/useCallPermissions';
-
 import LinearGradient from 'react-native-linear-gradient';
 import useCallTimer from '../../../hooks/useCallTimer';
 
@@ -68,7 +62,7 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     remoteVideoStates,
     error,
     joinSession,
-    leaveSession,
+    // leaveSession,
     endSession,
     toggleMute,
     toggleVideo,
@@ -97,16 +91,12 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     let mounted = true;
 
     const connectToConsultation = async () => {
-      console.log('[Consultation] Starting connection...');
-
-      console.log('[Consultation] consultationId:', consultationId);
+      console.log('[Consultation] 🚀 Starting connection...');
 
       try {
         setJoinError(null);
 
         const permissionsGranted = await requestPermissions();
-
-        console.log('[Consultation] Permissions granted:', permissionsGranted);
 
         if (!permissionsGranted) {
           throw new Error('Camera and microphone permissions are required.');
@@ -116,32 +106,20 @@ const ConsultationCallScreen = ({ navigation }: any) => {
 
         const result = await getJoinConsultation(consultationId).unwrap();
 
-        console.log('[Consultation] ✅ Join API response:', {
-          provider: result?.provider,
-          sessionName: result?.sessionName,
-          hasToken: Boolean(result?.token),
-          userName: result?.userName,
-          role: result?.role,
-        });
-
         if (!mounted) {
           return;
         }
 
-        if (!result) {
-          throw new Error('Join API returned empty response.');
+        if (!result?.sessionName) {
+          throw new Error('sessionName is missing.');
         }
 
-        if (!result.sessionName) {
-          throw new Error('sessionName is missing from join API response.');
+        if (!result?.token) {
+          throw new Error('Zoom token is missing.');
         }
 
-        if (!result.token) {
-          throw new Error('Zoom token is missing from join API response.');
-        }
-
-        if (!result.userName) {
-          throw new Error('userName is missing from join API response.');
+        if (!result?.userName) {
+          throw new Error('userName is missing.');
         }
 
         console.log('[Consultation] Calling joinSession()...');
@@ -152,17 +130,9 @@ const ConsultationCallScreen = ({ navigation }: any) => {
           userName: result.userName,
         });
 
-        console.log('[Consultation] joinSession() completed.');
+        console.log('[Consultation] ✅ joinSession() completed.');
       } catch (err) {
         console.error('[Consultation] ❌ Connection error:', err);
-
-        console.error('[Consultation] Error details:', {
-          message: err instanceof Error ? err.message : String(err),
-
-          stack: err instanceof Error ? err.stack : undefined,
-
-          rawError: err,
-        });
 
         if (mounted) {
           setJoinError(err instanceof Error ? err.message : String(err));
@@ -175,7 +145,7 @@ const ConsultationCallScreen = ({ navigation }: any) => {
     return () => {
       mounted = false;
     };
-  }, [consultationId, getJoinConsultation, joinSession, requestPermissions]);
+  }, [consultationId]);
 
   useEffect(() => {
     if (!isInSession || userRole !== 'astrologer' || hasStarted) {
@@ -210,13 +180,27 @@ const ConsultationCallScreen = ({ navigation }: any) => {
 
   const handleLeave = async () => {
     try {
-      await endSession();
-      // await leaveSession();
+      const success = await endSession();
+      if (!success) {
+        console.log('[Consultation] ❌ Session was NOT ended');
 
-      navigation.navigate('SessionDetails', {
-        id: consultationId,
-        isReviewMode: isAstrologerJoined ? true : false,
-      });
+        Alert.alert(
+          'Unable to End',
+          'The consultation could not be ended. Please try again.',
+        );
+
+        return;
+      }
+
+      if (isAstrologerJoined) {
+        if (success) {
+          navigation.navigate('RateAstrologer', {
+            consultationId,
+          });
+        }
+      } else {
+        navigation.navigate('SessionDetails', { id: consultationId });
+      }
     } catch (err) {
       console.error('Leave call error:', err);
     }
@@ -376,8 +360,6 @@ const ConsultationCallScreen = ({ navigation }: any) => {
         onToggleVideo={toggleVideo}
         onSwitchCamera={switchCamera}
         onLeave={handleLeave}
-        // onEnd={handleEnd}
-        isAstrologer={userRole === 'astrologer'}
       />
     </SafeAreaView>
   );

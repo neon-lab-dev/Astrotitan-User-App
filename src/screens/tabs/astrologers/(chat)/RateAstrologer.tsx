@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
 import {
   Alert,
@@ -8,19 +7,18 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
 } from 'react-native';
-import { useAddReviewMutation } from '../../../redux/features/consultation/consultationApi';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { useAddReviewMutation } from '../../../../redux/features/consultation/consultationApi';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
+import AppBar from '../../../../components/reusable/AppBar/AppBar';
+import { NavigationProp } from '../../../../components/shared/AppHeader/AppHeader';
 
-const RateAstrologer = ({
-  consultationId,
-  onClose,
-}: {
-  consultationId: string;
-  onClose: () => void;
-}) => {
+const RateAstrologer = () => {
+  const navigation = useNavigation<NavigationProp>();
+  const route = useRoute();
+  const consultationId = route.params?.consultationId;
   const [addReview, { isLoading: isSubmitting }] = useAddReviewMutation();
 
   const [rating, setRating] = useState(0);
@@ -42,24 +40,23 @@ const RateAstrologer = ({
         data: payload,
       }).unwrap();
       if (response?.success) {
-        onClose();
+        navigation.navigate('SessionDetails', { id: consultationId });
       }
     } catch (error) {
       console.log(error, 'TT');
     }
   };
-
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
-    >
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+    <AnimatedScreen>
+      <ScreenWrapper>
+        <AppBar
+          title="Rate Astrologer"
+          onPressBack={() =>
+            navigation.navigate('SessionDetails', { id: consultationId })
+          }
+        />
         <View style={styles.container}>
-          <Text style={styles.title}>Share your experience</Text>
+          <Text style={styles.title}>Share your session experience</Text>
 
           {/* Star Rating */}
           <View style={styles.ratingContainer}>
@@ -101,7 +98,7 @@ const RateAstrologer = ({
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
-              onPress={onClose}
+              //   onPress={onClose}
               disabled={isSubmitting}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -120,15 +117,14 @@ const RateAstrologer = ({
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </ScreenWrapper>
+    </AnimatedScreen>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#FFFFFF',
   },
 
   title: {

@@ -9,8 +9,11 @@ import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/Skele
 import SessionHistoryCard from '../../../../components/SessionHistoryPage/SessionHistoryCard/SessionHistoryCard';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 import { useGetMyConsultationRequestsBookingsQuery } from '../../../../redux/features/consultation/consultationApi';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '../../../../components/shared/AppHeader/AppHeader';
 
 const SessionHistory = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const {
@@ -77,7 +80,9 @@ const SessionHistory = () => {
             contentContainerStyle={styles.scrollContent}
             style={{ flex: 1 }}
           >
-            <AppBar title="Session Logs" />
+            <AppBar title="Session Logs"  onPressBack={() =>
+            navigation.navigate('AstrologerScreen')
+          }/>
 
             <View style={styles.content}>{renderContent()}</View>
           </ScrollView>

@@ -9,6 +9,7 @@ import SessionHistory from "../screens/tabs/astrologers/(chat)/SessionHistory";
 import SessionDetails from "../screens/tabs/astrologers/(chat)/SessionDetails";
 import SubscriptionScreen from "../screens/tabs/profile/subscription/SubscriptionScreen";
 import ConsultationCallScreen from "../screens/tabs/astrologers/ConsultationCallScreen";
+import RateAstrologer from "../screens/tabs/astrologers/(chat)/RateAstrologer";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +39,10 @@ export default function AstrologersNavigator() {
       <Stack.Screen
         name="SessionDetails"
         component={SessionDetails}
+      />
+      <Stack.Screen
+        name="RateAstrologer"
+        component={RateAstrologer}
       />
       <Stack.Screen
         name="AstrologerChatScreen"

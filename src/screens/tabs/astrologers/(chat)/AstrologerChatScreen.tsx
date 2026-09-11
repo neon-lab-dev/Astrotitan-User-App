@@ -1,11 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, FlatList, StyleSheet, TextInput } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  RefreshControl,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import {
+  useRoute,
+  useNavigation,
+  useFocusEffect,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigation/types';
-
-// Redux
 import { selectUser } from '../../../../redux/features/auth/authSlice';
 import {
   addConsultationMessage,
@@ -16,8 +24,6 @@ import {
   setSelectedConsultationMessages,
   updateConsultationMessageId,
 } from '../../../../redux/features/consultation/consultationChatSlice';
-
-// APIs & Hooks
 import {
   useGetConsultationMessagesQuery,
   useMarkConsultationMessagesReadMutation,
@@ -29,6 +35,7 @@ import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ChatSkeleton from '../../../../components/ChatPage/ChatSkeleton/ChatSkeleton';
 import ChatHeader from '../../../../components/ChatPage/ChatHeader/ChatHeader';
 import ChatInput from '../../../../components/ChatPage/ChatInput/ChatInput';
+import { SansText } from '../../../../components/reusable/Text/SansText';
 
 const AstrologerChatScreen = () => {
   const route = useRoute<any>();
@@ -39,6 +46,8 @@ const AstrologerChatScreen = () => {
     consultationFor,
   } = route.params || {};
 
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -48,6 +57,7 @@ const AstrologerChatScreen = () => {
   const hasInitializedRef = useRef(false);
   const hasMarkedReadRef = useRef(false);
   const messagesRef = useRef<any[]>([]);
+  const flatListRef = useRef<FlatList>(null);
 
   // State
   const [message, setMessage] = useState('');
@@ -66,9 +76,17 @@ const AstrologerChatScreen = () => {
     socket,
   } = useConsultationSocket();
 
-  const { data, isLoading, isFetching } = useGetConsultationMessagesQuery(
+  const { data, isLoading, refetch } = useGetConsultationMessagesQuery(
     consultationId,
     { skip: !consultationId },
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (consultationId) {
+        refetch();
+      }
+    }, [consultationId, refetch]),
   );
 
   const [markMessagesAsRead] = useMarkConsultationMessagesReadMutation();
@@ -193,7 +211,6 @@ const AstrologerChatScreen = () => {
       dispatch(clearSelectedConsultation());
       navigation.navigate('SessionDetails', {
         id: consultationId,
-        isReviewMode: true,
       });
     } catch (err: any) {
       console.log(err);
@@ -209,8 +226,31 @@ const AstrologerChatScreen = () => {
     return <ChatMessage item={item} isOwn={isOwn} />;
   };
 
-  // Show skeleton while loading
-  if (isLoading || isFetching) {
+  const onRefresh = useCallback(async () => {
+    if (refreshing) return;
+
+    try {
+      setRefreshing(true);
+
+      await Promise.all([refetch().unwrap()]);
+    } catch (error) {
+      console.log('REFRESH ERROR:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshing, refetch]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({
+          animated: true,
+        });
+      }, 100);
+    }
+  }, [messages.length]);
+
+  if (isLoading) {
     return (
       <AnimatedScreen>
         <ChatSkeleton />
@@ -231,13 +271,31 @@ const AstrologerChatScreen = () => {
         />
 
         {/* Messages */}
-        <FlatList
-          data={messages}
-          keyExtractor={item => item?._id}
-          renderItem={renderMessage}
-          contentContainerStyle={styles.chatContainer}
-          showsVerticalScrollIndicator={false}
-        />
+        <View style={styles.container}>
+          {messages.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <SansText style={styles.emptyText}>No messages yet</SansText>
+            </View>
+          ) : (
+            <FlatList
+              ref={flatListRef}
+              data={messages}
+              keyExtractor={item => item?._id}
+              renderItem={renderMessage}
+              contentContainerStyle={styles.chatContainer}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor="#816B22"
+                  colors={['#816B22']}
+                  progressBackgroundColor="#FBF7EB"
+                />
+              }
+            />
+          )}
+        </View>
 
         {/* Input */}
         <ChatInput
@@ -259,6 +317,16 @@ const styles = StyleSheet.create({
   chatContainer: {
     padding: 14,
     paddingBottom: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#272727',
+    marginTop: 50,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

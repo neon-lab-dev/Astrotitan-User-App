@@ -33,6 +33,7 @@ const useZoomCall = () => {
 
     const isJoiningRef =
         useRef(false);
+    const isEndingRef = useRef(false);
 
     const hasJoinedRef =
         useRef(false);
@@ -70,10 +71,7 @@ const useZoomCall = () => {
                 remoteUsers: ZoomVideoSdkUser[],
             ) => {
                 try {
-                    const states: Record<
-                        string,
-                        boolean
-                    > = {};
+                    const states: Record<string, boolean> = {};
 
                     for (
                         const user of remoteUsers
@@ -143,7 +141,7 @@ const useZoomCall = () => {
 
                 const remoteUserObjects =
                     remoteUsers.map(
-                        (user:any) =>
+                        (user: any) =>
                             new ZoomVideoSdkUser(
                                 user,
                             ),
@@ -386,6 +384,10 @@ const useZoomCall = () => {
                 userName,
                 sessionPassword,
             }: JoinSessionData) => {
+                if (isEndingRef.current) {
+                    console.log('[Zoom] ❌ Session is ending. Join blocked.');
+                    return;
+                }
                 if (
                     isJoiningRef.current
                 ) {
@@ -581,6 +583,8 @@ const useZoomCall = () => {
             }
         }, [zoom]);
 
+
+
     const leaveSession =
         useCallback(async () => {
             try {
@@ -617,41 +621,68 @@ const useZoomCall = () => {
             zoom,
         ]);
 
-    const endSession =
-        useCallback(async () => {
-            try {
-                console.log(
-                    "[Zoom] Ending session...",
-                );
+    const endSession = useCallback(async () => {
+  console.log('[Zoom] 🔴 END SESSION REQUESTED');
 
-                await zoom.leaveSession(
-                    true,
-                );
-            } catch (error) {
-                console.error(
-                    "[Zoom] End session error:",
-                    error,
-                );
-            } finally {
-                isJoiningRef.current =
-                    false;
+  // Prevent any future join
+  isEndingRef.current = true;
 
-                hasJoinedRef.current =
-                    false;
+  try {
+    console.log('[Zoom] Stopping local video/audio...');
 
-                setIsInSession(false);
-                setUsers([]);
-                setMySelf(null);
-                setRemoteVideoStates(
-                    {},
-                );
+    // Explicitly stop video if it is running
+    try {
+      const currentUser = await zoom.session.getMySelf();
 
-                cleanupListeners();
-            }
-        }, [
-            cleanupListeners,
-            zoom,
-        ]);
+      if (currentUser) {
+        const videoOn =
+          await currentUser.videoStatus.isOn();
+
+        if (videoOn) {
+          await zoom.videoHelper.stopVideo();
+          console.log('[Zoom] ✅ Video stopped');
+        }
+      }
+    } catch (error) {
+      console.error(
+        '[Zoom] Error stopping video:',
+        error,
+      );
+    }
+
+    console.log('[Zoom] Ending Zoom session...');
+
+    await zoom.leaveSession(true);
+
+    console.log('[Zoom] ✅ Zoom session ended');
+
+    return true;
+  } catch (error) {
+    console.error(
+      '[Zoom] ❌ End session error:',
+      error,
+    );
+
+    return false;
+  } finally {
+    isJoiningRef.current = false;
+
+    // Keep this TRUE.
+    // The current consultation screen is ending.
+    hasJoinedRef.current = true;
+
+    setIsInSession(false);
+    setUsers([]);
+    setMySelf(null);
+    setRemoteVideoStates({});
+    setIsVideoOn(false);
+    setIsMuted(false);
+
+    cleanupListeners();
+
+    console.log('[Zoom] 🔴 End session cleanup completed');
+  }
+}, [cleanupListeners, zoom]);
 
     useEffect(() => {
         return () => {

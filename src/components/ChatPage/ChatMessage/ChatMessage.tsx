@@ -40,12 +40,12 @@ const ChatMessage = ({ item, isOwn }: ChatMessageProps) => {
           {item?.isTemp && (
             <SansText style={styles.sendingText}>⌛ Sending...</SansText>
           )}
-          {isOwn && !item?.isTemp && item?.status === 'read' && (
+          {/* {isOwn && !item?.isTemp && item?.status === 'read' && (
             <SansText style={styles.readText}>✓✓ Read</SansText>
           )}
           {isOwn && !item?.isTemp && item?.status === 'sent' && (
             <SansText style={styles.sentText}>✓ Sent</SansText>
-          )}
+          )} */}
         </View>
       </View>
     </View>

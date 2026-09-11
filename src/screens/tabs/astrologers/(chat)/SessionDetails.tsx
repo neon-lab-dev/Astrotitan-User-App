@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -23,8 +23,6 @@ import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 import NoteIcon from '@/assets/icons/navigation/note.svg';
-import BottomSheetService from '../../../../redux/features/ui/GlobalSheet/BottomSheetService';
-import RateAstrologer from '../../../../components/SessionDetailsPage/RateAstrologer/RateAstrologer';
 import { getConsultationStatusColor } from '../../../../utils/getConsultationStatusColor';
 import { getConsultationStatusLabel } from '../../../../utils/getConsultationStatusLabel';
 import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
@@ -40,7 +38,6 @@ const SessionDetails = () => {
   const navigation = useNavigation<NavigationProp>();
   const dispatch = useDispatch();
   const id = route.params?.id;
-  const isReviewMode = route.params?.isReviewMode || true;
 
   const { data, refetch, isLoading, isFetching, isError } =
     useGetSingleConsultationBookingsQuery(id);
@@ -97,24 +94,6 @@ const SessionDetails = () => {
     });
   };
 
-  const hasOpenedReviewRef = useRef(false);
-
-  useEffect(() => {
-    if (isReviewMode && !hasOpenedReviewRef.current) {
-      hasOpenedReviewRef.current = true;
-
-      BottomSheetService.open(
-        <RateAstrologer
-          consultationId={id}
-          onClose={BottomSheetService.close}
-        />,
-        {
-          height: '60%',
-          hasGradient: true,
-        },
-      );
-    }
-  }, [isReviewMode, id]);
 
   const onRefresh = useCallback(async () => {
     if (refreshing) return;

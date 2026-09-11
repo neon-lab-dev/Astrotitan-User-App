@@ -1,11 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import StarIcon from '@/assets/icons/visual/star.svg';
-import React, { useState } from 'react';
+import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SansText } from '../../../../reusable/Text/SansText';
 import { SatoshiText } from '../../../../reusable/Text/SatoshiText';
-
 
 type Props = {
   _id: string;
@@ -17,80 +16,32 @@ type Props = {
   image: any;
 };
 
-// Fallback image - use a reliable placeholder
-const FALLBACK_IMAGE = require('@/assets/images/user-profile-placeholder.png');
-
 const ExpertCard = ({ _id, name, experience, tags, rating, image }: Props) => {
   const navigation = useNavigation<any>();
-  const [imageError, setImageError] = useState(false);
-
-  // const onPressAstrologer = (user: AstrologerType) => {
-  //   BottomSheetService.open(
-  //     <ConsultAstrologerSection
-  //       astrologer={user}
-  //       onCancel={BottomSheetService.close}
-  //       onConsult={() => {
-  //         BottomSheetService.close();
-
-  //         navigation.getParent()?.navigate('AstrologersTab', {
-  //           screen: 'AstrologerDetailsScreen',
-  //           params: {
-  //             id: _id,
-  //           },
-  //         });
-  //       }}
-  //     />,
-  //     {
-  //       height: 400,
-  //       hasGradient: true,
-  //     },
-  //   );
-  // };
-
-  const getImageSource = () => {
-    // If image error occurred, use fallback
-    if (imageError) {
-      return FALLBACK_IMAGE;
-    }
-
-    // If no image, use fallback
-    if (!image) {
-      return FALLBACK_IMAGE;
-    }
-
-    // If image is a string (URL), use { uri: image }
-    if (typeof image === 'string') {
-      return { uri: image };
-    }
-
-    // If image is already a valid source object
-    return image;
-  };
-
-  // Handle image load error
-  const handleImageError = () => {
-    console.log('⚠️ Image failed to load:', image);
-    setImageError(true);
-  };
 
   return (
     <TouchableOpacity
       onPress={() => {
-            navigation.getParent()?.navigate('AstrologersTab', {
-            screen: 'AstrologerDetailsScreen',
-            params: {
-              id: _id,
-            },
-          });
+        navigation.getParent()?.navigate('AstrologersTab', {
+          screen: 'AstrologerDetailsScreen',
+          params: {
+            id: _id,
+          },
+        });
       }}
       style={styles.card}
       activeOpacity={0.9}
     >
       <View style={styles.avatarWrapper}>
         <Image
-          source={getImageSource()}
+          source={
+            image
+              ? {
+                  uri: image,
+                }
+              : require('@/assets/images/user-profile-placeholder.png')
+          }
           style={styles.avatar}
-          onError={handleImageError}
         />
 
         <View style={styles.ratingBadge}>
@@ -101,9 +52,13 @@ const ExpertCard = ({ _id, name, experience, tags, rating, image }: Props) => {
 
       <View style={{ alignItems: 'center', gap: 4 }}>
         <SatoshiText style={styles.name}>{name}</SatoshiText>
-        <SansText style={styles.exp}>{experience} Years</SansText>
+        <SansText style={styles.exp}>{experience} Years Experience</SansText>
         <SansText style={styles.tags}>
-          {tags.map(t => `• ${t}`).join('  ')}
+          {tags
+            .slice(0, 2)
+            .map(t => `• ${t}`)
+            .join('  ')}
+          {tags.length > 2 && '  ...'}
         </SansText>
       </View>
     </TouchableOpacity>
@@ -162,7 +117,8 @@ const styles = StyleSheet.create({
   },
 
   exp: {
-    fontSize: 14,
+    fontSize: 12,
+    fontFamily: 'Satoshi-SemiBold',
     color: '#4A4A4A',
     letterSpacing: 0.28,
   },

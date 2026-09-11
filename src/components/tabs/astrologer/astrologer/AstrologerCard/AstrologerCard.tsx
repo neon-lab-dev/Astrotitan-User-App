@@ -23,7 +23,16 @@ export const AstrologerCard = ({ item }: any) => {
         style={styles.card}
       >
         <View style={styles.cardTop}>
-          <Image source={{ uri: item?.profilePicture }} style={styles.avatar} />
+          <Image
+            source={
+              item?.profilePicture
+                ? {
+                    uri: item?.profilePicture,
+                  }
+                : require('@/assets/images/user-profile-placeholder.png')
+            }
+            style={styles.avatar}
+          />
           <View style={{ flex: 1 }}>
             <SatoshiText style={styles.name}> {item?.displayName}</SatoshiText>
             <SansText style={styles.sub}>

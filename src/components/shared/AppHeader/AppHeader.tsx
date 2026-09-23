@@ -1,36 +1,74 @@
 /* eslint-disable react-native/no-inline-styles */
+
 import React from 'react';
-import { View } from 'react-native';
-import { SansText } from '../../reusable/Text/SansText';
-import { getTimeBasedGreeting } from '../../../utils/greetings';
-import { SatoshiText } from '../../reusable/Text/SatoshiText';
+import {View} from 'react-native';
+
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+import {SansText} from '../../reusable/Text/SansText';
+import {getTimeBasedGreeting} from '../../../utils/greetings';
+import {SatoshiText} from '../../reusable/Text/SatoshiText';
 import IconButton from '../../reusable/IconButton/IconButton';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../../redux/features/auth/authSlice';
+
+import {useSelector} from 'react-redux';
+import {selectUser} from '../../../redux/features/auth/authSlice';
+
 import CrownIcon from '@/assets/icons/navigation/crown.svg';
 import NotificationIcon from '@/assets/icons/navigation/notifications.svg';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../navigation/types';
-import { useNavigation } from '@react-navigation/native';
-import { useGetMyNotificationsQuery } from '../../../redux/features/notification/notificationApi';
 
-export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+import {
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+
+import {
+  RootStackParamList,
+} from '../../../navigation/types';
+
+import {useNavigation} from '@react-navigation/native';
+
+import {
+  useGetMyNotificationsQuery,
+} from '../../../redux/features/notification/notificationApi';
+
+export type NavigationProp =
+  NativeStackNavigationProp<RootStackParamList>;
+
 const AppHeader = () => {
   const user = useSelector(selectUser);
-  const navigation = useNavigation<NavigationProp>();
 
-  const { data: myNotifications } = useGetMyNotificationsQuery({});
-  const unreadCount = myNotifications?.data?.filter(
-    (notification: any) => !notification.isRead,
-  ).length;
+  const navigation =
+    useNavigation<NavigationProp>();
+
+  const insets = useSafeAreaInsets();
+
+  const {data: myNotifications} =
+    useGetMyNotificationsQuery({});
+
+  const unreadCount =
+    myNotifications?.data?.filter(
+      (notification: any) =>
+        !notification.isRead,
+    ).length ?? 0;
+
   return (
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'flex-end',
-        padding: 16,
+
+        paddingHorizontal: 16,
+
+        // Keep the original 16px spacing
+        // and add the device's status-bar inset.
+        paddingTop: insets.top + 16,
+
+        paddingBottom: 16,
       }}
     >
+      {/* =====================================
+          LEFT - GREETING
+      ====================================== */}
+
       <View
         style={{
           flex: 1,
@@ -53,11 +91,14 @@ const AppHeader = () => {
             fontFamily: 'Satoshi-Bold',
           }}
         >
-          {user?.profile?.firstName} {user?.profile?.lastName}
+          {user?.profile?.firstName}{' '}
+          {user?.profile?.lastName}
         </SatoshiText>
       </View>
 
-      {/* RIGHT */}
+      {/* =====================================
+          RIGHT - ACTIONS
+      ====================================== */}
 
       <View
         style={{
@@ -65,21 +106,27 @@ const AppHeader = () => {
           gap: 12,
         }}
       >
+        {/* Notification */}
         <IconButton
           Icon={NotificationIcon}
           iconColor="#0D0D0D"
           onPress={() => {
-            navigation.navigate('NotificationScreen');
+            navigation.navigate(
+              'NotificationScreen',
+            );
           }}
           update={unreadCount > 0}
           updateCount={unreadCount}
         />
 
+        {/* Subscription */}
         <IconButton
           Icon={CrownIcon}
           iconColor="#0D0D0D"
           onPress={() => {
-            navigation.navigate('SubscriptionScreen');
+            navigation.navigate(
+              'SubscriptionScreen',
+            );
           }}
         />
       </View>

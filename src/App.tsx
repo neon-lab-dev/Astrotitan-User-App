@@ -32,23 +32,27 @@ function App() {
 
 function AppContent() {
   return (
-    <Provider store={store}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
-        <ZoomProvider>
-          <NavigationContainer>
-            <NotificationManager />
-            <ScreenWrapper>
-              <RootNavigator />
-            </ScreenWrapper>
-            <GlobalBottomSheet />
-            <GlobalModal />
-            {/* <DevResetPanel/>  */}
-          </NavigationContainer>
-        </ZoomProvider>
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <ZoomProvider>
+            <NavigationContainer>
+              <NotificationManager />
+
+              <ScreenWrapper>
+                <RootNavigator />
+              </ScreenWrapper>
+
+              <GlobalBottomSheet />
+
+              <GlobalModal />
+
+              {/* <DevResetPanel /> */}
+            </NavigationContainer>
+          </ZoomProvider>
+        </GestureHandlerRootView>
+      </Provider>
+    </SafeAreaProvider>
   );
 }
 

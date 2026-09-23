@@ -1,9 +1,15 @@
+import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { SansText } from "../reusable/Text/SansText";
-import { IconName, ICONS } from "../../assets/svg";
+import {SansText} from '../reusable/Text/SansText';
+import {IconName, ICONS} from '../../assets/svg';
+
 import {
   StackActions,
   CommonActions,
@@ -14,18 +20,36 @@ export function CustomTabBar({
   descriptors,
   navigation,
 }: BottomTabBarProps) {
+  const insets = useSafeAreaInsets();
+
   const activeRoute = state.routes[state.index];
-  const activeOptions = descriptors[activeRoute.key].options as any;
-  const isHidden = activeOptions?.tabBarStyle?.display === "none";
 
-  if (isHidden) return null;
+  const activeOptions =
+    descriptors[activeRoute.key].options as any;
+
+  const isHidden =
+    activeOptions?.tabBarStyle?.display === 'none';
+
+  if (isHidden) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-
-
+    <View
+      style={[
+        styles.container,
+        {
+          paddingBottom: insets.bottom,
+          height: 68 + insets.bottom,
+        },
+      ]}
+    >
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const isFocused = state.index === index;
+        const {options} =
+          descriptors[route.key];
+
+        const isFocused =
+          state.index === index;
 
         const onPress = () => {
           const event = navigation.emit({
@@ -41,20 +65,10 @@ export function CustomTabBar({
           /*
            * route.state is the navigation state of the
            * nested Stack Navigator inside this tab.
-           *
-           * Example:
-           *
-           * ProfileTab
-           *    ↓
-           * ProfileNavigator
-           *    ↓
-           * OrdersScreen
-           *
-           * route.key       = ProfileTab route
-           * route.state.key  = ProfileNavigator
            */
 
-          const nestedNavigatorKey = route.state?.key;
+          const nestedNavigatorKey =
+            route.state?.key;
 
           if (nestedNavigatorKey) {
             navigation.dispatch({
@@ -66,6 +80,7 @@ export function CustomTabBar({
           /*
            * Now navigate to the selected tab.
            */
+
           navigation.dispatch(
             CommonActions.navigate({
               name: route.name,
@@ -73,7 +88,8 @@ export function CustomTabBar({
           );
         };
 
-        const tabIcon = (options as any)?.tabIcon as {
+        const tabIcon = (options as any)
+          ?.tabIcon as {
           active: IconName;
           inactive: IconName;
         };
@@ -82,7 +98,8 @@ export function CustomTabBar({
           ? tabIcon?.active
           : tabIcon?.inactive;
 
-        const IconComponent = ICONS[iconKey];
+        const IconComponent =
+          ICONS[iconKey];
 
         return (
           <TouchableOpacity
@@ -92,15 +109,24 @@ export function CustomTabBar({
             activeOpacity={0.8}
           >
             {/* SVG Icon */}
-            {IconComponent && <IconComponent width={24} height={24} />}
+            {IconComponent && (
+              <IconComponent
+                width={24}
+                height={24}
+              />
+            )}
 
             {/* Label */}
             <SansText
               style={{
                 fontSize: 12,
-                textAlign: "center",
-                color: isFocused ? "#816B22" : "#4A4A4A",
-                fontFamily: isFocused ? "GeneralSans-Medium" : "GeneralSans-Regular",
+                textAlign: 'center',
+                color: isFocused
+                  ? '#816B22'
+                  : '#4A4A4A',
+                fontFamily: isFocused
+                  ? 'GeneralSans-Medium'
+                  : 'GeneralSans-Regular',
               }}
             >
               {options.title}
@@ -114,31 +140,47 @@ export function CustomTabBar({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    height: 68,
-    backgroundColor: "#FBF7EB",
-    justifyContent: "space-around",
-    alignItems: "flex-start",
-    borderColor: "#EDDEAD",
+    flexDirection: 'row',
+
+    /*
+     * Original height was 68.
+     *
+     * Actual height is now:
+     * 68 + Android bottom safe-area inset
+     */
+    backgroundColor: '#FBF7EB',
+
+    justifyContent: 'space-around',
+
+    alignItems: 'flex-start',
+
+    borderColor: '#EDDEAD',
+
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderLeftWidth: 1,
+
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12,
-    paddingTop: 8
+
+    paddingTop: 8,
   },
 
   topShadow: {
-    position: "absolute",
+    position: 'absolute',
+
     top: -35,
     left: 0,
     right: 0,
+
     height: 36,
   },
 
   tabBtn: {
     flex: 1,
-    alignItems: "center",
+
+    alignItems: 'center',
+
     gap: 2,
   },
 });

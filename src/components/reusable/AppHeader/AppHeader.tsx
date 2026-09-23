@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 
 import React, {useCallback, useEffect} from 'react';
+
 import {
   BackHandler,
   StatusBar,
@@ -11,7 +12,9 @@ import {
 } from 'react-native';
 
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import Ionicons from '@react-native-vector-icons/ionicons';
+
 import {useNavigation} from '@react-navigation/native';
 
 import {SansText} from '../Text/SansText';
@@ -36,6 +39,7 @@ const AppHeader = ({
   description,
 }: Props) => {
   const navigation = useNavigation();
+
   const insets = useSafeAreaInsets();
 
   const handleBack = useCallback(() => {
@@ -48,74 +52,122 @@ const AppHeader = ({
     return true;
   }, [onPressBack, navigation]);
 
+  /**
+   * Android hardware back button
+   */
   useEffect(() => {
-    if (!showBack) return;
+    if (!showBack) {
+      return;
+    }
 
     const subscription = BackHandler.addEventListener(
       'hardwareBackPress',
       handleBack,
     );
 
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+    };
   }, [showBack, handleBack]);
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: insets.top + 13,
-        },
-      ]}>
-      
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="#715700"
+    <>
+      {/* 
+        Status bar area.
+        
+        This area remains WHITE and is separated
+        from the brown header.
+      */}
+      <View
+        style={[
+          styles.safeArea,
+          {
+            height: insets.top,
+          },
+        ]}
       />
 
-      <View style={styles.backRow}>
-        {showBack && (
-          <TouchableOpacity
-            onPress={handleBack}
-            style={styles.backButton}>
-            <Ionicons
-              name="arrow-back"
-              size={24}
-              color="#FFFFFF"
-            />
-          </TouchableOpacity>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#FFFFFF"
+        translucent
+      />
+
+      {/* =========================================
+          ACTUAL HEADER
+      ========================================== */}
+
+      <View style={styles.container}>
+        {/* BACK + STEP */}
+        <View style={styles.backRow}>
+          {showBack && (
+            <TouchableOpacity
+              onPress={handleBack}
+              style={styles.backButton}
+              hitSlop={{
+                top: 10,
+                bottom: 10,
+                left: 10,
+                right: 10,
+              }}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+          )}
+
+          {showStep && (
+            <SansText style={styles.text}>
+              <SansText style={styles.bold}>
+                Step {(step ?? 0) + 1}
+              </SansText>{' '}
+              of {totalSteps}
+            </SansText>
+          )}
+        </View>
+
+        {/* TITLE */}
+        {!!title && (
+          <Text style={styles.title}>
+            {title}
+          </Text>
         )}
 
-        {showStep && (
-          <SansText style={styles.text}>
-            <SansText style={styles.bold}>
-              Step {(step ?? 0) + 1}
-            </SansText>{' '}
-            of {totalSteps}
+        {/* DESCRIPTION */}
+        {!!description && (
+          <SansText style={styles.description}>
+            {description}
           </SansText>
         )}
       </View>
-
-      <Text style={styles.title}>
-        {title}
-      </Text>
-
-      {!!description && (
-        <SansText style={styles.description}>
-          {description}
-        </SansText>
-      )}
-    </View>
+    </>
   );
 };
 
 export default AppHeader;
 
 const styles = StyleSheet.create({
+  /**
+   * Area occupied by Android status bar.
+   *
+   * WHITE background keeps the status bar visually
+   * separate from the brown header.
+   */
+  safeArea: {
+    backgroundColor: '#FFFFFF',
+  },
+
+  /**
+   * Actual header starts BELOW the status bar.
+   */
   container: {
     backgroundColor: '#715700',
 
     paddingHorizontal: 20,
+
+    paddingTop: 13,
     paddingBottom: 13,
 
     borderBottomWidth: 1,
@@ -125,6 +177,7 @@ const styles = StyleSheet.create({
   backRow: {
     flexDirection: 'row',
     alignItems: 'center',
+
     marginBottom: 8,
   },
 
@@ -134,25 +187,33 @@ const styles = StyleSheet.create({
 
   title: {
     fontFamily: 'Satoshi-Medium',
+
     letterSpacing: -0.32,
+
     fontSize: 20,
+
     color: '#FFFFFF',
+
     marginBottom: 4,
   },
 
   description: {
     fontSize: 16,
+
     color: '#D5D5D5',
   },
 
   text: {
     color: '#D5D5D5',
+
     fontSize: 14,
   },
 
   bold: {
     color: '#FFFFFF',
+
     fontSize: 14,
+
     fontFamily: 'Satoshi-Bold',
   },
 });

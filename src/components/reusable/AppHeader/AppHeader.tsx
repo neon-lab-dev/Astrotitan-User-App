@@ -1,18 +1,21 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, { useCallback, useEffect } from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {
   BackHandler,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { useNavigation } from '@react-navigation/native';
-import { SansText } from '../Text/SansText';
+import {useNavigation} from '@react-navigation/native';
+
+import {SansText} from '../Text/SansText';
+
 type Props = {
   showBack?: boolean;
   onPressBack?: () => void;
@@ -28,11 +31,12 @@ const AppHeader = ({
   onPressBack,
   step,
   totalSteps,
-  showStep=true,
+  showStep = true,
   title,
   description,
 }: Props) => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const handleBack = useCallback(() => {
     if (onPressBack) {
@@ -44,7 +48,6 @@ const AppHeader = ({
     return true;
   }, [onPressBack, navigation]);
 
-  // 🔥 SYSTEM BACK CONTROL
   useEffect(() => {
     if (!showBack) return;
 
@@ -57,94 +60,99 @@ const AppHeader = ({
   }, [showBack, handleBack]);
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: '#715700',
-            borderBottomWidth: 1,
-            borderBottomColor: '#EDDEAD',
-          },
-        ]}
-      >
-        <View style={styles.backRow}>
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: insets.top + 13,
+        },
+      ]}>
+      
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#715700"
+      />
+
+      <View style={styles.backRow}>
+        {showBack && (
           <TouchableOpacity
-            onPress={() => {
-              if (handleBack) {
-                handleBack();
-              } else {
-                navigation.goBack();
-              }
-            }}
-          >
-            <Ionicons name="arrow-back" size={24} color="#fcfcfc" />
+            onPress={handleBack}
+            style={styles.backButton}>
+            <Ionicons
+              name="arrow-back"
+              size={24}
+              color="#FFFFFF"
+            />
           </TouchableOpacity>
+        )}
 
-          {/* TEXT */}
-          {showStep && (
-            <SansText style={styles.text}>
-              <SansText style={styles.bold}>    Step {(step ?? 0) + 1} </SansText>{' '}
-              of {totalSteps}
-            </SansText>
-          )}
-        </View>
+        {showStep && (
+          <SansText style={styles.text}>
+            <SansText style={styles.bold}>
+              Step {(step ?? 0) + 1}
+            </SansText>{' '}
+            of {totalSteps}
+          </SansText>
+        )}
+      </View>
 
-        {/*CONTENT BELOW */}
-        <Text style={styles.title}>{title}</Text>
-        <SansText
-          style={{
-            fontSize: 16,
-            color: '#d5d5d5',
-          }}
-        >
+      <Text style={styles.title}>
+        {title}
+      </Text>
+
+      {!!description && (
+        <SansText style={styles.description}>
           {description}
         </SansText>
-      </View>
-    </SafeAreaView>
+      )}
+    </View>
   );
 };
 
 export default AppHeader;
 
 const styles = StyleSheet.create({
-  mainContainer: { backgroundColor: '#FFFFFF' },
   container: {
-    backgroundColor: '#EDDEAD',
+    backgroundColor: '#715700',
+
     paddingHorizontal: 20,
+    paddingBottom: 13,
+
     borderBottomWidth: 1,
-    borderBottomColor: '#F2F2F2',
-    paddingVertical: 13,
+    borderBottomColor: '#EDDEAD',
   },
 
   backRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
     marginBottom: 8,
+  },
+
+  backButton: {
+    marginRight: 12,
   },
 
   title: {
     fontFamily: 'Satoshi-Medium',
     letterSpacing: -0.32,
-    fontSize : 20,
-    color: '#ffffff',
-    marginBottom : 4,
+    fontSize: 20,
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+
+  description: {
+    fontSize: 16,
+    color: '#D5D5D5',
   },
 
   text: {
-    color: '#d5d5d5',
+    color: '#D5D5D5',
     fontSize: 14,
-  },
-  bold: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontFamily: 'Satoshi-Bold',
   },
 
-  childrenContainer: {
-    justifyContent: 'space-between', // optional
+  bold: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontFamily: 'Satoshi-Bold',
   },
 });

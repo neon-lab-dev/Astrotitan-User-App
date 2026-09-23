@@ -12,7 +12,7 @@ import GlobalModal from './components/reusable/GlobalModal/GlobalModal';
 import GlobalBottomSheet from './components/reusable/GlobalBottomSheet/GlobalBottomSheet';
 import { NavigationContainer } from '@react-navigation/native';
 import { NotificationManager } from './components/NotificationManager';
-import { DevResetPanel } from './components/dev/DevResetPanel';
+// import { DevResetPanel } from './components/dev/DevResetPanel';
 import ZoomProvider from './providers/ZoomProvider';
 // import { DevResetPanel } from './components/dev/DevResetPanel';
 
@@ -34,7 +34,7 @@ function AppContent() {
   return (
     <Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        {/* <SafeAreaProvider> */}
+        <SafeAreaProvider>
         <ZoomProvider>
           <NavigationContainer>
             <NotificationManager />
@@ -46,7 +46,7 @@ function AppContent() {
             {/* <DevResetPanel/>  */}
           </NavigationContainer>
         </ZoomProvider>
-        {/* </SafeAreaProvider> */}
+        </SafeAreaProvider>
       </GestureHandlerRootView>
     </Provider>
   );

@@ -80,9 +80,10 @@ const SessionHistory = () => {
             contentContainerStyle={styles.scrollContent}
             style={{ flex: 1 }}
           >
-            <AppBar title="Session Logs"  onPressBack={() =>
-            navigation.navigate('AstrologerScreen')
-          }/>
+            <AppBar
+              title="Session Logs"
+              onPressBack={() => navigation.navigate('AstrologerScreen')}
+            />
 
             <View style={styles.content}>{renderContent()}</View>
           </ScrollView>

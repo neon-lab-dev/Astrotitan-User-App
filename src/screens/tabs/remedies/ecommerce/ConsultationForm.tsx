@@ -193,9 +193,7 @@ const ConsultationForm = () => {
             mode="date"
             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={handleDateChange}
-            // Remove maximumDate to allow future dates
-            // OR set it to a future date if needed
-            // minimumDate={new Date()} // Optional: prevent past dates
+            accentColor="#D4AF37"
           />
         )}
       </ScreenWrapper>

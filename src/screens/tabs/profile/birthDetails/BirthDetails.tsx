@@ -22,6 +22,7 @@ import { SansText } from '../../../../components/reusable/Text/SansText';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type FormValues = {
   dob: Date | null;
@@ -31,17 +32,16 @@ type FormValues = {
 
 type TimePickerType = 'hour' | 'minute' | 'period' | null;
 
-const hours = Array.from(
-  { length: 12 },
-  (_, index) => String(index + 1).padStart(2, '0')
+const hours = Array.from({ length: 12 }, (_, index) =>
+  String(index + 1).padStart(2, '0'),
 );
-const minutes = Array.from(
-  { length: 60 },
-  (_, index) => String(index).padStart(2, '0')
+const minutes = Array.from({ length: 60 }, (_, index) =>
+  String(index).padStart(2, '0'),
 );
 const periods = ['AM', 'PM'];
 
 const BirthDetails = () => {
+  const insets = useSafeAreaInsets();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState<TimePickerType>(null);
@@ -126,7 +126,7 @@ const BirthDetails = () => {
           date = new Date(
             parseInt(parts[2]),
             parseInt(parts[1]) - 1,
-            parseInt(parts[0])
+            parseInt(parts[0]),
           );
         } else {
           date = new Date(profile.dateOfBirth);
@@ -390,7 +390,14 @@ const BirthDetails = () => {
 
           {/* FIXED BOTTOM */}
           {isFormValid && (
-            <View style={styles.bottomContainer}>
+            <View
+              style={[
+                styles.bottomContainer,
+                {
+                  paddingBottom: Math.max(insets.bottom, 24),
+                },
+              ]}
+            >
               <ReusableButton
                 title={showSuccess ? 'Details Saved!' : 'Save Birth Details'}
                 onPress={handleSubmit(onSubmit)}
@@ -413,6 +420,7 @@ const BirthDetails = () => {
             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={handleDateChange}
             maximumDate={new Date()}
+            accentColor="#D4AF37"
           />
         )}
 
@@ -429,7 +437,7 @@ const BirthDetails = () => {
           >
             <Pressable
               style={styles.modalContent}
-              onPress={(event) => event.stopPropagation()}
+              onPress={event => event.stopPropagation()}
             >
               <View style={styles.modalHeader}>
                 <SatoshiText style={styles.modalTitle}>
@@ -442,7 +450,7 @@ const BirthDetails = () => {
 
               <FlatList
                 data={getPickerData()}
-                keyExtractor={(item) => item}
+                keyExtractor={item => item}
                 numColumns={showTimePicker === 'period' ? 2 : 4}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.pickerList}

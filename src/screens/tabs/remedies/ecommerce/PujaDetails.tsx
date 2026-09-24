@@ -27,8 +27,10 @@ import { RootStackParamList } from '../../../../navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 import ProductImages from '../../../../components/ProductDetailsPage/ProductImages/ProductImages';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const PujaDetails = () => {
+  const insets = useSafeAreaInsets();
   const route = useRoute<any>();
 
   type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -378,7 +380,14 @@ const PujaDetails = () => {
 
             {/* BUTTON */}
 
-            <View style={styles.buttonRow}>
+            <View
+              style={[
+                styles.buttonRow,
+                {
+                  paddingBottom: Math.max(insets.bottom, 20),
+                },
+              ]}
+            >
               <SkeletonLoader
                 width="100%"
                 height={52}

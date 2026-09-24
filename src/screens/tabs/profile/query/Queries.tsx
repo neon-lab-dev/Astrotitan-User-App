@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGetMyQueriesQuery } from '../../../../redux/features/quary/quaryApi';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
@@ -17,6 +18,14 @@ import { SansText } from '../../../../components/reusable/Text/SansText';
 const Queries = () => {
   const [refreshing, setRefreshing] = useState(false);
 
+  /**
+   * Safe area
+   *
+   * Gives us the actual bottom inset of the
+   * current device.
+   */
+  const insets = useSafeAreaInsets();
+
   const {
     data: queryResponse,
     isLoading,
@@ -27,9 +36,11 @@ const Queries = () => {
     limit: 10,
     status: [],
   });
+
   type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
   const navigation = useNavigation<NavigationProp>();
+
   const queries = queryResponse?.data?.data || [];
 
   const onRefresh = useCallback(async () => {
@@ -47,19 +58,41 @@ const Queries = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
+        {/* =========================================
+            HEADER
+        ========================================== */}
+
         <AppBar title="Your Queries" />
+
+        {/* =========================================
+            CONTENT
+        ========================================== */}
 
         <View
           style={{
             paddingHorizontal: 16,
+
             flexGrow: 1,
-            marginBottom: 16,
+
+            /*
+             * Original spacing was 16.
+             *
+             * Add the device-specific bottom
+             * safe-area inset so the button stays
+             * above the Android navigation area.
+             */
+            marginBottom: Math.max(insets.bottom, 16),
           }}
         >
-          {/* LOADING */}
+          {/* =======================================
+              LOADING
+          ======================================== */}
+
           {isLoading || isFetching ? (
             <ScrollView
-              style={{ flex: 1 }}
+              style={{
+                flex: 1,
+              }}
               showsVerticalScrollIndicator={false}
             >
               <View
@@ -87,6 +120,7 @@ const Queries = () => {
                       }}
                     >
                       {/* LEFT */}
+
                       <View
                         style={{
                           flex: 1,
@@ -94,14 +128,14 @@ const Queries = () => {
                         }}
                       >
                         <SkeletonLoader
-                          width={'70%'}
+                          width="70%"
                           height={24}
                           array={[1]}
                           borderRadius={8}
                         />
 
                         <SkeletonLoader
-                          width={'40%'}
+                          width="40%"
                           height={16}
                           array={[1]}
                           borderRadius={8}
@@ -116,6 +150,7 @@ const Queries = () => {
                       </View>
 
                       {/* RIGHT */}
+
                       <View
                         style={{
                           justifyContent: 'space-between',
@@ -156,9 +191,14 @@ const Queries = () => {
               </View>
             </ScrollView>
           ) : queries.length < 1 ? (
-            /* EMPTY */
+            /* =====================================
+               EMPTY
+            ====================================== */
+
             <ScrollView
-              style={{ flex: 1 }}
+              style={{
+                flex: 1,
+              }}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -183,16 +223,28 @@ const Queries = () => {
                 >
                   <DocumentSearchIcon height={124} width={124} />
 
-                  <SansText style={{ textAlign: 'center', fontSize: 16, color: '#000', fontFamily: 'Satoshi-Bold' }}>
+                  <SansText
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 16,
+                      color: '#000',
+                      fontFamily: 'Satoshi-Bold',
+                    }}
+                  >
                     No Queries Found
                   </SansText>
                 </View>
               </View>
             </ScrollView>
           ) : (
-            /* DATA */
+            /* =====================================
+               DATA
+            ====================================== */
+
             <ScrollView
-              style={{ flex: 1 }}
+              style={{
+                flex: 1,
+              }}
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -229,6 +281,10 @@ const Queries = () => {
               </View>
             </ScrollView>
           )}
+
+          {/* =======================================
+              RAISE QUERY BUTTON
+          ======================================== */}
 
           <ReusableButton
             onPress={() => {

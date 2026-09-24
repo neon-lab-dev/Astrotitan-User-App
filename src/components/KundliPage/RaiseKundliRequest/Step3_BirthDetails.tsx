@@ -394,6 +394,7 @@ const Step3_BirthDetails = ({ control, watch, setValue }: Props) => {
           }
           onChange={handleDateChange}
           maximumDate={new Date()}
+          accentColor="#D4AF37"
         />
       )}
 

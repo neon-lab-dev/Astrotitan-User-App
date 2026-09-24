@@ -1,36 +1,88 @@
 /* eslint-disable react-native/no-inline-styles */
+
 import LocationIcon from '@/assets/icons/navigation/location.svg';
+
 import React from 'react';
 
-import { RefreshControl, ScrollView, View } from 'react-native';
+import {
+  RefreshControl,
+  ScrollView,
+  View,
+} from 'react-native';
+
+import {
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+
 import {
   useDeleteAddressMutation,
   useGetMyAddressesQuery,
 } from '../../../../redux/features/address/addressApi';
+
 import BottomSheetService from '../../../../redux/features/ui/GlobalSheet/BottomSheetService';
+
 import DeleteAddressSection from '../../../../components/reusable/BottomSheet/DeleteAddressSectoin';
+
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
+
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
-import { SansText } from '../../../../components/reusable/Text/SansText';
+
+import {
+  SansText,
+} from '../../../../components/reusable/Text/SansText';
+
 import ReusableButton from '../../../../components/reusable/ReusableButton/ReusableButton';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../../../navigation/types';
+
+import {
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+
+import {
+  useNavigation,
+} from '@react-navigation/native';
+
+import {
+  RootStackParamList,
+} from '../../../../navigation/types';
+
 import AddressCardSkeleton from '../../../../components/tabs/profile/address/AddressCardSkeleton/AddressCardSkeleton';
+
 import AddressCard from '../../../../components/tabs/profile/address/AddressCard';
+
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
+
 const AddressScreen = () => {
-  const { data, isLoading, refetch, isFetching } = useGetMyAddressesQuery({});
-  type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+  /**
+   * Device safe-area insets
+   */
+  const insets = useSafeAreaInsets();
 
-  const navigation = useNavigation<NavigationProp>();
-  const [deleteAddress, { isLoading: deleteLoading }] =
-    useDeleteAddressMutation();
+  const {
+    data,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useGetMyAddressesQuery({});
 
-  const [refreshing, setRefreshing] = React.useState(false);
+  type NavigationProp =
+    NativeStackNavigationProp<RootStackParamList>;
 
-  const addresses = data?.data || [];
+  const navigation =
+    useNavigation<NavigationProp>();
+
+  const [
+    deleteAddress,
+    {
+      isLoading: deleteLoading,
+    },
+  ] = useDeleteAddressMutation();
+
+  const [refreshing, setRefreshing] =
+    React.useState(false);
+
+  const addresses =
+    data?.data || [];
 
   const onRefresh = async () => {
     try {
@@ -38,23 +90,35 @@ const AddressScreen = () => {
 
       await refetch();
     } catch (error) {
-      console.log('REFETCH ERROR:', error);
+      console.log(
+        'REFETCH ERROR:',
+        error,
+      );
     } finally {
       setRefreshing(false);
     }
   };
 
-  const onPressDelete = (id: string) => {
+  const onPressDelete = (
+    id: string,
+  ) => {
     BottomSheetService.open(
       <DeleteAddressSection
-        onCancel={BottomSheetService.close}
+        onCancel={
+          BottomSheetService.close
+        }
         onDelete={async () => {
           try {
-            await deleteAddress(id).unwrap();
+            await deleteAddress(
+              id,
+            ).unwrap();
 
             BottomSheetService.close();
           } catch (error) {
-            console.log('DELETE ADDRESS ERROR:', error);
+            console.log(
+              'DELETE ADDRESS ERROR:',
+              error,
+            );
           }
         }}
       />,
@@ -65,78 +129,148 @@ const AddressScreen = () => {
     );
   };
 
-  if (isLoading || isFetching) {
+  /**
+   * =========================================
+   * LOADING
+   * =========================================
+   */
+
+  if (
+    isLoading ||
+    isFetching
+  ) {
     return (
       <AnimatedScreen>
         <ScreenWrapper>
           <ScrollView
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={
+              false
+            }
             contentContainerStyle={{
               padding: 16,
               gap: 18,
-              paddingBottom: 24,
+              paddingBottom:
+                Math.max(
+                  insets.bottom,
+                  24,
+                ),
             }}
           >
-            {[1, 2, 3].map(item => (
-              <AddressCardSkeleton key={item} />
-            ))}
+            {[1, 2, 3].map(
+              item => (
+                <AddressCardSkeleton
+                  key={item}
+                />
+              ),
+            )}
           </ScrollView>
         </ScreenWrapper>
       </AnimatedScreen>
     );
   }
 
-  /* =======================================================
+  /**
+   * =========================================
    * MAIN UI
-   * ======================================================= */
+   * =========================================
+   */
 
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        {/* HEADER */}
-        <AppBar title="Saved Address" />
 
+        {/* =====================================
+            HEADER
+        ====================================== */}
+
+        <AppBar
+          title="Saved Address"
+        />
+
+
+        {/* =====================================
+            CONTENT
+        ====================================== */}
 
         <View
           style={{
             flex: 1,
+
             paddingHorizontal: 16,
-            paddingBottom: 16,
+
+            /*
+             * Original spacing = 16
+             *
+             * Add device-specific bottom
+             * safe-area spacing.
+             */
+            paddingBottom:
+              Math.max(
+                insets.bottom,
+                16,
+              ),
           }}
         >
-          {/* EMPTY STATE */}
+
+          {/* ===================================
+              EMPTY STATE
+          ==================================== */}
+
           {addresses.length < 1 ? (
             <View
               style={{
                 flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
+
+                justifyContent:
+                  'center',
+
+                alignItems:
+                  'center',
+
                 paddingHorizontal: 20,
               }}
             >
-              <LocationIcon height={124} width={124} />
+              <LocationIcon
+                height={124}
+                width={124}
+              />
 
               <SansText
                 style={{
                   marginTop: 18,
+
                   textAlign: 'center',
+
                   lineHeight: 24,
+
                   color: '#6B6B6B',
                 }}
               >
-                No saved addresses found.
+                No saved addresses
+                found.
               </SansText>
             </View>
           ) : (
+
+            /* =================================
+               ADDRESS LIST
+            ================================== */
+
             <ScrollView
               style={{
                 flex: 1,
               }}
-              showsVerticalScrollIndicator={false}
+              showsVerticalScrollIndicator={
+                false
+              }
               refreshControl={
                 <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
+                  refreshing={
+                    refreshing
+                  }
+                  onRefresh={
+                    onRefresh
+                  }
                   tintColor="#D4AF37"
                 />
               }
@@ -148,31 +282,58 @@ const AddressScreen = () => {
                 paddingBottom: 32,
               }}
             >
-              {addresses.map((item: any) => (
-                <AddressCard
-                  key={item._id}
-                  data={item}
-                  onEdit={() => {
-                    navigation.navigate('AddAddress', {
-                      mode: 'edit',
-                      data: JSON.stringify(item),
-                    });
-                  }}
-                  onDelete={() => onPressDelete(item._id)}
-                  showActions
-                />
-              ))}
+              {addresses.map(
+                (item: any) => (
+                  <AddressCard
+                    key={item._id}
+                    data={item}
+
+                    onEdit={() => {
+                      navigation.navigate(
+                        'AddAddress',
+                        {
+                          mode: 'edit',
+                          data:
+                            JSON.stringify(
+                              item,
+                            ),
+                        },
+                      );
+                    }}
+
+                    onDelete={() =>
+                      onPressDelete(
+                        item._id,
+                      )
+                    }
+
+                    showActions
+                  />
+                ),
+              )}
             </ScrollView>
           )}
 
-          {/* ADD BUTTON */}
+
+          {/* ===================================
+              ADD BUTTON
+          ==================================== */}
+
           <ReusableButton
             title="Add New Address"
             onPress={() => {
-              navigation.navigate('AddAddress', { mode: 'add' });
+              navigation.navigate(
+                'AddAddress',
+                {
+                  mode: 'add',
+                },
+              );
             }}
-            disabled={deleteLoading}
+            disabled={
+              deleteLoading
+            }
           />
+
         </View>
       </ScreenWrapper>
     </AnimatedScreen>

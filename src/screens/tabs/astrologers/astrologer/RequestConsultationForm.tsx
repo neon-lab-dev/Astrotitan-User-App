@@ -415,6 +415,7 @@ const RequestConsultationForm = () => {
                   mode="date"
                   display="calendar"
                   minimumDate={new Date()}
+                  accentColor="#D4AF37"
                   onChange={(event, date) => {
                     setShowDatePicker(false);
 

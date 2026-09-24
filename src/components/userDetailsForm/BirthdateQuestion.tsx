@@ -107,6 +107,7 @@ const BirthdateQuestion = ({ value, setValue, error }: any) => {
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleDateChange}
           maximumDate={new Date()}
+          accentColor="#D4AF37"
         />
       )}
     </View>

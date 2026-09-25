@@ -30,6 +30,7 @@ import ReusableButton from '../../../components/reusable/ReusableButton/Reusable
 import AppBar from '../../../components/reusable/AppBar/AppBar';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '../../../components/shared/AppHeader/AppHeader';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type FormValues = {
   firstName: string;
@@ -41,6 +42,7 @@ type FormValues = {
 };
 
 const PersonalInformation = () => {
+  const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp>();
 
@@ -367,15 +369,22 @@ const PersonalInformation = () => {
 
           {/* BUTTON */}
 
-          <View style={styles.bottomContainer}>
-            <ReusableButton
-              title="Save changes"
-              onPress={handleSubmit(onSubmit)}
-              width="100%"
-              loading={updateLoading}
-              disabled={updateLoading}
-            />
-          </View>
+         <View
+  style={[
+    styles.bottomContainer,
+    {
+      bottom: insets.bottom,
+    },
+  ]}
+>
+  <ReusableButton
+    title="Save Changes"
+    onPress={handleSubmit(onSubmit)}
+    width="100%"
+    loading={updateLoading}
+    disabled={updateLoading}
+  />
+</View>
         </View>
       </ScreenWrapper>
     </AnimatedScreen>
@@ -423,21 +432,13 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
 
-  bottomContainer: {
-    position: 'absolute',
-
-    bottom: 0,
-
-    left: 0,
-
-    right: 0,
-
-    paddingHorizontal: 16,
-
-    paddingTop: 16,
-
-    paddingBottom: 24,
-
-    backgroundColor: '#FBF7EB',
-  },
+ bottomContainer: {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 24,
+  backgroundColor: '#FBF7EB',
+},
 });

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useGetAstrologerByIdQuery } from '../../../../redux/features/astrologer/astrologerApi';
 import AstrologerDetailSkeleton from '../../../../components/tabs/astrologer/astrologer/AstrologerDetailSkeleton/AstrologerDetailSkeleton ';
@@ -27,12 +28,19 @@ import PremiumRequiredModal from '../../../../components/AstrologersPage/Premium
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const AstrologerDetailsScreen = () => {
+  const insets = useSafeAreaInsets();
+
   const { data: myProfile, refetch: refetchProfile } = useGetMeQuery({});
+
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
+
   const [showPremiumModal, setShowPremiumModal] = useState<boolean>(false);
+
   const id = route.params?.id as string;
+
   const [refreshing, setRefreshing] = useState(false);
+
   const previewAstrologer = route.params?.astrologer
     ? JSON.parse(route.params.astrologer as string)
     : null;
@@ -42,6 +50,7 @@ const AstrologerDetailsScreen = () => {
   });
 
   const astrologer = data?.data || previewAstrologer;
+
   const onRefresh = async () => {
     try {
       setRefreshing(true);
@@ -66,7 +75,7 @@ const AstrologerDetailsScreen = () => {
   useEffect(() => {
     refetchProfile();
   }, [refetchProfile]);
-  
+
   if (isLoading && !previewAstrologer) {
     return <AstrologerDetailSkeleton />;
   }
@@ -149,9 +158,7 @@ const AstrologerDetailsScreen = () => {
                 <View
                   style={{
                     flexDirection: 'row',
-
                     alignItems: 'center',
-
                     gap: 4,
                   }}
                 >
@@ -252,15 +259,25 @@ const AstrologerDetailsScreen = () => {
 
         {/* FIXED BOTTOM */}
 
-        <View style={styles.fixedBottom}>
+        <View
+          style={[
+            styles.fixedBottom,
+            {
+              paddingBottom: Math.max(insets.bottom, 24),
+            },
+          ]}
+        >
           <ReusableButton
             onPress={() => {
               const isPremium = myProfile?.data?.profile?.isPremiumUser;
+
               if (!isPremium) {
                 setShowPremiumModal(true);
                 return;
               } else {
-                navigation.navigate('RequestConsultationForm', { id: id ?? id });
+                navigation.navigate('RequestConsultationForm', {
+                  id: id ?? id,
+                });
               }
             }}
             title="Consult now"
@@ -278,6 +295,7 @@ const AstrologerDetailsScreen = () => {
           onClose={() => setShowPremiumModal(false)}
           onNavigateToSubscription={() => {
             setShowPremiumModal(false);
+
             navigation.navigate('SubscriptionScreen');
           }}
         />
@@ -291,13 +309,11 @@ export default AstrologerDetailsScreen;
 const styles = StyleSheet.create({
   header: {
     position: 'relative',
-
     overflow: 'hidden',
   },
 
   image: {
     width: SCREEN_WIDTH,
-
     height: SCREEN_WIDTH,
     borderBottomRightRadius: 12,
     borderBottomLeftRadius: 12,
@@ -305,13 +321,9 @@ const styles = StyleSheet.create({
 
   gradient: {
     position: 'absolute',
-
     left: 0,
-
     right: 0,
-
     bottom: 0,
-
     height: '100%',
     borderBottomRightRadius: 12,
     borderBottomLeftRadius: 12,
@@ -319,175 +331,117 @@ const styles = StyleSheet.create({
 
   backBtn: {
     position: 'absolute',
-
     top: 36,
-
     left: 20,
-
     width: 48,
-
     height: 48,
-
     borderRadius: 100,
-
     backgroundColor: '#EDDEAD',
-
     justifyContent: 'center',
-
     alignItems: 'center',
   },
 
   overlayContent: {
     position: 'absolute',
-
     left: 20,
-
     right: 20,
-
     bottom: 24,
-
     gap: 8,
   },
 
   name: {
     fontSize: 21,
-
     color: '#FFFFFF',
-
     fontFamily: 'Satoshi-Bold',
   },
 
   sub: {
     color: '#F5F5F5',
-
     fontSize: 14,
-
     lineHeight: 24,
   },
 
   status: {
     alignSelf: 'flex-start',
-
     backgroundColor: '#1B7726',
-
     paddingHorizontal: 14,
-
     paddingVertical: 10,
-
     borderRadius: 100,
-
     flexDirection: 'row',
-
     alignItems: 'center',
-
     gap: 8,
-
     marginTop: 6,
   },
 
   statusText: {
     color: '#E9F7EB',
-
     fontSize: 12,
   },
 
   container: {
     padding: 16,
-
     gap: 24,
   },
 
   statsRow: {
     flexDirection: 'row',
-
     gap: 12,
   },
 
   statBox: {
     flex: 1,
-
     backgroundColor: '#FBF7EB',
-
     borderRadius: 16,
-
     borderWidth: 1,
-
     borderColor: '#D4AF37',
-
     padding: 24,
-
     alignItems: 'center',
-
     gap: 6,
   },
 
   statValue: {
     fontSize: 21,
-
     color: '#0D0D0D',
-
     fontFamily: 'Satoshi-Bold',
   },
 
   statLabel: {
     fontSize: 13,
-
     color: '#4A4A4A',
-
     textAlign: 'center',
-
     lineHeight: 20,
   },
 
   tagRow: {
     flexDirection: 'row',
-
     flexWrap: 'wrap',
-
     gap: 10,
-
     marginTop: 14,
   },
 
   tag: {
     backgroundColor: '#EDDEAD',
-
     borderWidth: 1,
-
     borderColor: '#E6D18B',
-
     paddingHorizontal: 20,
-
     paddingVertical: 10,
-
     borderRadius: 12,
   },
 
   tagText: {
     fontSize: 14,
-
     color: '#0D0D0D',
   },
 
   fixedBottom: {
     position: 'absolute',
-
     left: 0,
-
     right: 0,
-
     bottom: 0,
-
     flexDirection: 'row',
-
     gap: 12,
-
     paddingHorizontal: 16,
-
     paddingTop: 16,
-
-    paddingBottom: 24,
-
     backgroundColor: '#FBF7EB',
   },
 });

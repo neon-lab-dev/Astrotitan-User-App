@@ -22,6 +22,7 @@ import {
 import useCallPermissions from '../../../hooks/useCallPermissions';
 import LinearGradient from 'react-native-linear-gradient';
 import useCallTimer from '../../../hooks/useCallTimer';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ConsultationCallRouteParams {
   consultationId: string;
@@ -31,6 +32,7 @@ interface ConsultationCallRouteParams {
 }
 
 const ConsultationCallScreen = ({ navigation }: any) => {
+  const insets = useSafeAreaInsets();
   const route = useRoute<any>();
 
   const {
@@ -339,7 +341,14 @@ const ConsultationCallScreen = ({ navigation }: any) => {
         </View>
       )}
 
-      <View style={styles.topBar}>
+      <View
+        style={[
+          styles.topBar,
+          {
+            top: insets.top + 10,
+          },
+        ]}
+      >
         <View style={styles.nameRow}>
           <Text style={styles.name}>{formattedTime}</Text>
         </View>
@@ -448,7 +457,6 @@ const styles = StyleSheet.create({
 
   topBar: {
     position: 'absolute',
-    top: 20,
     left: 16,
     right: 16,
     flexDirection: 'row',

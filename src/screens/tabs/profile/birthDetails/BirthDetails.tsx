@@ -394,7 +394,7 @@ const BirthDetails = () => {
               style={[
                 styles.bottomContainer,
                 {
-                  paddingBottom: Math.max(insets.bottom, 24),
+                  bottom: insets.bottom,
                 },
               ]}
             >
@@ -406,6 +406,7 @@ const BirthDetails = () => {
                 disabled={updateLoading || showSuccess}
                 variant="solid"
               />
+
               <SansText style={styles.footerText}>
                 These details are used to generate accurate charts & insights
               </SansText>
@@ -508,17 +509,16 @@ const styles = StyleSheet.create({
     marginTop: 12,
     gap: 14,
   },
-  bottomContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 24,
-    backgroundColor: '#F7F1DF',
-    gap: 10,
-  },
+ bottomContainer: {
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  paddingHorizontal: 16,
+  paddingTop: 16,
+  paddingBottom: 24,
+  backgroundColor: '#F7F1DF',
+  gap: 10,
+},
   footerText: {
     textAlign: 'center',
     fontSize: 11,

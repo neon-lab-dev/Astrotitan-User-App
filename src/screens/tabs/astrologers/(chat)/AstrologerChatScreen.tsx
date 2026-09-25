@@ -36,8 +36,10 @@ import ChatSkeleton from '../../../../components/ChatPage/ChatSkeleton/ChatSkele
 import ChatHeader from '../../../../components/ChatPage/ChatHeader/ChatHeader';
 import ChatInput from '../../../../components/ChatPage/ChatInput/ChatInput';
 import { SansText } from '../../../../components/reusable/Text/SansText';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const AstrologerChatScreen = () => {
+  const insets = useSafeAreaInsets();
   const route = useRoute<any>();
   const {
     id: consultationId,
@@ -262,13 +264,15 @@ const AstrologerChatScreen = () => {
     <AnimatedScreen>
       <View style={styles.container}>
         {/* Header */}
-        <ChatHeader
-          profilePicture={profilePicture}
-          name={name}
-          consultationFor={consultationFor}
-          handleEndSession={handleEndSession}
-          isLoading={endSessionLoading}
-        />
+        <View style={{ paddingTop: insets.top }}>
+          <ChatHeader
+            profilePicture={profilePicture}
+            name={name}
+            consultationFor={consultationFor}
+            handleEndSession={handleEndSession}
+            isLoading={endSessionLoading}
+          />
+        </View>
 
         {/* Messages */}
         <View style={styles.container}>
@@ -282,7 +286,12 @@ const AstrologerChatScreen = () => {
               data={messages}
               keyExtractor={item => item?._id}
               renderItem={renderMessage}
-              contentContainerStyle={styles.chatContainer}
+              contentContainerStyle={[
+                styles.chatContainer,
+                {
+                  paddingBottom: Math.max(insets.bottom + 80, 100),
+                },
+              ]}
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl
@@ -298,12 +307,21 @@ const AstrologerChatScreen = () => {
         </View>
 
         {/* Input */}
-        <ChatInput
-          message={message}
-          setMessage={setMessage}
-          onSend={handleSendMessage}
-          inputRef={inputRef as any}
-        />
+        <View
+          style={[
+            styles.inputContainer,
+            {
+              paddingBottom: insets.bottom,
+            },
+          ]}
+        >
+          <ChatInput
+            message={message}
+            setMessage={setMessage}
+            onSend={handleSendMessage}
+            inputRef={inputRef as any}
+          />
+        </View>
       </View>
     </AnimatedScreen>
   );
@@ -327,6 +345,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  inputContainer: {
+    backgroundColor: '#F7F2E3',
   },
 });
 

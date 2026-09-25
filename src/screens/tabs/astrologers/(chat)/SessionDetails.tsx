@@ -29,10 +29,12 @@ import ReusableButton from '../../../../components/reusable/ReusableButton/Reusa
 import { formatDate } from './../../../../utils/formatDate';
 import SessionDetailsSkeleton from '../../../../components/SessionDetailsPage/SessionDetailsSkeleton/SessionDetailsSkeleton';
 import SessionNotes from '../../../../components/SessionDetailsPage/SessionNotes/SessionNotes';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const SessionDetails = () => {
+  const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const route = useRoute();
   const navigation = useNavigation<NavigationProp>();
@@ -93,7 +95,6 @@ const SessionDetails = () => {
       // astrologerId: astrologer._id,
     });
   };
-
 
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
@@ -157,7 +158,12 @@ const SessionDetails = () => {
 
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.contentContainer}
+              contentContainerStyle={[
+                styles.contentContainer,
+                {
+                  paddingBottom: Math.max(insets.bottom, 40),
+                },
+              ]}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -330,7 +336,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
-    paddingBottom: 40,
   },
   profileCard: {
     flexDirection: 'row',

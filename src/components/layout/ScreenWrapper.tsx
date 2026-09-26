@@ -1,18 +1,20 @@
-// src/components/layout/ScreenWrapper.tsx
-
-import { StyleSheet } from "react-native";
+/* eslint-disable react-native/no-inline-styles */
+import { StyleSheet, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ScreenWrapper({ children }: any) {
+  const insets = useSafeAreaInsets();
+
   return (
     <LinearGradient
       colors={["#EDDEAD", "#F1E8C9", "#F5F5F5"]}
       locations={[0, 0.45, 1]}
-      // start={{ x: 0, y: 0 }}
-      // end={{ x: 1, y: 0.6 }} // approx 169deg
       style={styles.container}
     >
-      {children}
+      <View style={{ paddingTop: insets.top, flex: 1 }}>
+        {children}
+      </View>
     </LinearGradient>
   );
 }

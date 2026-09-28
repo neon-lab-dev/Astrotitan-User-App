@@ -393,9 +393,6 @@ const BirthDetails = () => {
             <View
               style={[
                 styles.bottomContainer,
-                {
-                  bottom: insets.bottom,
-                },
               ]}
             >
               <ReusableButton

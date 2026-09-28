@@ -197,18 +197,6 @@ const AddressScreen = () => {
             flex: 1,
 
             paddingHorizontal: 16,
-
-            /*
-             * Original spacing = 16
-             *
-             * Add device-specific bottom
-             * safe-area spacing.
-             */
-            paddingBottom:
-              Math.max(
-                insets.bottom,
-                16,
-              ),
           }}
         >
 

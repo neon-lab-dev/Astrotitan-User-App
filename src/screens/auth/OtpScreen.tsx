@@ -52,12 +52,7 @@ export default function OtpScreen() {
 
   const inputs = useRef<TextInput[]>([]);
 
-  const [otpArray, setOtpArray] = useState([
-    '',
-    '',
-    '',
-    '',
-  ]);
+  const [otpArray, setOtpArray] = useState(['', '', '', '']);
 
   const route = useRoute<any>();
   const params = route.params || {};
@@ -104,15 +99,12 @@ export default function OtpScreen() {
         }),
       );
 
-      const isProfileCompleted =
-        user?.isProfileCompleted;
+      const isProfileCompleted = user?.isProfileCompleted;
 
       await Storage.setAccessToken(accessToken);
       await Storage.setRefreshToken(refreshToken);
       await Storage.setUser(user);
-      await Storage.setProfileCompleted(
-        isProfileCompleted,
-      );
+      await Storage.setProfileCompleted(isProfileCompleted);
 
       setStatus('success');
 
@@ -140,13 +132,9 @@ export default function OtpScreen() {
         });
       }
     } catch (err: any) {
-      const message =
-        err?.data?.message ||
-        'Invalid OTP. Please try again.';
+      const message = err?.data?.message || 'Invalid OTP. Please try again.';
 
-      if (
-        message.toLowerCase().includes('expired')
-      ) {
+      if (message.toLowerCase().includes('expired')) {
         setStatus('expired');
         setCanResend(true);
       } else {
@@ -164,9 +152,7 @@ export default function OtpScreen() {
     if (timer === 0) {
       setCanResend(true);
 
-      const isEmpty = otpArray.every(
-        digit => digit === '',
-      );
+      const isEmpty = otpArray.every(digit => digit === '');
 
       if (isEmpty) {
         setStatus('not_received');
@@ -201,42 +187,25 @@ export default function OtpScreen() {
       setCanResend(false);
       setStatus('default');
 
-      setOtpArray([
-        '',
-        '',
-        '',
-        '',
-      ]);
+      setOtpArray(['', '', '', '']);
 
       setValue('otp', '');
     } catch {
       setStatus('error');
-      setErrorMessage(
-        'Failed to resend OTP. Try again.',
-      );
+      setErrorMessage('Failed to resend OTP. Try again.');
     } finally {
       setLoading(false);
     }
   };
 
   // INPUT HANDLING
-  const handleBackspace = (
-    key: string,
-    index: number,
-  ) => {
-    if (
-      key === 'Backspace' &&
-      !otpArray[index] &&
-      index > 0
-    ) {
+  const handleBackspace = (key: string, index: number) => {
+    if (key === 'Backspace' && !otpArray[index] && index > 0) {
       inputs.current[index - 1]?.focus();
     }
   };
 
-  const handleChange = (
-    text: string,
-    index: number,
-  ) => {
+  const handleChange = (text: string, index: number) => {
     if (!/^[0-9]?$/.test(text)) return;
 
     const newOtp = [...otpArray];
@@ -267,9 +236,7 @@ export default function OtpScreen() {
               showStep={false}
               title="OTP Verification"
               description={`Enter the 4-digit OTP sent to your ${
-                params.phone
-                  ? 'mobile number'
-                  : 'email'
+                params.phone ? 'mobile number' : 'email'
               } ${params.phone || params.email}`}
             />
 
@@ -279,33 +246,20 @@ export default function OtpScreen() {
                   <TextInput
                     key={index}
                     value={otp[index] || ''}
-                    onChangeText={text =>
-                      handleChange(
-                        text,
-                        index,
-                      )
-                    }
-                    onKeyPress={({
-                      nativeEvent,
-                    }) =>
-                      handleBackspace(
-                        nativeEvent.key,
-                        index,
-                      )
+                    onChangeText={text => handleChange(text, index)}
+                    onKeyPress={({ nativeEvent }) =>
+                      handleBackspace(nativeEvent.key, index)
                     }
                     keyboardType="number-pad"
                     maxLength={1}
                     style={[
                       styles.otpBox,
-                      status === 'error' &&
-                        styles.errorBorder,
-                      status === 'success' &&
-                        styles.successBorder,
+                      status === 'error' && styles.errorBorder,
+                      status === 'success' && styles.successBorder,
                     ]}
                     ref={ref => {
                       if (ref) {
-                        inputs.current[index] =
-                          ref;
+                        inputs.current[index] = ref;
                       }
                     }}
                   />
@@ -313,47 +267,31 @@ export default function OtpScreen() {
               </View>
 
               {/* STATUS */}
-              {loading && (
-                <ActivityIndicator />
-              )}
+              {loading && <ActivityIndicator />}
 
               {status === 'success' && (
-                <SansText
-                  style={styles.successText}
-                >
+                <SansText style={styles.successText}>
                   OTP verified successfully
                 </SansText>
               )}
 
               {status === 'error' && (
-                <SansText
-                  style={styles.errorText}
-                >
-                  {errorMessage}
-                </SansText>
+                <SansText style={styles.errorText}>{errorMessage}</SansText>
               )}
 
               {status === 'expired' && (
-                <SansText
-                  style={styles.errorText}
-                >
-                  {errorMessage}
-                </SansText>
+                <SansText style={styles.errorText}>{errorMessage}</SansText>
               )}
 
               {status === 'not_received' && (
                 <SansText>
-                  Didn’t receive the OTP? You
-                  can request a new one.
+                  Didn’t receive the OTP? You can request a new one.
                 </SansText>
               )}
 
-              {!canResend &&
-                status === 'default' && (
-                  <SansText>
-                    Resend OTP in {timer}s
-                  </SansText>
-                )}
+              {!canResend && status === 'default' && (
+                <SansText>Resend OTP in {timer}s</SansText>
+              )}
             </View>
           </View>
 
@@ -362,19 +300,12 @@ export default function OtpScreen() {
               style={[
                 styles.resendBox,
                 {
-                  paddingBottom: Math.max(
-                    insets.bottom,
-                    16,
-                  ),
+                  paddingBottom: Math.max(insets.bottom, 16),
                 },
               ]}
             >
               <ReusableButton
-                title={
-                  loading
-                    ? 'Please wait...'
-                    : 'Resend OTP'
-                }
+                title={loading ? 'Please wait...' : 'Resend OTP'}
                 variant="solid"
                 onPress={handleResend}
               />

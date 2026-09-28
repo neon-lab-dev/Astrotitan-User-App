@@ -100,7 +100,7 @@ const ConsultationForm = () => {
   return (
     <AnimatedScreen>
       <ScreenWrapper>
-        <AppBar title="Book Puja" />
+        <AppBar title="Book Pooja" />
 
         <View style={{ flex: 1 }}>
           <ScrollView
@@ -168,7 +168,7 @@ const ConsultationForm = () => {
             <FormInput
               control={control}
               name="purposeOfPuja"
-              label="Purpose Of Puja"
+              label="Purpose Of Pooja"
               placeholder="Explain your purpose"
               multiline
               numberOfLines={4}
@@ -178,7 +178,7 @@ const ConsultationForm = () => {
 
           <View style={styles.bottomContainer}>
             <ReusableButton
-              title="Book Puja"
+              title="Book Pooja"
               width="100%"
               loading={isLoading}
               disabled={isLoading}

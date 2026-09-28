@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import { StyleSheet, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,7 +11,14 @@ export default function ScreenWrapper({ children }: any) {
       locations={[0, 0.45, 1]}
       style={styles.container}
     >
-      <View style={{ paddingTop: insets.top, flex: 1 }}>
+      <View
+        style={[
+          styles.content,
+          {
+            paddingBottom: insets.bottom,
+          },
+        ]}
+      >
         {children}
       </View>
     </LinearGradient>
@@ -21,6 +27,10 @@ export default function ScreenWrapper({ children }: any) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+
+  content: {
     flex: 1,
   },
 });

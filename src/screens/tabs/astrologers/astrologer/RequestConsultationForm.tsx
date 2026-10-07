@@ -8,8 +8,15 @@ import TieIcon from '@/assets/icons/visual/intent/tie.svg';
 import WellnessIcon from '@/assets/icons/visual/intent/wellness.svg';
 import ChatIcon from '@/assets/icons/actions/bubble-chat.svg';
 import CallIcon from '@/assets/icons/visual/call.svg';
-import React, { useEffect, useState } from 'react';
-import { Alert, Pressable, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Alert,
+  Pressable,
+  TouchableOpacity,
+  View,
+  Modal,
+  FlatList,
+} from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import SelectableOptions from '../../../../components/reusable/SelectableOptions/SelectableOptions';
@@ -19,9 +26,43 @@ import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import QuestionScreen from '../../../../components/RequestConsultationForm/QuestionScreen';
 import { useBookConsultationMutation } from '../../../../redux/features/consultation/consultationApi';
 import { useGetAllSlotsByAstrologerIdQuery } from '../../../../redux/features/slot/slotApi';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import AppInput from './../../../../components/reusable/InputField/AppInput';
 import { SansText } from '../../../../components/reusable/Text/SansText';
+import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
+
+/* ==================================================
+   DATE DROPDOWN CONSTANTS
+================================================== */
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const CURRENT_YEAR = new Date().getFullYear();
+const MIN_YEAR = CURRENT_YEAR - 100;
+
+// Newest first — natural scroll for date pickers
+const YEARS = Array.from(
+  { length: CURRENT_YEAR - MIN_YEAR + 1 },
+  (_, i) => String(CURRENT_YEAR - i),
+);
+
+/** Number of days in a given (1-based) month + year */
+const getDaysInMonth = (month: number, year: number) =>
+  new Date(year, month, 0).getDate();
+
+type DatePickerType = 'day' | 'month' | 'year' | null;
 
 const RequestConsultationForm = () => {
   const route = useRoute<any>();
@@ -44,9 +85,7 @@ const RequestConsultationForm = () => {
 
   const [bookConsultation, { isLoading }] = useBookConsultationMutation();
 
-  // ==================================================
   // CONSULTATION STATE
-  // ==================================================
 
   const [method, setMethod] = useState<string>(savedMode || '');
 
@@ -54,35 +93,37 @@ const RequestConsultationForm = () => {
     savedRequestMessage || '',
   );
 
-  // ==================================================
   // DATE STATE
-  // ==================================================
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  // DROPDOWN PICKER STATE (replaces native DateTimePicker)
+  const [showDatePicker, setShowDatePicker] = useState<DatePickerType>(null);
 
-  // ==================================================
+  // DD / MM / YYYY chip state (mirrors `selectedDate`)
+  const [selectedDay, setSelectedDay] = useState<string>(
+    String(new Date().getDate()).padStart(2, '0'),
+  );
+  const [selectedMonth, setSelectedMonth] = useState<string>(
+    String(new Date().getMonth() + 1),
+  );
+  const [selectedYear, setSelectedYear] = useState<string>(
+    String(new Date().getFullYear()),
+  );
+
   // SLOT STATE
-  // ==================================================
 
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
 
   const [bookedSlotId, setBookedSlotId] = useState<string | null>(null);
 
-  // ==================================================
   // FORMAT DATE
-  // ==================================================
 
   const formattedDate = `${selectedDate.getFullYear()}-${String(
     selectedDate.getMonth() + 1,
   ).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
 
-  // ==================================================
   // GET AVAILABLE SLOTS
-  //
-  // API IS ONLY CALLED FOR CALL
-  // ==================================================
 
   const {
     data,
@@ -100,18 +141,14 @@ const RequestConsultationForm = () => {
 
   const slots = data?.data?.slots || [];
 
-  // ==================================================
   // CLEAR SLOT WHEN DATE CHANGES
-  // ==================================================
 
   useEffect(() => {
     setSelectedSlotId(null);
     setBookedSlotId(null);
   }, [selectedDate]);
 
-  // ==================================================
   // WHEN METHOD CHANGES
-  // ==================================================
 
   useEffect(() => {
     if (savedMode) {
@@ -119,29 +156,136 @@ const RequestConsultationForm = () => {
     }
   }, [savedMode]);
 
-  // ==================================================
-  // FINAL SUBMIT
-  // ==================================================
+  /* ==================================================
+     DAYS LIST (depends on month + year)
+  ================================================== */
+
+  const days = useMemo(() => {
+    const month = parseInt(selectedMonth) || 1;
+    const year = parseInt(selectedYear) || CURRENT_YEAR;
+    const total = getDaysInMonth(month, year);
+    return Array.from({ length: total }, (_, i) =>
+      String(i + 1).padStart(2, '0'),
+    );
+  }, [selectedMonth, selectedYear]);
+
+  /* ==================================================
+     SYNC: selectedDate -> chips
+  ================================================== */
+
+  useEffect(() => {
+    setSelectedDay(String(selectedDate.getDate()).padStart(2, '0'));
+    setSelectedMonth(String(selectedDate.getMonth() + 1));
+    setSelectedYear(String(selectedDate.getFullYear()));
+  }, [selectedDate]);
+
+  /* ==================================================
+     SYNC: chips -> selectedDate
+  ================================================== */
+
+  useEffect(() => {
+    if (!selectedDay || !selectedMonth || !selectedYear) return;
+
+    const day = parseInt(selectedDay);
+    const month = parseInt(selectedMonth);
+    const year = parseInt(selectedYear);
+    const maxDay = getDaysInMonth(month, year);
+
+    if (day > maxDay) {
+      // Clamp if month/year changed to something shorter (e.g. 31 -> Feb)
+      setSelectedDay(String(maxDay).padStart(2, '0'));
+      return;
+    }
+
+    const next = new Date(year, month - 1, day);
+
+    // Only update if the date actually changed, to avoid re-triggering
+    if (
+      next.getFullYear() !== selectedDate.getFullYear() ||
+      next.getMonth() !== selectedDate.getMonth() ||
+      next.getDate() !== selectedDate.getDate()
+    ) {
+      setSelectedDate(next);
+    }
+  }, [selectedDay, selectedMonth, selectedYear]);
+
+  /* ==================================================
+     DATE DROPDOWN HANDLERS
+  ================================================== */
+
+  const handleDaySelect = (day: string) => {
+    setSelectedDay(day);
+    setShowDatePicker(null);
+    // Auto-advance to Month
+    setTimeout(() => setShowDatePicker('month'), 200);
+  };
+
+  const handleMonthSelect = (month1Based: string) => {
+    setSelectedMonth(month1Based);
+    setShowDatePicker(null);
+    // Auto-advance to Year
+    setTimeout(() => setShowDatePicker('year'), 200);
+  };
+
+  const handleYearSelect = (year: string) => {
+    setSelectedYear(year);
+    setShowDatePicker(null);
+  };
+
+  const getDatePickerTitle = () => {
+    switch (showDatePicker) {
+      case 'day':
+        return 'Select Day';
+      case 'month':
+        return 'Select Month';
+      case 'year':
+        return 'Select Year';
+      default:
+        return '';
+    }
+  };
+
+  const getDatePickerData = (): { value: string; label: string }[] => {
+    switch (showDatePicker) {
+      case 'day':
+        return days.map(d => ({ value: d, label: d }));
+      case 'month':
+        return MONTHS.map((name, i) => ({
+          value: String(i + 1),
+          label: name,
+        }));
+      case 'year':
+        return YEARS.map(y => ({ value: y, label: y }));
+      default:
+        return [];
+    }
+  };
+
+  const isDateItemSelected = (v: string) => {
+    if (showDatePicker === 'day') return selectedDay === v;
+    if (showDatePicker === 'month') return selectedMonth === v;
+    if (showDatePicker === 'year') return selectedYear === v;
+    return false;
+  };
+
+  const handleDateItemPress = (v: string) => {
+    if (showDatePicker === 'day') handleDaySelect(v);
+    else if (showDatePicker === 'month') handleMonthSelect(v);
+    else if (showDatePicker === 'year') handleYearSelect(v);
+  };
+
+  /* ==================================================
+     FINAL SUBMIT
+  ================================================== */
 
   const handleFinalSubmit = async (formData: any) => {
     try {
       const payload: any = {
         astrologer: astrologerId,
-
         method: formData.mode,
-
         consultationFor: formData.guidance,
-
-        /*
-         * Reason/message behind consultation
-         */
         requestMessage: formData.requestMessage || '',
       };
-
-      // ==================================================
-      // CALL ONLY:
-      // ADD SLOT INFORMATION
-      // ==================================================
 
       if (formData.mode === 'call') {
         if (!selectedSlotId) {
@@ -193,10 +337,7 @@ const RequestConsultationForm = () => {
     }
   };
 
-  // ==================================================
   // QUESTIONS
-  // ==================================================
-
   const questions = [
     // ==================================================
     // STEP 1
@@ -377,54 +518,93 @@ const RequestConsultationForm = () => {
                 Select Date
               </SansText>
 
-              <Pressable
-                onPress={() => setShowDatePicker(true)}
+              {/* DD / Month / YYYY dropdown row */}
+              <View
                 style={{
-                  paddingVertical: 14,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 8,
                   marginBottom: 20,
-                  borderRadius: 10,
-                  borderWidth: 1.2,
-                  borderColor: '#e7c555',
-                  backgroundColor: '#fdf5da',
-                  flex: 1,
-                  paddingHorizontal: 16,
                 }}
               >
-                <SansText
+                <TouchableOpacity
+                  onPress={() => setShowDatePicker('day')}
+                  activeOpacity={0.8}
                   style={{
-                    fontSize: 15,
-                    color: '#222',
+                    width: 78,
+                    height: 52,
+                    borderRadius: 10,
+                    borderWidth: 1.2,
+                    borderColor: '#e7c555',
+                    backgroundColor: '#fdf5da',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingHorizontal: 6,
                   }}
                 >
-                  {selectedDate.toLocaleDateString('en-IN', {
-                    weekday: 'short',
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </SansText>
-              </Pressable>
+                  <SansText
+                    style={{
+                      fontSize: 15,
+                      color: '#222',
+                    }}
+                  >
+                    {selectedDay || 'DD'}
+                  </SansText>
+                </TouchableOpacity>
 
-              {/* ==============================
-                  NATIVE CALENDAR
-              ============================== */}
-
-              {showDatePicker && (
-                <DateTimePicker
-                  value={selectedDate}
-                  mode="date"
-                  display="calendar"
-                  minimumDate={new Date()}
-                  accentColor="#D4AF37"
-                  onChange={(event, date) => {
-                    setShowDatePicker(false);
-
-                    if (date && event.type !== 'dismissed') {
-                      setSelectedDate(date);
-                    }
+                <TouchableOpacity
+                  onPress={() => setShowDatePicker('month')}
+                  activeOpacity={0.8}
+                  style={{
+                    flex: 1,
+                    height: 52,
+                    borderRadius: 10,
+                    borderWidth: 1.2,
+                    borderColor: '#e7c555',
+                    backgroundColor: '#fdf5da',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingHorizontal: 6,
                   }}
-                />
-              )}
+                >
+                  <SansText
+                    style={{
+                      fontSize: 15,
+                      color: '#222',
+                    }}
+                    numberOfLines={1}
+                  >
+                    {selectedMonth
+                      ? MONTHS[parseInt(selectedMonth) - 1]
+                      : 'Month'}
+                  </SansText>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => setShowDatePicker('year')}
+                  activeOpacity={0.8}
+                  style={{
+                    width: 78,
+                    height: 52,
+                    borderRadius: 10,
+                    borderWidth: 1.2,
+                    borderColor: '#e7c555',
+                    backgroundColor: '#fdf5da',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingHorizontal: 6,
+                  }}
+                >
+                  <SansText
+                    style={{
+                      fontSize: 15,
+                      color: '#222',
+                    }}
+                  >
+                    {selectedYear || 'YYYY'}
+                  </SansText>
+                </TouchableOpacity>
+              </View>
 
               {/* ==============================
                   AVAILABLE SLOTS
@@ -568,10 +748,6 @@ const RequestConsultationForm = () => {
     },
   ];
 
-  // ==================================================
-  // CURRENT QUESTION
-  // ==================================================
-
   const currentQuestion = questions[step];
 
   if (!currentQuestion) {
@@ -597,6 +773,114 @@ const RequestConsultationForm = () => {
         >
           {currentQuestion.render}
         </QuestionScreen>
+
+        {/* ==================================================
+            DATE PICKER MODAL (Day / Month / Year)
+        ================================================== */}
+
+        <Modal
+          visible={showDatePicker !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowDatePicker(null)}
+        >
+          <Pressable
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.45)',
+              justifyContent: 'flex-end',
+            }}
+            onPress={() => setShowDatePicker(null)}
+          >
+            <Pressable
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderTopLeftRadius: 24,
+                borderTopRightRadius: 24,
+                maxHeight: '65%',
+                paddingHorizontal: 20,
+                paddingTop: 20,
+                paddingBottom: 30,
+              }}
+              onPress={e => e.stopPropagation()}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 20,
+                }}
+              >
+                <SatoshiText
+                  style={{
+                    fontSize: 18,
+                    fontFamily: 'Satoshi-Bold',
+                    color: '#1a1a2e',
+                  }}
+                >
+                  {getDatePickerTitle()}
+                </SatoshiText>
+
+                <TouchableOpacity onPress={() => setShowDatePicker(null)}>
+                  <SansText
+                    style={{
+                      fontSize: 14,
+                      color: '#D4AF37',
+                      fontFamily: 'Satoshi-Medium',
+                    }}
+                  >
+                    Close
+                  </SansText>
+                </TouchableOpacity>
+              </View>
+
+              <FlatList
+                data={getDatePickerData()}
+                keyExtractor={item => item.value}
+                numColumns={showDatePicker === 'month' ? 2 : 3}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ gap: 10 }}
+                renderItem={({ item }) => {
+                  const isSelected = isDateItemSelected(item.value);
+
+                  return (
+                    <TouchableOpacity
+                      style={{
+                        flex: 1,
+                        height: 50,
+                        margin: 5,
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: isSelected ? '#D4AF37' : '#E5E5E5',
+                        backgroundColor: isSelected
+                          ? 'rgba(212, 175, 55, 0.12)'
+                          : '#FFF',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingHorizontal: 6,
+                      }}
+                      onPress={() => handleDateItemPress(item.value)}
+                    >
+                      <SansText
+                        style={{
+                          fontSize: 16,
+                          color: isSelected ? '#D4AF37' : '#1a1a2e',
+                          fontFamily: isSelected
+                            ? 'Satoshi-Bold'
+                            : 'Satoshi-Medium',
+                        }}
+                        numberOfLines={1}
+                      >
+                        {item.label}
+                      </SansText>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </Pressable>
+          </Pressable>
+        </Modal>
       </ScreenWrapper>
     </AnimatedScreen>
   );

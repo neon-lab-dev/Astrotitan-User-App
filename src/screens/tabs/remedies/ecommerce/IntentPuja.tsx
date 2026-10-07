@@ -1,16 +1,12 @@
-
-
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, {
   useCallback,
   useState,
 } from "react";
-
 import {
   RefreshControl,
   View,
 } from "react-native";
-
 import { FlatList } from "react-native-gesture-handler";
 import { RootStackParamList } from "../../../../navigation/types";
 import { useGetAllCategoriesByAreaNameQuery } from "../../../../redux/features/categories/categoriesApi";

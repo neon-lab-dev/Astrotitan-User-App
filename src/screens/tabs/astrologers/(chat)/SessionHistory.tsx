@@ -82,7 +82,7 @@ const SessionHistory = () => {
           >
             <AppBar
               title="Session Logs"
-              onPressBack={() => navigation.navigate('AstrologerScreen')}
+              onBackPress={() => navigation.goBack()}
             />
 
             <View style={styles.content}>{renderContent()}</View>

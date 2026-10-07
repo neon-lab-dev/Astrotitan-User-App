@@ -88,7 +88,7 @@ export default function TabNavigator() {
         name="RemediesTab"
         component={RemediesNavigator}
         options={({ route }): any => ({
-          title: 'Pooja & Products',
+          title: 'Remedies',
           tabIcon: { active: 'firePitActive', inactive: 'firePitInactive' },
           tabBarStyle: shouldHideTabBar(route)
             ? { display: 'none' }

@@ -1,11 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {SansText} from '../reusable/Text/SansText';
 import {IconName, ICONS} from '../../assets/svg';
@@ -20,7 +19,6 @@ export function CustomTabBar({
   descriptors,
   navigation,
 }: BottomTabBarProps) {
-  const insets = useSafeAreaInsets();
 
   const activeRoute = state.routes[state.index];
 
@@ -38,10 +36,6 @@ export function CustomTabBar({
     <View
       style={[
         styles.container,
-        {
-          paddingBottom: insets.bottom,
-          height: 68 + insets.bottom,
-        },
       ]}
     >
       {state.routes.map((route, index) => {

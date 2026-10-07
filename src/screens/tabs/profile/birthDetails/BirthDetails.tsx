@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -21,7 +19,6 @@ import ReusableButton from '../../../../components/reusable/ReusableButton/Reusa
 import { SansText } from '../../../../components/reusable/Text/SansText';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type FormValues = {
@@ -31,32 +28,64 @@ type FormValues = {
 };
 
 type TimePickerType = 'hour' | 'minute' | 'period' | null;
+type DatePickerType = 'day' | 'month' | 'year' | null;
 
-const hours = Array.from({ length: 12 }, (_, index) =>
-  String(index + 1).padStart(2, '0'),
+const hours = Array.from({ length: 12 }, (_, i) =>
+  String(i + 1).padStart(2, '0'),
 );
-const minutes = Array.from({ length: 60 }, (_, index) =>
-  String(index).padStart(2, '0'),
+const minutes = Array.from({ length: 60 }, (_, i) =>
+  String(i).padStart(2, '0'),
 );
 const periods = ['AM', 'PM'];
 
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const CURRENT_YEAR = new Date().getFullYear();
+const MIN_YEAR = CURRENT_YEAR - 100;
+// Newest first — feels natural when scrolling (common in date dropdowns)
+const YEARS = Array.from(
+  { length: CURRENT_YEAR - MIN_YEAR + 1 },
+  (_, i) => String(CURRENT_YEAR - i),
+);
+
+const daysInMonth = (month: number, year: number) => {
+  // month is 1-based here
+  return new Date(year, month, 0).getDate();
+};
+
 const BirthDetails = () => {
   const insets = useSafeAreaInsets();
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState<TimePickerType>(null);
+  const [showDatePicker, setShowDatePicker] = useState<DatePickerType>(null);
+
   const [selectedHour, setSelectedHour] = useState('');
   const [selectedMinute, setSelectedMinute] = useState('');
   const [selectedPeriod, setSelectedPeriod] = useState('');
 
+  // Date dropdown state
+  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState(''); // 1-12 as string
+  const [selectedYear, setSelectedYear] = useState('');
+
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
-    defaultValues: {
-      dob: null,
-      time: '',
-      place: '',
-    },
+    defaultValues: { dob: null, time: '', place: '' },
     mode: 'onChange',
   });
+
   const [updateProfile, { isLoading: updateLoading }] =
     useUpdateProfileMutation();
   const dob = watch('dob');
@@ -64,22 +93,60 @@ const BirthDetails = () => {
   const place = watch('place');
   const user = useSelector((state: RootState) => state.auth.user);
 
-  // Parse existing time on load
+  /* ================== DERIVED DAYS LIST ================== */
+  const days = useMemo(() => {
+    const month = parseInt(selectedMonth) || 1;
+    const year = parseInt(selectedYear) || CURRENT_YEAR;
+    const total = daysInMonth(month, year);
+    return Array.from({ length: total }, (_, i) =>
+      String(i + 1).padStart(2, '0'),
+    );
+  }, [selectedMonth, selectedYear]);
+
+  /* ================== SYNC DOB -> selected* ================== */
+  useEffect(() => {
+    if (!dob) return;
+    const d = String(dob.getDate()).padStart(2, '0');
+    const m = String(dob.getMonth() + 1); // keep as "1".."12" for picker matching
+    const y = String(dob.getFullYear());
+    setSelectedDay(d);
+    setSelectedMonth(m);
+    setSelectedYear(y);
+  }, [dob]);
+
+  /* ================== SYNC selected* -> DOB ================== */
+  useEffect(() => {
+    if (selectedDay && selectedMonth && selectedYear) {
+      const d = parseInt(selectedDay);
+      const m = parseInt(selectedMonth);
+      const y = parseInt(selectedYear);
+      const maxDay = daysInMonth(m, y);
+      if (d > maxDay) {
+        // clamp if user changed month/year to something with fewer days
+        setSelectedDay(String(maxDay).padStart(2, '0'));
+        return;
+      }
+      setValue('dob', new Date(y, m - 1, d), {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [selectedDay, selectedMonth, selectedYear, setValue]);
+
+  /* ================== SYNC TIME from profile ================== */
   useEffect(() => {
     if (time) {
       const parts = time.split(' ');
       if (parts.length === 2) {
-        const timeParts = parts[0].split(':');
-        if (timeParts.length === 2) {
-          setSelectedHour(timeParts[0]);
-          setSelectedMinute(timeParts[1]);
-          setSelectedPeriod(parts[1]);
-        }
+        const [h, m] = parts[0].split(':');
+        setSelectedHour(h);
+        setSelectedMinute(m);
+        setSelectedPeriod(parts[1]);
       }
     }
   }, [time]);
 
-  // Format date for display (DD/MM/YYYY)
+  /* ================== FORMATTERS ================== */
   const formatDateForDisplay = (date: Date | null) => {
     if (!date) return '';
     try {
@@ -87,13 +154,11 @@ const BirthDetails = () => {
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
-    } catch (error) {
-      console.error('Error formatting date:', error);
+    } catch {
       return '';
     }
   };
 
-  // Format date for API (YYYY-MM-DD)
   const formatDateForAPI = (date: Date | null) => {
     if (!date) return '';
     try {
@@ -101,53 +166,38 @@ const BirthDetails = () => {
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
-    } catch (error) {
-      console.error('Error formatting date for API:', error);
+    } catch {
       return '';
     }
   };
 
-  // Validate date
-  const isDateValid = (date: Date | null) => {
-    if (!date) return false;
-    return date instanceof Date && !isNaN(date.getTime());
-  };
+  const isDateValid = (date: Date | null) =>
+    !!date && date instanceof Date && !isNaN(date.getTime());
 
+  /* ================== HYDRATE FROM PROFILE ================== */
   useEffect(() => {
     const profile = user?.profile;
     if (!profile) return;
 
-    /* DATE */
     if (profile?.dateOfBirth) {
       try {
         let date: Date;
         if (profile.dateOfBirth.includes('/')) {
-          const parts = profile.dateOfBirth.split('/');
-          date = new Date(
-            parseInt(parts[2]),
-            parseInt(parts[1]) - 1,
-            parseInt(parts[0]),
-          );
+          const [dd, mm, yyyy] = profile.dateOfBirth.split('/');
+          date = new Date(parseInt(yyyy), parseInt(mm) - 1, parseInt(dd));
         } else {
           date = new Date(profile.dateOfBirth);
         }
-        if (!isNaN(date.getTime())) {
-          setValue('dob', date);
-        }
-      } catch (error) {
-        console.log('Error parsing date:', error);
+        if (!isNaN(date.getTime())) setValue('dob', date);
+      } catch (e) {
+        console.log('Error parsing date:', e);
       }
     }
-
-    /* TIME */
-    if (profile?.timeOfBirth) {
-      setValue('time', profile.timeOfBirth);
-    }
-    if (profile?.placeOfBirth) {
-      setValue('place', profile.placeOfBirth);
-    }
+    if (profile?.timeOfBirth) setValue('time', profile.timeOfBirth);
+    if (profile?.placeOfBirth) setValue('place', profile.placeOfBirth);
   }, [user, setValue]);
 
+  /* ================== VALIDATION ================== */
   const isFormValid =
     isDateValid(dob) &&
     selectedHour &&
@@ -155,44 +205,29 @@ const BirthDetails = () => {
     selectedPeriod &&
     place?.trim()?.length > 2;
 
+  /* ================== SUBMIT ================== */
   const onSubmit = async (data: FormValues) => {
     try {
       const formattedDate = formatDateForAPI(data.dob);
-
-      // ✅ Use selected time components instead of data.time
       const formattedTime = `${selectedHour}:${selectedMinute} ${selectedPeriod}`;
-
       const payload = {
         dateOfBirth: formattedDate,
         timeOfBirth: formattedTime,
         placeOfBirth: data.place,
       };
-
       console.log('📤 Submitting payload:', payload);
-
-      const res = await updateProfile(payload).unwrap();
-      console.log('✅ PROFILE UPDATED', res);
-
+      await updateProfile(payload).unwrap();
       setShowSuccess(true);
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 3000);
+      setTimeout(() => setShowSuccess(false), 3000);
     } catch (error: any) {
       console.log('❌ UPDATE PROFILE ERROR:', error?.data || error);
     }
   };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setValue('dob', selectedDate);
-    }
-  };
-
+  /* ================== TIME HANDLERS ================== */
   const updateTimeOfBirth = (hour: string, minute: string, period: string) => {
     if (hour && minute && period) {
-      const formattedTime = `${hour}:${minute} ${period}`;
-      setValue('time', formattedTime, {
+      setValue('time', `${hour}:${minute} ${period}`, {
         shouldValidate: true,
         shouldDirty: true,
       });
@@ -202,26 +237,37 @@ const BirthDetails = () => {
   const handleHourSelect = (hour: string) => {
     setSelectedHour(hour);
     setShowTimePicker(null);
-    setTimeout(() => {
-      setShowTimePicker('minute');
-    }, 300);
+    setTimeout(() => setShowTimePicker('minute'), 300);
   };
-
   const handleMinuteSelect = (minute: string) => {
     setSelectedMinute(minute);
     setShowTimePicker(null);
-    setTimeout(() => {
-      setShowTimePicker('period');
-    }, 300);
+    setTimeout(() => setShowTimePicker('period'), 300);
   };
-
   const handlePeriodSelect = (period: string) => {
     setSelectedPeriod(period);
     setShowTimePicker(null);
     updateTimeOfBirth(selectedHour, selectedMinute, period);
   };
 
-  const getPickerData = () => {
+  /* ================== DATE HANDLERS ================== */
+  const handleDaySelect = (day: string) => {
+    setSelectedDay(day);
+    setShowDatePicker(null);
+    setTimeout(() => setShowDatePicker('month'), 300);
+  };
+  const handleMonthSelect = (monthIndex1Based: string) => {
+    setSelectedMonth(monthIndex1Based);
+    setShowDatePicker(null);
+    setTimeout(() => setShowDatePicker('year'), 300);
+  };
+  const handleYearSelect = (year: string) => {
+    setSelectedYear(year);
+    setShowDatePicker(null);
+  };
+
+  /* ================== PICKER DATA HELPERS ================== */
+  const getTimePickerData = () => {
     switch (showTimePicker) {
       case 'hour':
         return hours;
@@ -234,7 +280,7 @@ const BirthDetails = () => {
     }
   };
 
-  const getPickerTitle = () => {
+  const getTimePickerTitle = () => {
     switch (showTimePicker) {
       case 'hour':
         return 'Select Hour';
@@ -248,14 +294,57 @@ const BirthDetails = () => {
   };
 
   const handleTimeItemPress = (item: string) => {
-    if (showTimePicker === 'hour') {
-      handleHourSelect(item);
-    } else if (showTimePicker === 'minute') {
-      handleMinuteSelect(item);
-    } else if (showTimePicker === 'period') {
-      handlePeriodSelect(item);
+    if (showTimePicker === 'hour') handleHourSelect(item);
+    else if (showTimePicker === 'minute') handleMinuteSelect(item);
+    else if (showTimePicker === 'period') handlePeriodSelect(item);
+  };
+
+  // For Date picker (day / month / year)
+  // Month data is [ [value, label], ... ] so we can show January instead of 1
+  const getDatePickerData = (): { value: string; label: string }[] => {
+    switch (showDatePicker) {
+      case 'day':
+        return days.map(d => ({ value: d, label: d }));
+      case 'month':
+        return MONTHS.map((name, i) => ({
+          value: String(i + 1),
+          label: name,
+        }));
+      case 'year':
+        return YEARS.map(y => ({ value: y, label: y }));
+      default:
+        return [];
     }
   };
+
+  const getDatePickerTitle = () => {
+    switch (showDatePicker) {
+      case 'day':
+        return 'Select Day';
+      case 'month':
+        return 'Select Month';
+      case 'year':
+        return 'Select Year';
+      default:
+        return '';
+    }
+  };
+
+  const isDateItemSelected = (value: string) => {
+    if (showDatePicker === 'day') return selectedDay === value;
+    if (showDatePicker === 'month') return selectedMonth === value;
+    if (showDatePicker === 'year') return selectedYear === value;
+    return false;
+  };
+
+  const handleDateItemPress = (value: string) => {
+    if (showDatePicker === 'day') handleDaySelect(value);
+    else if (showDatePicker === 'month') handleMonthSelect(value);
+    else if (showDatePicker === 'year') handleYearSelect(value);
+  };
+
+  /* ================== DISPLAY TEXT ================== */
+  const dobDisplay = dob ? formatDateForDisplay(dob) : 'Select Date of Birth';
 
   return (
     <AnimatedScreen>
@@ -271,37 +360,82 @@ const BirthDetails = () => {
             <AppBar title="Birth Details" />
 
             <View style={styles.formContainer}>
-              {/* DOB */}
+              {/* ============== DOB ============== */}
               <Controller
                 control={control}
                 name="dob"
-                rules={{
-                  required: 'Date of birth is required',
-                }}
-                render={({ field: { value }, fieldState: { error } }) => (
+                rules={{ required: 'Date of birth is required' }}
+                render={({ fieldState: { error } }) => (
                   <View>
                     <SansText style={styles.label}>Date of Birth</SansText>
-                    <TouchableOpacity
-                      style={[
-                        styles.datePickerButton,
-                        error && styles.datePickerError,
-                      ]}
-                      onPress={() => setShowDatePicker(true)}
-                      activeOpacity={0.8}
-                    >
-                      <View style={styles.datePickerContent}>
+
+                    {/* 3 field row: DD / MM / YYYY */}
+                    <View style={styles.dateRow}>
+                      <TouchableOpacity
+                        style={[
+                          styles.dateField,
+                          error && styles.dateFieldError,
+                        ]}
+                        activeOpacity={0.8}
+                        onPress={() => setShowDatePicker('day')}
+                      >
                         <SansText
                           style={[
-                            styles.datePickerText,
-                            !value && styles.datePickerPlaceholder,
+                            styles.dateFieldText,
+                            !selectedDay && styles.dateFieldPlaceholder,
                           ]}
                         >
-                          {value
-                            ? formatDateForDisplay(value)
-                            : 'Select Date of Birth'}
+                          {selectedDay || 'DD'}
                         </SansText>
-                      </View>
-                    </TouchableOpacity>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[
+                          styles.dateField,
+                          styles.dateFieldFlexible,
+                          error && styles.dateFieldError,
+                        ]}
+                        activeOpacity={0.8}
+                        onPress={() => setShowDatePicker('month')}
+                      >
+                        <SansText
+                          style={[
+                            styles.dateFieldText,
+                            !selectedMonth && styles.dateFieldPlaceholder,
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {selectedMonth
+                            ? MONTHS[parseInt(selectedMonth) - 1]
+                            : 'Month'}
+                        </SansText>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[
+                          styles.dateField,
+                          error && styles.dateFieldError,
+                        ]}
+                        activeOpacity={0.8}
+                        onPress={() => setShowDatePicker('year')}
+                      >
+                        <SansText
+                          style={[
+                            styles.dateFieldText,
+                            !selectedYear && styles.dateFieldPlaceholder,
+                          ]}
+                        >
+                          {selectedYear || 'YYYY'}
+                        </SansText>
+                      </TouchableOpacity>
+                    </View>
+
+                    {dob && (
+                      <SansText style={styles.helperText}>
+                        Selected: {dobDisplay}
+                      </SansText>
+                    )}
+
                     {error && (
                       <SansText style={styles.errorText}>
                         {error.message}
@@ -311,12 +445,10 @@ const BirthDetails = () => {
                 )}
               />
 
-              {/* TIME OF BIRTH - Custom Time Picker */}
+              {/* ============== TIME ============== */}
               <View style={styles.timeContainer}>
                 <SansText style={styles.label}>Time of Birth</SansText>
-
                 <View style={styles.timeFields}>
-                  {/* HOUR */}
                   <TouchableOpacity
                     style={styles.timeField}
                     activeOpacity={0.8}
@@ -334,7 +466,6 @@ const BirthDetails = () => {
 
                   <SansText style={styles.timeSeparator}>:</SansText>
 
-                  {/* MINUTE */}
                   <TouchableOpacity
                     style={styles.timeField}
                     activeOpacity={0.8}
@@ -350,7 +481,6 @@ const BirthDetails = () => {
                     </SansText>
                   </TouchableOpacity>
 
-                  {/* AM / PM */}
                   <TouchableOpacity
                     style={styles.periodField}
                     activeOpacity={0.8}
@@ -368,7 +498,7 @@ const BirthDetails = () => {
                 </View>
               </View>
 
-              {/* PLACE */}
+              {/* ============== PLACE ============== */}
               <FormInput
                 control={control}
                 name="place"
@@ -393,6 +523,7 @@ const BirthDetails = () => {
             <View
               style={[
                 styles.bottomContainer,
+                { paddingBottom: insets.bottom + 16 },
               ]}
             >
               <ReusableButton
@@ -403,7 +534,6 @@ const BirthDetails = () => {
                 disabled={updateLoading || showSuccess}
                 variant="solid"
               />
-
               <SansText style={styles.footerText}>
                 These details are used to generate accurate charts & insights
               </SansText>
@@ -411,18 +541,65 @@ const BirthDetails = () => {
           )}
         </View>
 
-        {showDatePicker && (
-          <DateTimePicker
-            value={dob || new Date()}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={handleDateChange}
-            maximumDate={new Date()}
-            accentColor="#D4AF37"
-          />
-        )}
+        {/* ============== DATE PICKER MODAL ============== */}
+        <Modal
+          visible={showDatePicker !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowDatePicker(null)}
+        >
+          <Pressable
+            style={styles.modalOverlay}
+            onPress={() => setShowDatePicker(null)}
+          >
+            <Pressable
+              style={styles.modalContent}
+              onPress={e => e.stopPropagation()}
+            >
+              <View style={styles.modalHeader}>
+                <SatoshiText style={styles.modalTitle}>
+                  {getDatePickerTitle()}
+                </SatoshiText>
+                <TouchableOpacity onPress={() => setShowDatePicker(null)}>
+                  <SansText style={styles.closeText}>Close</SansText>
+                </TouchableOpacity>
+              </View>
 
-        {/* TIME PICKER MODAL */}
+              <FlatList
+                data={getDatePickerData()}
+                keyExtractor={item => item.value}
+                numColumns={showDatePicker === 'month' ? 2 : 3}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.pickerList}
+                renderItem={({ item }) => {
+                  const isSelected = isDateItemSelected(item.value);
+                  return (
+                    <TouchableOpacity
+                      style={[
+                        styles.pickerItem,
+                        showDatePicker === 'month' && styles.monthPickerItem,
+                        isSelected && styles.pickerItemActive,
+                      ]}
+                      onPress={() => handleDateItemPress(item.value)}
+                    >
+                      <SansText
+                        style={[
+                          styles.pickerItemText,
+                          isSelected && styles.pickerItemTextActive,
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {item.label}
+                      </SansText>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </Pressable>
+          </Pressable>
+        </Modal>
+
+        {/* ============== TIME PICKER MODAL ============== */}
         <Modal
           visible={showTimePicker !== null}
           transparent
@@ -435,11 +612,11 @@ const BirthDetails = () => {
           >
             <Pressable
               style={styles.modalContent}
-              onPress={event => event.stopPropagation()}
+              onPress={e => e.stopPropagation()}
             >
               <View style={styles.modalHeader}>
                 <SatoshiText style={styles.modalTitle}>
-                  {getPickerTitle()}
+                  {getTimePickerTitle()}
                 </SatoshiText>
                 <TouchableOpacity onPress={() => setShowTimePicker(null)}>
                   <SansText style={styles.closeText}>Close</SansText>
@@ -447,7 +624,7 @@ const BirthDetails = () => {
               </View>
 
               <FlatList
-                data={getPickerData()}
+                data={getTimePickerData()}
                 keyExtractor={item => item}
                 numColumns={showTimePicker === 'period' ? 2 : 4}
                 showsVerticalScrollIndicator={false}
@@ -457,7 +634,6 @@ const BirthDetails = () => {
                     (showTimePicker === 'hour' && selectedHour === item) ||
                     (showTimePicker === 'minute' && selectedMinute === item) ||
                     (showTimePicker === 'period' && selectedPeriod === item);
-
                   return (
                     <TouchableOpacity
                       style={[
@@ -490,59 +666,77 @@ const BirthDetails = () => {
 export default BirthDetails;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   label: {
     fontSize: 14,
     color: '#0D0D0D',
     lineHeight: 26,
   },
-  scrollContent: {
-    paddingBottom: 140,
-  },
+  scrollContent: { paddingBottom: 160 },
   formContainer: {
     paddingHorizontal: 16,
     marginTop: 12,
     gap: 14,
   },
- bottomContainer: {
-  position: 'absolute',
-  left: 0,
-  right: 0,
-  paddingHorizontal: 16,
-  paddingTop: 16,
-  paddingBottom: 24,
-  backgroundColor: '#F7F1DF',
-  gap: 10,
-},
+
+  bottomContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    backgroundColor: '#F7F1DF',
+    gap: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 8,
+  },
   footerText: {
     textAlign: 'center',
     fontSize: 11,
     color: '#777',
     lineHeight: 16,
   },
-  datePickerButton: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 6,
+
+  /* ============ DATE (DD / MM / YYYY) ============ */
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  dateField: {
+    width: 78,
+    height: 52,
     borderWidth: 1,
     borderColor: '#e7c555',
     backgroundColor: '#fdf5da',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
   },
-  datePickerError: {
+  dateFieldFlexible: {
+    flex: 1,
+    width: undefined,
+  },
+  dateFieldError: {
     borderColor: '#FF3B30',
   },
-  datePickerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  datePickerText: {
+  dateFieldText: {
     fontSize: 14,
     color: '#1a1a2e',
+    fontFamily: 'Satoshi-Medium',
   },
-  datePickerPlaceholder: {
+  dateFieldPlaceholder: {
     color: '#999',
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#777',
+    marginTop: 6,
   },
   errorText: {
     fontSize: 12,
@@ -550,10 +744,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  /* ================= TIME ================= */
-  timeContainer: {
-    marginTop: 2,
-  },
+  /* ============ TIME ============ */
+  timeContainer: { marginTop: 2 },
   timeFields: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -589,11 +781,9 @@ const styles = StyleSheet.create({
     color: '#1a1a2e',
     fontFamily: 'Satoshi-Medium',
   },
-  timeFieldPlaceholder: {
-    color: '#999',
-  },
+  timeFieldPlaceholder: { color: '#999' },
 
-  /* ================= MODAL ================= */
+  /* ============ MODAL ============ */
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.45)',
@@ -624,9 +814,7 @@ const styles = StyleSheet.create({
     color: '#D4AF37',
     fontFamily: 'Satoshi-Medium',
   },
-  pickerList: {
-    gap: 10,
-  },
+  pickerList: { gap: 10 },
   pickerItem: {
     flex: 1,
     height: 50,
@@ -636,10 +824,10 @@ const styles = StyleSheet.create({
     borderColor: '#E5E5E5',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 6,
   },
-  periodPickerItem: {
-    flex: 1,
-  },
+  monthPickerItem: { flex: 1 },
+  periodPickerItem: { flex: 1 },
   pickerItemActive: {
     borderColor: '#D4AF37',
     backgroundColor: 'rgba(212, 175, 55, 0.12)',

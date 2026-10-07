@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGetMyQueriesQuery } from '../../../../redux/features/quary/quaryApi';
 import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
@@ -17,14 +16,6 @@ import { SansText } from '../../../../components/reusable/Text/SansText';
 
 const Queries = () => {
   const [refreshing, setRefreshing] = useState(false);
-
-  /**
-   * Safe area
-   *
-   * Gives us the actual bottom inset of the
-   * current device.
-   */
-  const insets = useSafeAreaInsets();
 
   const {
     data: queryResponse,
@@ -71,17 +62,7 @@ const Queries = () => {
         <View
           style={{
             paddingHorizontal: 16,
-
             flexGrow: 1,
-
-            /*
-             * Original spacing was 16.
-             *
-             * Add the device-specific bottom
-             * safe-area inset so the button stays
-             * above the Android navigation area.
-             */
-            marginBottom: Math.max(insets.bottom, 16),
           }}
         >
           {/* =======================================

@@ -18,6 +18,7 @@ import { zodiacSigns } from '../../../../data/zodiacSigns';
 import { useRoute } from '@react-navigation/native';
 import SkeletonLoader from '../../../../components/reusable/SkeletonLoader/SkeletonLoade';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 // import { ChevronDown } from "lucide-react-native";
 const HoroscopeScreen = () => {
   const route = useRoute<any>();
@@ -108,12 +109,12 @@ const HoroscopeScreen = () => {
   const currentSign = zodiacSigns.find(z => z.id === selectedZodiac);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <AnimatedScreen>
       <ScreenWrapper>
-        <ScrollView style={{ flex: 1 }}>
+            <AppBar title="Daily Horoscopes" />
+        <ScrollView style={{ flex: 1, marginTop:24 }}>
           <View style={{ gap: 24 }}>
             {/* TITLE */}
-            <AppBar title="Daily Horoscope" />
 
             {/* DAY TABS */}
             <Tabs
@@ -194,7 +195,7 @@ const HoroscopeScreen = () => {
           </View>
         </ScrollView>
       </ScreenWrapper>
-    </SafeAreaView>
+    </AnimatedScreen>
   );
 };
 

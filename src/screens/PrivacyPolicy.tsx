@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimatedScreen from '../components/layout/AnimatedScreen';
 import ScreenWrapper from '../components/layout/ScreenWrapper';
 import ContentSection from '../components/reusable/ContentSectoin/ContentSection';
@@ -10,15 +9,11 @@ import AppBar from '../components/reusable/AppBar/AppBar';
 const PrivacyPolicy = () => {
   return (
     <AnimatedScreen>
-      <SafeAreaView style={{ flex: 1 }}>
         <ScreenWrapper>
           <AppBar title="Privacy Policy" />
 
           <ScrollView
             style={{ flex: 1 }}
-            contentContainerStyle={{
-              paddingBottom: 40,
-            }}
             showsVerticalScrollIndicator={false}
           >
             <View
@@ -105,7 +100,6 @@ const PrivacyPolicy = () => {
             </View>
           </ScrollView>
         </ScreenWrapper>
-      </SafeAreaView>
     </AnimatedScreen>
   );
 };

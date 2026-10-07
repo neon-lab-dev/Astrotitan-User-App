@@ -5,8 +5,6 @@ import {
   View,
 } from 'react-native';
 
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-
 import ReusableButton from '../ReusableButton/ReusableButton';
 import AnimatedScreen from '../../layout/AnimatedScreen';
 import ScreenWrapper from '../../layout/ScreenWrapper';
@@ -34,7 +32,6 @@ const SuccessScreen = ({
   children,
   buttons = [],
 }: Props) => {
-  const insets = useSafeAreaInsets();
 
   return (
     <AnimatedScreen>
@@ -42,9 +39,6 @@ const SuccessScreen = ({
         <View
           style={[
             styles.container,
-            {
-              paddingBottom: Math.max(insets.bottom, 16),
-            },
           ]}
         >
           {/* Center Content */}
@@ -99,12 +93,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-
-    // Default spacing.
-    // Actual bottom spacing is handled
-    // dynamically with insets.bottom.
-    paddingBottom: 16,
-
     justifyContent: 'space-between',
   },
 

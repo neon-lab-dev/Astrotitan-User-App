@@ -72,7 +72,7 @@ const OrderSuccessful = () => {
   return (
     <SuccessScreen
       title="Payment Successful!"
-      description="Your product order has been successfully placed. You can track your order status from the orders screen."
+      description="Your order has been successfully placed. You can track your order status from the orders screen."
       buttons={[
         {
           title: 'Continue Shopping',

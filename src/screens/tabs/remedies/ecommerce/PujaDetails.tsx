@@ -803,7 +803,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 16,
-    paddingBottom: 20,
   },
 
   smallDesc: {

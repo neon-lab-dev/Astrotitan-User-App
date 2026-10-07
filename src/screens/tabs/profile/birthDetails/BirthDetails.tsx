@@ -19,7 +19,6 @@ import ReusableButton from '../../../../components/reusable/ReusableButton/Reusa
 import { SansText } from '../../../../components/reusable/Text/SansText';
 import { SatoshiText } from '../../../../components/reusable/Text/SatoshiText';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type FormValues = {
   dob: Date | null;
@@ -67,7 +66,6 @@ const daysInMonth = (month: number, year: number) => {
 };
 
 const BirthDetails = () => {
-  const insets = useSafeAreaInsets();
   const [showSuccess, setShowSuccess] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState<TimePickerType>(null);
   const [showDatePicker, setShowDatePicker] = useState<DatePickerType>(null);
@@ -523,7 +521,6 @@ const BirthDetails = () => {
             <View
               style={[
                 styles.bottomContainer,
-                { paddingBottom: insets.bottom + 16 },
               ]}
             >
               <ReusableButton

@@ -200,7 +200,6 @@ const SubscriptionSkeleton = () => {
 const SubscriptionScreen = () => {
   const { data: plans, isLoading: isPlansLoading } = useGetAllSubscriptionPlansQuery({});
   const subscriptionPlans = plans?.data?.data || [];
-  console.log(subscriptionPlans);
 
   const user = useSelector((state: RootState) => state.auth.user);
   const { data, isLoading, refetch } = useGetMySubscriptionQuery({});
@@ -445,7 +444,6 @@ const SubscriptionScreen = () => {
           contentContainerStyle={{
             paddingHorizontal: 16,
             paddingTop: 24,
-            paddingBottom: 40,
           }}
           refreshControl={
             <RefreshControl

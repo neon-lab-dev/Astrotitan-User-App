@@ -187,7 +187,6 @@ const HomeScreen = () => {
             style={{
               paddingTop: 26,
               gap: 24,
-              marginBottom: 40,
             }}
           >
             {/* TODAY */}

@@ -1,12 +1,11 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ScreenWrapper from '../../../../components/layout/ScreenWrapper';
 import SelectZodiacScreen from '../../../../components/reusable/zodiacSigns/zodiacSigns';
 import { RootStackParamList } from '../../../../navigation/types';
 import AppBar from '../../../../components/reusable/AppBar/AppBar';
+import AnimatedScreen from '../../../../components/layout/AnimatedScreen';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -20,13 +19,12 @@ const SelectZodiacSign = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <AnimatedScreen>
       <ScreenWrapper>
         <AppBar title="Select Your Zodiac Sign" />
-
         <SelectZodiacScreen handleContinue={handleContinue} />
       </ScreenWrapper>
-    </SafeAreaView>
+    </AnimatedScreen>
   );
 };
 

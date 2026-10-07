@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
 import {
   FlatList,
@@ -6,7 +7,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ReusableButton from '../ReusableButton/ReusableButton';
 import { SatoshiText } from '../Text/SatoshiText';
@@ -20,7 +20,6 @@ type Props = {
 };
 
 export default function SelectZodiacScreen({ handleContinue }: Props) {
-  const insets = useSafeAreaInsets();
 
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -89,9 +88,6 @@ export default function SelectZodiacScreen({ handleContinue }: Props) {
         <View
           style={[
             styles.footer,
-            {
-              paddingBottom: Math.max(insets.bottom, 16),
-            },
           ]}
         >
           <ReusableButton

@@ -393,9 +393,6 @@ const ConsultationForm = () => {
               numberOfLines={4}
               rules={{ required: 'Purpose is required' }}
             />
-          </ScrollView>
-
-          <View style={styles.bottomContainer}>
             <ReusableButton
               title="Book Pooja"
               width="100%"
@@ -403,7 +400,7 @@ const ConsultationForm = () => {
               disabled={isLoading}
               onPress={handleSubmit(onSubmit)}
             />
-          </View>
+          </ScrollView>
         </View>
 
         {/* ==================================================
@@ -483,16 +480,6 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 120,
     gap: 20,
-  },
-  bottomContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 24,
-    backgroundColor: '#F7F1DF',
   },
   label: {
     fontSize: 14,

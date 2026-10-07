@@ -16,7 +16,7 @@ const RaiseQuerySuccess = () => {
   const { slug } = route.params || {};
   return (
     <SuccessScreen
-      title="Query submitted"
+      title="Query Submitted"
       description="We have received your query and will get back to you soon."
       buttons={[
 

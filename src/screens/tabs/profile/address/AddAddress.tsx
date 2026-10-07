@@ -21,23 +21,14 @@ import AppBar from '../../../../components/reusable/AppBar/AppBar';
 
 type FormType = {
   fullName: string;
-
   phoneNumber: string;
-
   alternativePhoneNumber: string;
-
   addressLine1: string;
-
   addressLine2: string;
-
   city: string;
-
   state: string;
-
   pinCode: string;
-
   country: string;
-
   type: 'home' | 'office';
 };
 
@@ -144,8 +135,8 @@ const AddAddress = () => {
           style={{
             flex: 1,
             justifyContent: 'space-between',
-
-            padding: 16,
+            paddingTop: 16,
+            paddingHorizontal: 16,
           }}
         >
           <KeyboardSafeSection

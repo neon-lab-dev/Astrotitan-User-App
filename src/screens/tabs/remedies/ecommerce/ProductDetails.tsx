@@ -42,10 +42,8 @@ import CartIcon from '@/assets/icons/navigation/cart.svg';
 import ProductDetailsPageSkeleton from '../../../../components/Loaders/ProductDetailsPageSkeleton/ProductDetailsPageSkeleton';
 import ProductImages from '../../../../components/ProductDetailsPage/ProductImages/ProductImages';
 import ProductCard from '../../../../components/PoojaAndProductsPage/ProductCard/ProductCard';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ProductDetails = () => {
-  const insets = useSafeAreaInsets();
   type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
   const navigation = useNavigation<NavigationProp>();
@@ -425,13 +423,13 @@ const ProductDetails = () => {
 
         {/* BUTTONS */}
         <View
-  style={[
-    styles.buttonRow,
-    {
-      bottom: insets.bottom,
-    },
-  ]}
->
+          style={[
+            styles.buttonRow,
+            {
+              bottom: 0,
+            },
+          ]}
+        >
           {quantity === 0 ? (
             <>
               <ReusableButton

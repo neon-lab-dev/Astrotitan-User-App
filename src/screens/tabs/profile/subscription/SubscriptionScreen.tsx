@@ -198,7 +198,8 @@ const SubscriptionSkeleton = () => {
 };
 
 const SubscriptionScreen = () => {
-  const { data: plans, isLoading: isPlansLoading } = useGetAllSubscriptionPlansQuery({});
+  const { data: plans, isLoading: isPlansLoading } =
+    useGetAllSubscriptionPlansQuery({});
   const subscriptionPlans = plans?.data?.data || [];
 
   const user = useSelector((state: RootState) => state.auth.user);
@@ -240,11 +241,9 @@ const SubscriptionScreen = () => {
       new Date(subscription.endDate) < new Date() &&
       !isCancelled);
 
-  const handlePaymentSuccess = async () => {
+  const handlePaymentSuccess = async (planId: string) => {
     try {
-      const payload = {
-        subscriptionPlanId : selectedPlanId
-      }
+      const payload = { subscriptionPlanId: planId };
       const response = await purchaseSubscription(payload).unwrap();
       if (response.success) {
         refetch();
@@ -256,6 +255,36 @@ const SubscriptionScreen = () => {
         'Payment succeeded but subscription activation failed.',
       );
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePurchase = async (planId: string) => {
+    if (!user) {
+      Alert.alert('Login Required', 'Please login to continue.');
+      return;
+    }
+    if (!planId) {
+      Alert.alert('Error', 'Please select a plan.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await createRazorpayOrder({ amount: 250 }).unwrap();
+      const razorpayOrder = response.data;
+      await openRazorpayPayment(razorpayOrder);
+      await handlePaymentSuccess(planId); // ✅ real id passed
+    } catch (error: any) {
+      console.log(error);
+      if (error?.code === 'PAYMENT_CANCELLED') {
+        Alert.alert('Payment Cancelled', 'You cancelled the payment.');
+      } else {
+        Alert.alert(
+          'Payment Failed',
+          error?.description || 'Unable to complete payment.',
+        );
+      }
       setLoading(false);
     }
   };
@@ -293,33 +322,33 @@ const SubscriptionScreen = () => {
     });
   };
 
-  const handlePurchase = async () => {
-    if (!user) {
-      Alert.alert('Login Required', 'Please login to continue.');
-      return;
-    }
+  // const handlePurchase = async () => {
+  //   if (!user) {
+  //     Alert.alert('Login Required', 'Please login to continue.');
+  //     return;
+  //   }
 
-    try {
-      setLoading(true);
-      const response = await createRazorpayOrder({
-        amount: 250,
-      }).unwrap();
-      const razorpayOrder = response.data;
-      await openRazorpayPayment(razorpayOrder);
-      await handlePaymentSuccess();
-    } catch (error: any) {
-      console.log(error);
-      if (error?.code === 'PAYMENT_CANCELLED') {
-        Alert.alert('Payment Cancelled', 'You cancelled the payment.');
-      } else {
-        Alert.alert(
-          'Payment Failed',
-          error?.description || 'Unable to complete payment.',
-        );
-      }
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     setLoading(true);
+  //     const response = await createRazorpayOrder({
+  //       amount: 250,
+  //     }).unwrap();
+  //     const razorpayOrder = response.data;
+  //     await openRazorpayPayment(razorpayOrder);
+  //     await handlePaymentSuccess();
+  //   } catch (error: any) {
+  //     console.log(error);
+  //     if (error?.code === 'PAYMENT_CANCELLED') {
+  //       Alert.alert('Payment Cancelled', 'You cancelled the payment.');
+  //     } else {
+  //       Alert.alert(
+  //         'Payment Failed',
+  //         error?.description || 'Unable to complete payment.',
+  //       );
+  //     }
+  //     setLoading(false);
+  //   }
+  // };
 
   const onRefresh = useCallback(async () => {
     if (refreshing) return;
@@ -393,7 +422,9 @@ const SubscriptionScreen = () => {
           >
             <CancelledSubscription
               subscription={subscription}
-              onResubscribe={handlePurchase}
+              onResubscribe={() =>
+                handlePurchase(selectedPlanId ?? subscriptionPlans?.[0]?._id)
+              }
               onCheckPlans={() => setShowPlans(true)}
             />
           </ScrollView>
@@ -425,7 +456,9 @@ const SubscriptionScreen = () => {
             showsVerticalScrollIndicator={false}
           >
             <ExpiredSubscription
-              onRenew={handlePurchase}
+              onRenew={() =>
+                handlePurchase(selectedPlanId ?? subscriptionPlans?.[0]?._id)
+              }
               onCheckPlans={() => setShowPlans(true)}
             />
           </ScrollView>
@@ -467,8 +500,8 @@ const SubscriptionScreen = () => {
                 plan={plan}
                 loading={isPlansLoading || loading}
                 onPress={() => {
-                  setSelectedPlanId(plan?._id);
-                  handlePurchase();
+                  setSelectedPlanId(plan._id); // keep for UI highlighting only
+                  handlePurchase(plan._id); // ✅ pass the id directly
                 }}
               />
             ))}
